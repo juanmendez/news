@@ -5,13 +5,14 @@ import java.util.*
 
 class DateUtil
 constructor(
-    private val dateFormat: SimpleDateFormat
+    private val dateToTimeFormat: SimpleDateFormat,
+    private val timeToDateFormat: SimpleDateFormat
 ) {
     fun dateToTime(date: String): Long {
-        return dateFormat.parse(date).time
+        return dateToTimeFormat.parse(date).time
     }
 
     fun timeToDate(time: Long): String {
-        return dateFormat.format(Date(time))
+        return timeToDateFormat.format(Date(time))
     }
 }

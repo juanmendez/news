@@ -46,7 +46,9 @@ class ArticlesAdapter (private val articles: List<Article>,
             } else {
                 view.article_row_image.setImageDrawable(null)
             }
+            view.article_row_source.text = article.sourceName
             view.article_row_title.text = article.title
+            view.article_row_date.text = article.publishedDate
         }
     }
 }

@@ -26,9 +26,16 @@ class RepositoryImpl(private val database: ArticlesDatabase) : Repository {
                 super.onActive()
                 getArticlesJob?.let { job ->
                     CoroutineScope(Dispatchers.IO + job).launch {
+                        // https://developer.android.com/reference/java/text/SimpleDateFormat
                         // "2020-08-24T14:38:37Z"
+                        // "August 08, 2020"
                         val cacheMapper =
-                            CacheMapper(dateUtil = DateUtil(SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")))
+                            CacheMapper(
+                                dateUtil = DateUtil(
+                                    SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"),
+                                    SimpleDateFormat("MMMM dd',' YYYY")
+                                )
+                            )
                         val available = articlesDao.getArticlesCount(query)
                         if (available == 0) {
                             articlesRemote(query)?.let {
