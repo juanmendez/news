@@ -43,7 +43,9 @@ class TestInsertArticles {
             content = "content"
         )
 
-        articlesDaoService.insertArticle(article)
+        val result = articlesDaoService.insertArticle(article)
+        assert(result == 1L)
+
         val count = articlesDaoService.getArticlesCount("technology")
         assert(count > 0)
     }
