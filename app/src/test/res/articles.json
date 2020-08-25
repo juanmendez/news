@@ -1,0 +1,28 @@
+[
+  {
+    "id": "2474abea-7584-486b-9f88-87a21870b0ec",
+    "query": "technology",
+    "sourceId": "",
+    "sourceName": "IGN",
+    "author": "John Smith",
+    "title": "XBOX Series X Launch Date",
+    "description": "description",
+    "url": "url",
+    "imageUrl": "imageUrl",
+    "publishedDate": "August 08, 2020",
+    "content": "content"
+  },
+  {
+    "id": "2474fbaa-7884-4h6b-9b8z-87a21670b0ec",
+    "query": "technology",
+    "sourceId": "",
+    "sourceName": "IGN",
+    "author": "John Johnson",
+    "title": "Nintendo Switch Pro Launch Date",
+    "description": "description",
+    "url": "url",
+    "imageUrl": "imageUrl",
+    "publishedDate": "August 09, 2020",
+    "content": "content"
+  }
+]

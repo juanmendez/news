@@ -8,7 +8,7 @@ interface ArticlesDaoService {
 
     suspend fun insertArticles(articles: List<Article>): LongArray
 
-    suspend fun getArticles(query: String?): List<Article>
+    suspend fun getArticles(query: String): List<Article>
 
-    suspend fun getArticlesCount(query: String?): Int
+    suspend fun getArticlesCount(query: String): Int
 }

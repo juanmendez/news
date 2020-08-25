@@ -29,11 +29,11 @@ constructor(
         return articlesDao.insertArticles(mapper.articleListToEntityList(articles))
     }
 
-    override suspend fun getArticles(query: String?): List<Article> {
+    override suspend fun getArticles(query: String): List<Article> {
         return mapper.entityListToArticleList(articlesDao.getArticles(query))
     }
 
-    override suspend fun getArticlesCount(query: String?): Int {
+    override suspend fun getArticlesCount(query: String): Int {
         return articlesDao.getArticlesCount(query)
     }
 }
