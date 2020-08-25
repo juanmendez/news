@@ -1,7 +1,7 @@
 package com.example.news
 
 import android.app.Application
-import com.example.news.model.ArticlesDatabase
+import com.example.news.model.cache.ArticlesDatabase
 
 class MyApplication : Application() {
 

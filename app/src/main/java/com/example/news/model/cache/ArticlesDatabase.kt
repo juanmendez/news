@@ -1,12 +1,11 @@
-package com.example.news.model
+package com.example.news.model.cache
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.news.model.local.ArticleLocal
 
-@Database(entities = [ArticleLocal::class], version = 1)
+@Database(entities = [ArticleCacheEntity::class], version = 1)
 abstract class ArticlesDatabase : RoomDatabase() {
 
     abstract fun articlesDao(): ArticlesDao

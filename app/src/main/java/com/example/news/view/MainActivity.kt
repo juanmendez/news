@@ -25,7 +25,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val viewModel: MainActivityViewModel by viewModels {
-        MainActivityViewModelFactory(RepositoryImpl((application as MyApplication).database))
+        val database = (application as MyApplication).database
+        MainActivityViewModelFactory(
+            RepositoryImpl(database)
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

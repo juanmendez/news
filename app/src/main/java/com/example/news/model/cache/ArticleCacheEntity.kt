@@ -1,11 +1,11 @@
-package com.example.news.model.local
+package com.example.news.model.cache
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "articles")
-data class ArticleLocal(
+data class ArticleCacheEntity(
     @PrimaryKey var id: String,
     var query: String,
     @ColumnInfo(name = "source_id") var sourceId: String,

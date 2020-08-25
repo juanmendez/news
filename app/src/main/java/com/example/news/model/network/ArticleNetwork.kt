@@ -1,6 +1,6 @@
-package com.example.news.model.remote
+package com.example.news.model.network
 
-data class ArticleRemote (
+data class ArticleNetwork (
     val source: Source?,
     val author: String?,
     val title: String?,

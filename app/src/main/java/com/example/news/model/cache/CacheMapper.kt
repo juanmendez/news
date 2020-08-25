@@ -1,4 +1,4 @@
-package com.example.news.model.local
+package com.example.news.model.cache
 
 import com.example.news.model.Article
 import com.example.news.util.DateUtil
@@ -7,9 +7,9 @@ import com.example.news.util.EntityMapper
 class CacheMapper
 constructor(
     private val dateUtil: DateUtil
-) : EntityMapper<ArticleLocal, Article> {
+) : EntityMapper<ArticleCacheEntity, Article> {
 
-    fun entityListToArticleList(entities: List<ArticleLocal>): List<Article> {
+    fun entityListToArticleList(entities: List<ArticleCacheEntity>): List<Article> {
         val list: ArrayList<Article> = ArrayList()
         for (entity in entities) {
             list.add(mapFromEntity(entity))
@@ -17,15 +17,15 @@ constructor(
         return list
     }
 
-    fun articleListToEntityList(notes: List<Article>): List<ArticleLocal> {
-        val entities: ArrayList<ArticleLocal> = ArrayList()
+    fun articleListToEntityList(notes: List<Article>): List<ArticleCacheEntity> {
+        val entities: ArrayList<ArticleCacheEntity> = ArrayList()
         for (note in notes) {
             entities.add(mapToEntity(note))
         }
         return entities
     }
 
-    override fun mapFromEntity(entity: ArticleLocal): Article {
+    override fun mapFromEntity(entity: ArticleCacheEntity): Article {
         return Article(
             id = entity.id,
             query = entity.query,
@@ -41,8 +41,8 @@ constructor(
         )
     }
 
-    override fun mapToEntity(article: Article): ArticleLocal {
-        return ArticleLocal(
+    override fun mapToEntity(article: Article): ArticleCacheEntity {
+        return ArticleCacheEntity(
             id = article.id,
             query = article.query,
             sourceId = article.sourceId,
