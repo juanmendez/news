@@ -13,6 +13,8 @@ class MainActivityViewModel (private val repository: Repository) : ViewModel(), 
 
     private val _query: MutableLiveData<String> = MutableLiveData()
 
+    // switchMap allows to update the UI "live" as the user types in an EditText
+    // and invokes setQuery to update the query with each typed character
     val articles: LiveData<List<Article>> = Transformations.switchMap(_query) { query ->
         getArticlesJob = Job()
         getArticlesJob?.let { job ->
