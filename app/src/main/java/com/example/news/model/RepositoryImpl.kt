@@ -1,47 +1,26 @@
 package com.example.news.model
 
-import androidx.lifecycle.LiveData
 import com.example.news.model.cache.ArticlesDaoService
 import com.example.news.model.network.ArticlesApiService
-import kotlinx.coroutines.*
 
 class RepositoryImpl(
     private val articlesApiService: ArticlesApiService,
     private val articlesDaoService: ArticlesDaoService
 ) : Repository {
-    private var getArticlesJob: CompletableJob? = null
 
-    override fun getArticles(query: String) : LiveData<List<Article>> {
-        getArticlesJob = Job()
-        return object : LiveData<List<Article>>() {
-            override fun onActive() {
-                super.onActive()
-                getArticlesJob?.let { job ->
-                    CoroutineScope(Dispatchers.IO + job).launch {
-                        val available = articlesDaoService.getArticlesCount(query)
-                        if (available == 0) {
-                            articlesApiService.getArticles(query)?.let {
-                                articlesDaoService.insertArticles(it)
-                                val articles = articlesDaoService.getArticles(query)
-                                withContext(Dispatchers.Main) {
-                                    value = articles
-                                    job.complete()
-                                }
-                            }
-                        } else {
-                            val articles = articlesDaoService.getArticles(query)
-                            withContext(Dispatchers.Main) {
-                                value = articles
-                                job.complete()
-                            }
-                        }
-                    }
-                }
+    override suspend fun getArticles(query: String): List<Article> {
+        val cachedArticlesCount = articlesDaoService.getArticlesCount(query)
+        if (cachedArticlesCount == 0) {
+            // fetch articles from network
+            articlesApiService.getArticles(query)?.let {
+                // cache them
+                articlesDaoService.insertArticles(it)
+                // return them
+                return articlesDaoService.getArticles(query)
             }
+        } else {
+            // return cached articles
+            return articlesDaoService.getArticles(query)
         }
-    }
-
-    override fun cancelJobs() {
-        getArticlesJob?.cancel()
     }
 }
