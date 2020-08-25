@@ -4,8 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.news.model.cache.ArticleCacheEntity
-
 
 @Dao
 interface ArticlesDao {
@@ -21,4 +19,7 @@ interface ArticlesDao {
 
     @Query("SELECT COUNT(*) FROM articles WHERE `query` LIKE :query")
     suspend fun getArticlesCount(query: String?): Int
+
+    @Query("DELETE FROM articles")
+    suspend fun deleteAllArticles(): Int
 }

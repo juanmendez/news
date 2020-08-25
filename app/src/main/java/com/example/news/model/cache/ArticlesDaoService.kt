@@ -11,4 +11,6 @@ interface ArticlesDaoService {
     suspend fun getArticles(query: String): List<Article>
 
     suspend fun getArticlesCount(query: String): Int
+
+    suspend fun deleteAllArticles(): Int
 }

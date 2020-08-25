@@ -76,4 +76,10 @@ constructor(
         }
         return count
     }
+
+    override suspend fun deleteAllArticles(): Int {
+        val deletedArticlesCount = articlesData.size
+        articlesData.clear()
+        return deletedArticlesCount
+    }
 }
