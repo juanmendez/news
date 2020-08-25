@@ -16,9 +16,11 @@ class MainActivityViewModel (private val repository: Repository) : ViewModel(), 
     val articles: LiveData<List<Article>> = Transformations.switchMap(_query) { query ->
         getArticlesJob = Job()
         getArticlesJob?.let { job ->
-            // we create LiveData here instead of having the Repository returning
-            // LiveData, that way the Repository does not depend on Android APIs,
-            // thus we can Unit Test it in isolation
+            // We use a LiveData builder to create a coroutine that will run
+            // the Repository asynchronously, consume the response, and emit
+            // a LiveData value, instead of having the Repository returning
+            // LiveData, that way the Repository does not depend on Android
+            // APIs, thus we can Unit Test it in isolation
             liveData(Dispatchers.IO + job) {
                 emit(repository.getArticles(query))
             }
