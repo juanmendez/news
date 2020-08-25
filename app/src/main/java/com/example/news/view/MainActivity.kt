@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
-import com.example.news.model.RepositoryImpl
+import com.example.news.util.InjectorUtil
 import com.example.news.viewmodel.MainActivityViewModel
 import com.example.news.viewmodel.MainActivityViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
@@ -25,10 +25,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val viewModel: MainActivityViewModel by viewModels {
-        val database = (application as MyApplication).database
-        MainActivityViewModelFactory(
-            RepositoryImpl(database)
-        )
+        val repository = InjectorUtil.provideRepository(application as MyApplication)
+        MainActivityViewModelFactory(repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
