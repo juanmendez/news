@@ -9,6 +9,10 @@ class RepositoryImpl(
 ) : Repository {
 
     override suspend fun getArticles(query: String): List<Article> {
+
+        // uncomment to see the UI handling the Repo throwing an exception
+        //throw Exception()
+
         val cachedArticlesCount = articlesDaoService.getArticlesCount(query)
         if (cachedArticlesCount == 0) {
             // fetch articles from network

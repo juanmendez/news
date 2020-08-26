@@ -6,12 +6,33 @@ import com.example.news.model.Repository
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 
-class MainActivityViewModel (private val repository: Repository) : ViewModel(), LifecycleObserver {
+class MainActivityViewModel (
+    private val repository: Repository
+) : ViewModel(), LifecycleObserver {
 
     private var getArticlesJob: CompletableJob? = null
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        getArticlesJob?.cancel()
+    }
+
+    private val _showError : MutableLiveData<Boolean> = MutableLiveData()
+    val showError : LiveData<Boolean> = _showError
+    fun showError(value: Boolean) {
+        if (value != _showError.value) {
+            _showError.value = value
+        }
+    }
+
     private val _query: MutableLiveData<String> = MutableLiveData()
+    fun setQuery(query: String) {
+        if (query != _query.value) {
+            _query.value = query
+        }
+    }
 
     // switchMap allows to update the UI "live" as the user types in an EditText
     // and invokes setQuery to update the query with each typed character
@@ -24,19 +45,14 @@ class MainActivityViewModel (private val repository: Repository) : ViewModel(), 
             // LiveData, that way the Repository does not depend on Android
             // APIs, thus we can Unit Test it in isolation
             liveData(Dispatchers.IO + job) {
-                emit(repository.getArticles(query))
+                try {
+                    emit(repository.getArticles(query))
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        showError(true)
+                    }
+                }
             }
         }
-    }
-
-    fun setQuery(query: String) {
-        if (query != _query.value) {
-            _query.value = query
-        }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
-        getArticlesJob?.cancel()
     }
 }

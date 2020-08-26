@@ -7,6 +7,7 @@ import com.example.news.util.TAG
 import com.example.news.util.log
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Test
 
 @InternalCoroutinesApi
@@ -63,5 +64,41 @@ class TestRepository {
         val newCacheCount = articlesDaoService.getArticlesCount(query)
         log(this@TestRepository.TAG, "updated cache count = $newCacheCount")
         assert(newCacheCount > 0)
+    }
+
+    @Test
+    fun getArticles_failure_cacheInsert() = runBlocking {
+        val query = "technology"
+
+        val cachedCount = articlesDaoService.getArticlesCount(query)
+        log(this@TestRepository.TAG, "cached count = $cachedCount")
+        if (cachedCount > 0) {
+
+            // empty cache
+            articlesDaoService.deleteAllArticles()
+
+            // verify it's empty
+            val emptyCount = articlesDaoService.getArticlesCount(query)
+            log(this@TestRepository.TAG, "empty cache count = $emptyCount")
+            assert(emptyCount == 0)
+        }
+
+        assertThrows<Exception> {
+            log(this@TestRepository.TAG, "call Repository's getArticles and fail")
+            repository.getArticles(FORCE_GET_ARTICLES_EXCEPTION)
+        }
+    }
+
+    private inline fun <reified T : Exception> assertThrows(runnable: () -> Any?) {
+        try {
+            runnable.invoke()
+        } catch (e: Throwable) {
+            if (e is T) {
+                return
+            }
+            Assert.fail("expected ${T::class.qualifiedName} but caught " +
+                    "${e::class.qualifiedName} instead")
+        }
+        Assert.fail("expected ${T::class.qualifiedName}")
     }
 }
