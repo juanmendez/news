@@ -7,10 +7,18 @@ import com.google.gson.reflect.TypeToken
 class ArticlesDataFactory(
     private val testClassLoader: ClassLoader
 ) {
-    fun produceListOfArticles(): List<Article> {
+    fun produceCacheListOfArticles(): List<Article> {
         return Gson()
             .fromJson(
-                getArticlesFromFile("articles.json"),
+                getArticlesFromFile("cache.json"),
+                object : TypeToken<List<Article>>() {}.type  // Gson stuff, don't ask
+            )
+    }
+
+    fun produceNetworkListOfArticles(): List<Article> {
+        return Gson()
+            .fromJson(
+                getArticlesFromFile("network.json"),
                 object : TypeToken<List<Article>>() {}.type  // Gson stuff, don't ask
             )
     }

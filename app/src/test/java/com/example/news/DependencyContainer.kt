@@ -31,7 +31,7 @@ class DependencyContainer {
         articlesDaoService = FakeArticlesDaoServiceImpl(
             // use factory to get a HashMap of articles (fake cache)
             articlesData = articlesDataFactory.produceHashMapOfArticles(
-                articlesDataFactory.produceListOfArticles()
+                articlesDataFactory.produceCacheListOfArticles()
             )
         )
 
@@ -39,7 +39,7 @@ class DependencyContainer {
         articlesApiService = FakeArticlesApiServiceImpl(
             // use factory to get a HashMap of articles (fake API)
             articlesData = articlesDataFactory.produceHashMapOfArticles(
-                articlesDataFactory.produceListOfArticles()
+                articlesDataFactory.produceNetworkListOfArticles()
             )
         )
     }

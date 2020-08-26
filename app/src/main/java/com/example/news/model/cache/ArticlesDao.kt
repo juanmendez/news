@@ -8,7 +8,7 @@ import androidx.room.Query
 @Dao
 interface ArticlesDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertArticle(article: ArticleCacheEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

@@ -16,7 +16,9 @@ object NetworkMapper {
 
     private fun mapFromNetwork(query: String, articleNetwork: ArticleNetwork): Article {
         return Article(
-            id = UUID.randomUUID().toString(),
+            // this makes primary key unique, so we will not have
+            // any duplicate articles inserted into the database
+            id = articleNetwork.hashCode().toString(),
             query = query,
             sourceId = articleNetwork.source?.id ?: "",
             sourceName = articleNetwork.source?.name ?: "",
