@@ -32,16 +32,9 @@ class MainActivityViewModel (
         }
     }
 
-//    // switchMap allows to update the UI "live" as the user types in an EditText
-//    // and invokes setQuery to update the query with each typed character
 //    val articles: LiveData<List<Article>> = Transformations.switchMap(_query) { query ->
 //        getArticlesJob = Job()
 //        getArticlesJob?.let { job ->
-//            // We use a LiveData builder to create a coroutine that will run
-//            // the Repository asynchronously, consume the response, and emit
-//            // a LiveData value, instead of having the Repository returning
-//            // LiveData, that way the Repository does not depend on Android
-//            // APIs, thus it can be Unit Tested in isolation
 //            liveData(Dispatchers.IO + job) {
 //                try {
 //                    emit(repository.getCachedArticles(query))
@@ -65,13 +58,21 @@ class MainActivityViewModel (
             // LiveData, that way the Repository does not depend on Android
             // APIs, thus it can be Unit Tested in isolation
             liveData(Dispatchers.IO + job) {
+
+                // create a coroutine and return its future result
+                // (of type Flow) as an implementation of Deferred
                 val data = getArticlesAsync(query)
-                data.await().collect { emit(it) }
+
+                data
+                    .await() // get the Deferred Flow
+                    .collect { // collect the Flow's List<Article> objects
+                        emit(it) // emit each List<Article> to the LiveData builder
+                    }
             }
         }
     }
 
-    private fun getArticlesAsync(query: String) = viewModelScope.async(Dispatchers.IO) {
-        repository.getArticles(query)
+    private fun getArticlesAsync(query: String) = viewModelScope.async {
+        repository.getArticles(query) // Flow
     }
 }

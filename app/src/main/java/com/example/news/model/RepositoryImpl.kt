@@ -33,10 +33,10 @@ class RepositoryImpl(
     override suspend fun getArticles(query: String): Flow<List<Article>> = flow {
         val cachedArticlesCount = articlesDaoService.getArticlesCount(query)
         if (cachedArticlesCount > 0) {
-            // if there are cached data emit them
+            // if there are cached articles emit them
             emit(articlesDaoService.getArticles(query))
         }
-        // fetch updated data from network
+        // fetch new articles from network
         articlesApiService.getArticles(query)?.let {
             // save them to cache
             articlesDaoService.insertArticles(it)
