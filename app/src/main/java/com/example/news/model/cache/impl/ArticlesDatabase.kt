@@ -1,4 +1,4 @@
-package com.example.news.model.cache
+package com.example.news.model.cache.impl
 
 import android.content.Context
 import androidx.room.Database

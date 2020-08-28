@@ -4,10 +4,10 @@ import com.example.news.MyApplication
 import com.example.news.model.Repository
 import com.example.news.model.RepositoryImpl
 import com.example.news.model.cache.ArticlesCacheService
-import com.example.news.model.cache.ArticlesCacheServiceImpl
-import com.example.news.model.cache.ArticlesDatabase
+import com.example.news.model.cache.impl.ArticlesCacheServiceImpl
+import com.example.news.model.cache.impl.ArticlesDatabase
 import com.example.news.model.network.ArticlesApiService
-import com.example.news.model.network.ArticlesApiServiceImpl
+import com.example.news.model.network.impl.ArticlesApiServiceImpl
 
 object InjectorUtil {
 

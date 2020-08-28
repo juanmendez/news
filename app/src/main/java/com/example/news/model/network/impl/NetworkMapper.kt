@@ -1,7 +1,6 @@
-package com.example.news.model.network
+package com.example.news.model.network.impl
 
 import com.example.news.model.Article
-import java.util.*
 import kotlin.collections.ArrayList
 
 object NetworkMapper {

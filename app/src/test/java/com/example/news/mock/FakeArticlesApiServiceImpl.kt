@@ -1,4 +1,4 @@
-package com.example.news
+package com.example.news.mock
 
 import com.example.news.model.Article
 import com.example.news.model.network.ArticlesApiService

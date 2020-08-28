@@ -1,4 +1,4 @@
-package com.example.news.model.network
+package com.example.news.model.network.impl
 
 data class GetArticlesResponse (
     val status: String?,

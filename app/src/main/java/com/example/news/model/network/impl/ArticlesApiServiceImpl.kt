@@ -1,6 +1,7 @@
-package com.example.news.model.network
+package com.example.news.model.network.impl
 
 import com.example.news.model.Article
+import com.example.news.model.network.ArticlesApiService
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import retrofit2.Response
@@ -12,8 +13,7 @@ import java.io.IOException
 class ArticlesApiServiceImpl : ArticlesApiService {
 
     override suspend fun getArticles(query: String): List<Article> {
-        // synchronous Retrofit call that will be
-        // executed inside an IO-scoped coroutine
+        // synchronous Retrofit call that will be executed inside an IO-scoped coroutine
         val response = handleError(INSTANCE.getArticles(query, API_KEY))
         val networkArticles = response.body()?.articles
         networkArticles?.let {
@@ -62,7 +62,11 @@ class ArticlesApiServiceImpl : ArticlesApiService {
 
         private fun <T> handleError(response: Response<T>): Response<T> {
             if (!response.isSuccessful) {
-                throw Exception(parseError(response)?.message())
+                parseError(response)?.let { apiError ->
+                    throw Exception("\nStatus code: ${response.code()}\n\nMessage: ${apiError.message()}")
+                } ?: run {
+                    throw Exception("Error parsing API error response")
+                }
             }
             return response
         }

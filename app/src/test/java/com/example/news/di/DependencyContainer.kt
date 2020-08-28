@@ -1,5 +1,9 @@
-package com.example.news
+package com.example.news.di
 
+import com.example.news.mock.FakeArticlesApiServiceImpl
+import com.example.news.mock.FakeArticlesCacheServiceImpl
+import com.example.news.factory.ArticleFactory
+import com.example.news.factory.ArticlesDataFactory
 import com.example.news.model.cache.ArticlesCacheService
 import com.example.news.model.network.ArticlesApiService
 import com.example.news.util.isUnitTest

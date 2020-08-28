@@ -1,4 +1,4 @@
-package com.example.news
+package com.example.news.factory
 
 import com.example.news.model.Article
 import com.google.gson.Gson
