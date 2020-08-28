@@ -1,7 +1,7 @@
 package com.example.news
 
 import com.example.news.model.RepositoryImpl
-import com.example.news.model.cache.ArticlesDaoService
+import com.example.news.model.cache.ArticlesCacheService
 import com.example.news.model.network.ArticlesApiService
 import com.example.news.util.TAG
 import com.example.news.util.log
@@ -18,7 +18,7 @@ class TestRepository {
     private val repository: RepositoryImpl
 
     private val dependencyContainer: DependencyContainer = DependencyContainer()
-    private val articlesDaoService: ArticlesDaoService
+    private val articlesCacheService: ArticlesCacheService
     private val articlesApiService: ArticlesApiService
 
     init {
@@ -26,11 +26,11 @@ class TestRepository {
         dependencyContainer.build()
 
         // fake data sources
-        articlesDaoService = dependencyContainer.articlesDaoService
+        articlesCacheService = dependencyContainer.articlesCacheService
         articlesApiService = dependencyContainer.articlesApiService
 
         // init system in test
-        repository = RepositoryImpl(articlesApiService, articlesDaoService)
+        repository = RepositoryImpl(articlesApiService, articlesCacheService)
     }
 
     private inline fun <reified T : Exception> assertThrows(runnable: () -> Any?) {
@@ -53,16 +53,16 @@ class TestRepository {
 
         val query = "technology"
 
-        val cachedCount = articlesDaoService.getArticlesCount(query)
+        val cachedCount = articlesCacheService.getArticlesCount(query)
         log(this@TestRepository.TAG, "cached count = $cachedCount")
         assert(cachedCount == 1)
         if (cachedCount > 0) {
 
             // empty cache
-            articlesDaoService.deleteAllArticles()
+            articlesCacheService.deleteAllArticles()
 
             // verify it's empty
-            val emptyCount = articlesDaoService.getArticlesCount(query)
+            val emptyCount = articlesCacheService.getArticlesCount(query)
             log(this@TestRepository.TAG, "empty cache count = $emptyCount")
             assert(emptyCount == 0)
         }
@@ -71,7 +71,7 @@ class TestRepository {
         repository.getCachedArticles(query)
 
         // verify cache has articles
-        val newCacheCount = articlesDaoService.getArticlesCount(query)
+        val newCacheCount = articlesCacheService.getArticlesCount(query)
         log(this@TestRepository.TAG, "updated cache count = $newCacheCount")
         assert(newCacheCount == 1)
     }
@@ -90,7 +90,7 @@ class TestRepository {
         val query = "technology"
 
         // verify cache has articles
-        val cachedCount = articlesDaoService.getArticlesCount(query)
+        val cachedCount = articlesCacheService.getArticlesCount(query)
         log(this@TestRepository.TAG, "cached count = $cachedCount")
         assert(cachedCount == 1)
 
@@ -110,7 +110,7 @@ class TestRepository {
         }
 
         // verify cache was updated with new articles
-        val newCacheCount = articlesDaoService.getArticlesCount(query)
+        val newCacheCount = articlesCacheService.getArticlesCount(query)
         log(this@TestRepository.TAG, "updated cache count = $newCacheCount")
         assert(newCacheCount == 2)
     }

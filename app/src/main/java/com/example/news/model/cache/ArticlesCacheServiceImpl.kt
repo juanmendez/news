@@ -4,10 +4,11 @@ import com.example.news.model.Article
 import com.example.news.util.DateUtil
 import java.text.SimpleDateFormat
 
-class ArticlesDaoServiceImpl
+// This ArticlesCacheService implementation uses DAO/Room
+class ArticlesCacheServiceImpl
 constructor(
     private val articlesDao: ArticlesDao
-) : ArticlesDaoService {
+) : ArticlesCacheService {
 
     // https://developer.android.com/reference/java/text/SimpleDateFormat
     // "2020-08-24T14:38:37Z"

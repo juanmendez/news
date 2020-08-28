@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "articles")
-data class ArticleCacheEntity(
+data class ArticleEntity(
     @PrimaryKey var id: String,
     var query: String,
     @ColumnInfo(name = "source_id") var sourceId: String,

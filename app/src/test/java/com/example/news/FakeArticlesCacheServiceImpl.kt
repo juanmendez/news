@@ -1,7 +1,7 @@
 package com.example.news
 
 import com.example.news.model.Article
-import com.example.news.model.cache.ArticlesDaoService
+import com.example.news.model.cache.ArticlesCacheService
 
 const val FORCE_NEW_ARTICLE_EXCEPTION = "FORCE_NEW_ARTICLE_EXCEPTION"
 const val FORCE_GENERAL_FAILURE = "FORCE_GENERAL_FAILURE"
@@ -9,10 +9,10 @@ const val FORCE_GET_ARTICLES_EXCEPTION = "FORCE_GET_ARTICLES_EXCEPTION"
 
 // in the real implementation we delegate to DAO,
 // here we fake the database by using a HashMap
-class FakeArticlesDaoServiceImpl
+class FakeArticlesCacheServiceImpl
 constructor(
     private val articlesData: HashMap<String, Article>,
-) : ArticlesDaoService {
+) : ArticlesCacheService {
     override suspend fun insertArticle(article: Article): Long {
 
         // we need to test if the DAO throws an exception

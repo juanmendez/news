@@ -1,13 +1,13 @@
 package com.example.news.model
 
-import com.example.news.model.cache.ArticlesDaoService
+import com.example.news.model.cache.ArticlesCacheService
 import com.example.news.model.network.ArticlesApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class RepositoryImpl(
     private val articlesApiService: ArticlesApiService,
-    private val articlesDaoService: ArticlesDaoService
+    private val articlesCacheService: ArticlesCacheService
 ) : Repository {
 
     /**
@@ -20,18 +20,18 @@ class RepositoryImpl(
         // uncomment to see the UI handling the Repo throwing an exception
         //throw Exception()
 
-        val cachedArticlesCount = articlesDaoService.getArticlesCount(query)
+        val cachedArticlesCount = articlesCacheService.getArticlesCount(query)
         if (cachedArticlesCount == 0) {
             // fetch articles from network
             articlesApiService.getArticles(query)?.let {
                 // cache them
-                articlesDaoService.insertArticles(it)
+                articlesCacheService.insertArticles(it)
                 // return them
-                return articlesDaoService.getArticles(query)
+                return articlesCacheService.getArticles(query)
             }
         } else {
             // return cached articles
-            return articlesDaoService.getArticles(query)
+            return articlesCacheService.getArticles(query)
         }
     }
 
@@ -44,17 +44,17 @@ class RepositoryImpl(
         // uncomment to see the UI handling the Repo throwing an exception
         //throw Exception()
 
-        val cachedArticlesCount = articlesDaoService.getArticlesCount(query)
+        val cachedArticlesCount = articlesCacheService.getArticlesCount(query)
         if (cachedArticlesCount > 0) {
             // if there are cached articles emit them
-            emit(articlesDaoService.getArticles(query))
+            emit(articlesCacheService.getArticles(query))
         }
         // fetch new articles from network
         articlesApiService.getArticles(query)?.let {
             // save them to cache
-            articlesDaoService.insertArticles(it)
+            articlesCacheService.insertArticles(it)
             // emit them
-            emit(articlesDaoService.getArticles(query))
+            emit(articlesCacheService.getArticles(query))
         }
     }
 }

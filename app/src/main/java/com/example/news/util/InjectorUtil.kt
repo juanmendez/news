@@ -3,8 +3,8 @@ package com.example.news.util
 import com.example.news.MyApplication
 import com.example.news.model.Repository
 import com.example.news.model.RepositoryImpl
-import com.example.news.model.cache.ArticlesDaoService
-import com.example.news.model.cache.ArticlesDaoServiceImpl
+import com.example.news.model.cache.ArticlesCacheService
+import com.example.news.model.cache.ArticlesCacheServiceImpl
 import com.example.news.model.cache.ArticlesDatabase
 import com.example.news.model.network.ArticlesApiService
 import com.example.news.model.network.ArticlesApiServiceImpl
@@ -15,9 +15,9 @@ object InjectorUtil {
         return application.database
     }
 
-    fun provideArticlesDaoService(application: MyApplication): ArticlesDaoService {
+    fun provideArticlesDaoService(application: MyApplication): ArticlesCacheService {
         val database = provideDatabase(application)
-        return ArticlesDaoServiceImpl(database.articlesDao())
+        return ArticlesCacheServiceImpl(database.articlesDao())
     }
 
     fun provideArticlesApiService(): ArticlesApiService {

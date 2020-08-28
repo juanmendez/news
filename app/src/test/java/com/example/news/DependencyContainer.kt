@@ -1,6 +1,6 @@
 package com.example.news
 
-import com.example.news.model.cache.ArticlesDaoService
+import com.example.news.model.cache.ArticlesCacheService
 import com.example.news.model.network.ArticlesApiService
 import com.example.news.util.isUnitTest
 
@@ -8,7 +8,7 @@ class DependencyContainer {
 
     lateinit var articleFactory: ArticleFactory
     lateinit var articlesDataFactory: ArticlesDataFactory
-    lateinit var articlesDaoService: ArticlesDaoService
+    lateinit var articlesCacheService: ArticlesCacheService
     lateinit var articlesApiService: ArticlesApiService
 
     init {
@@ -29,7 +29,7 @@ class DependencyContainer {
         }
 
         // create the fake cache service implementation
-        articlesDaoService = FakeArticlesDaoServiceImpl(
+        articlesCacheService = FakeArticlesCacheServiceImpl(
             // use factory to get a HashMap of articles (fake cache)
             articlesData = articlesDataFactory.produceHashMapOfArticles(
                 articlesDataFactory.produceCacheListOfArticles()
