@@ -6,7 +6,7 @@ import com.example.news.model.Repository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
-class MainActivityViewModel (
+class ArticleListActivityViewModel (
     private val repository: Repository
 ) : ViewModel(), LifecycleObserver {
 
@@ -17,11 +17,11 @@ class MainActivityViewModel (
         getArticlesJob?.cancel()
     }
 
-    private val _showError : MutableLiveData<Boolean> = MutableLiveData()
-    val showError : LiveData<Boolean> = _showError
-    fun showError(value: Boolean) {
-        if (value != _showError.value) {
-            _showError.value = value
+    private val _errorMessage : MutableLiveData<String?> = MutableLiveData()
+    val errorMessage : LiveData<String?> = _errorMessage
+    fun showError(value: String?) {
+        if (value != _errorMessage.value) {
+            _errorMessage.value = value
         }
     }
 
@@ -71,7 +71,7 @@ class MainActivityViewModel (
                         }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        showError(true)
+                        showError(e.message.toString())
                     }
                 }
             }

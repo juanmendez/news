@@ -10,8 +10,8 @@ import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
 import com.example.news.util.InjectorUtil
-import com.example.news.viewmodel.MainActivityViewModel
-import com.example.news.viewmodel.MainActivityViewModelFactory
+import com.example.news.viewmodel.ArticleListActivityViewModel
+import com.example.news.viewmodel.ArticleListActivityViewModelFactory
 import kotlinx.android.synthetic.main.activity_article_list.*
 
 class ArticleListActivity : BaseActivity() {
@@ -24,9 +24,9 @@ class ArticleListActivity : BaseActivity() {
         }
     }
 
-    private val viewModel: MainActivityViewModel by viewModels {
+    private val viewModel: ArticleListActivityViewModel by viewModels {
         val repository = InjectorUtil.provideRepository(application as MyApplication)
-        MainActivityViewModelFactory(repository)
+        ArticleListActivityViewModelFactory(repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,23 +49,21 @@ class ArticleListActivity : BaseActivity() {
         viewModel.articles.observe(this, Observer { articles ->
             articles_recyclerview.adapter = ArticlesAdapter(articles, listener)
         })
-        viewModel.showError.observe(this, Observer { show ->
-            show?.let {
-                when (show) {
-                    true -> showAlertDialog()
-                }
+        viewModel.errorMessage.observe(this, Observer { msg ->
+            msg?.let {
+                showAlertDialog(msg)
             }
         })
     }
 
-    private fun showAlertDialog() {
+    private fun showAlertDialog(message: String?) {
         val dialogBuilder = AlertDialog.Builder(this)
         dialogBuilder
-            .setMessage("Something went wrong...")
+            .setMessage(message ?: "Something went wrong...")
             .setCancelable(false)
             .setPositiveButton("Ok", DialogInterface.OnClickListener { _, _ ->
                 run {
-                    viewModel.showError(false)
+                    viewModel.showError(null)
                 }
             })
         val alert = dialogBuilder.create()
