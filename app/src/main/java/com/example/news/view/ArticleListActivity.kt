@@ -1,7 +1,6 @@
 package com.example.news.view
 
 import android.content.DialogInterface
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -13,9 +12,9 @@ import com.example.news.model.Article
 import com.example.news.util.InjectorUtil
 import com.example.news.viewmodel.MainActivityViewModel
 import com.example.news.viewmodel.MainActivityViewModelFactory
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_article_list.*
 
-class MainActivity : AppCompatActivity() {
+class ArticleListActivity : BaseActivity() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
 
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_article_list)
         initUI()
         initObservers()
 
