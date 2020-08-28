@@ -17,18 +17,13 @@ class TestRepository {
     // this is the system in test
     private val repository: RepositoryImpl
 
-    private val dependencyContainer: DependencyContainer
-    private val articleFactory: ArticleFactory
+    private val dependencyContainer: DependencyContainer = DependencyContainer()
     private val articlesDaoService: ArticlesDaoService
     private val articlesApiService: ArticlesApiService
 
     init {
         // init fake dependencies
-        dependencyContainer = DependencyContainer()
         dependencyContainer.build()
-
-        // fake article factory
-        articleFactory = dependencyContainer.articleFactory
 
         // fake data sources
         articlesDaoService = dependencyContainer.articlesDaoService
@@ -52,7 +47,7 @@ class TestRepository {
     }
 
     @Test
-    fun getCachedArticles_success_confirmCacheUpdate() = runBlocking {
+    fun getCachedArticles_success() = runBlocking {
         // we call coroutines, so we block the thread
         // alternatively we could have called CoroutineScope(IO).launch
 
@@ -60,6 +55,7 @@ class TestRepository {
 
         val cachedCount = articlesDaoService.getArticlesCount(query)
         log(this@TestRepository.TAG, "cached count = $cachedCount")
+        assert(cachedCount == 1)
         if (cachedCount > 0) {
 
             // empty cache
@@ -77,25 +73,11 @@ class TestRepository {
         // verify cache has articles
         val newCacheCount = articlesDaoService.getArticlesCount(query)
         log(this@TestRepository.TAG, "updated cache count = $newCacheCount")
-        assert(newCacheCount > 0)
+        assert(newCacheCount == 1)
     }
 
     @Test
-    fun getCachedArticles_failure_cacheInsert() = runBlocking {
-        val query = "technology"
-
-        val cachedCount = articlesDaoService.getArticlesCount(query)
-        log(this@TestRepository.TAG, "cached count = $cachedCount")
-        if (cachedCount > 0) {
-
-            // empty cache
-            articlesDaoService.deleteAllArticles()
-
-            // verify it's empty
-            val emptyCount = articlesDaoService.getArticlesCount(query)
-            log(this@TestRepository.TAG, "empty cache count = $emptyCount")
-            assert(emptyCount == 0)
-        }
+    fun getCachedArticles_failure() = runBlocking {
 
         assertThrows<Exception> {
             log(this@TestRepository.TAG, "call Repository's getCachedArticles and fail")
@@ -104,24 +86,48 @@ class TestRepository {
     }
 
     @Test
-    fun getArticles_success_confirmCacheUpdate() = runBlocking {
+    fun getArticles_success() = runBlocking {
         val query = "technology"
 
         // verify cache has articles
         val cachedCount = articlesDaoService.getArticlesCount(query)
         log(this@TestRepository.TAG, "cached count = $cachedCount")
-        assert(cachedCount > 0)
+        assert(cachedCount == 1)
 
         log(this@TestRepository.TAG, "call Repository's getArticles")
         val stream = repository.getArticles(query)
+        var emitCount = 0
         stream.collect {
             log(this@TestRepository.TAG, "articles displayed = ${it.size}")
             assert(it.isNotEmpty())
+            emitCount++
+            when (emitCount) {
+                // verify cache data size emitted
+                1 -> assert(it.size == 1)
+                // verify refresh cache data size emitted
+                2 -> assert(it.size == 2)
+            }
         }
 
         // verify cache was updated with new articles
         val newCacheCount = articlesDaoService.getArticlesCount(query)
         log(this@TestRepository.TAG, "updated cache count = $newCacheCount")
-        assert(newCacheCount > 0)
+        assert(newCacheCount == 2)
+    }
+
+    @Test
+    fun getArticles_failure() = runBlocking {
+
+        log(this@TestRepository.TAG, "call Repository's getArticles and fail on cache")
+        val stream = repository.getArticles(FORCE_GET_ARTICLES_EXCEPTION)
+        assertThrows<Exception> {
+            stream.collect {}
+        }
+
+        log(this@TestRepository.TAG, "call Repository's getArticles and fail on network")
+        val stream2 = repository.getArticles(FORCE_GET_NETWORK_ARTICLES_EXCEPTION)
+        assertThrows<Exception> {
+            stream2.collect {}
+        }
     }
 }

@@ -48,8 +48,8 @@ constructor(
 
     override suspend fun getArticles(query: String): List<Article> {
 
-        // we need to test if an exception is thrown
-        // we will fake it by sending a query with
+        // we need to test the case where an exception is thrown,
+        // to that effect we will fake it by sending a query with
         // the value FORCE_GET_ARTICLES_EXCEPTION
         if (query == FORCE_GET_ARTICLES_EXCEPTION) {
             throw Exception("Something went getting the cached articles.")

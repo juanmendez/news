@@ -11,7 +11,7 @@ class ArticlesDataFactory(
         return Gson()
             .fromJson(
                 getArticlesFromFile("cache.json"),
-                object : TypeToken<List<Article>>() {}.type  // Gson stuff, don't ask
+                object : TypeToken<List<Article>>() {}.type
             )
     }
 
@@ -19,7 +19,7 @@ class ArticlesDataFactory(
         return Gson()
             .fromJson(
                 getArticlesFromFile("network.json"),
-                object : TypeToken<List<Article>>() {}.type  // Gson stuff, don't ask
+                object : TypeToken<List<Article>>() {}.type
             )
     }
 

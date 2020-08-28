@@ -63,11 +63,17 @@ class MainActivityViewModel (
                 // (of type Flow) as an implementation of Deferred
                 val data = getArticlesAsync(query)
 
-                data
-                    .await() // get the Deferred Flow
-                    .collect { // collect the Flow's List<Article> objects
-                        emit(it) // emit each List<Article> to the LiveData builder
+                try {
+                    data
+                        .await() // get the Deferred Flow
+                        .collect { // collect the Flow's List<Article> objects
+                            emit(it) // emit each List<Article> to the LiveData builder
+                        }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        showError(true)
                     }
+                }
             }
         }
     }

@@ -10,6 +10,11 @@ class RepositoryImpl(
     private val articlesDaoService: ArticlesDaoService
 ) : Repository {
 
+    /**
+     * Returns cached articles. If there are no articles in the cache it
+     * makes a network call to fetch them from the network and returns
+     * the updated cached articles
+     */
     override suspend fun getCachedArticles(query: String): List<Article> {
 
         // uncomment to see the UI handling the Repo throwing an exception
@@ -30,7 +35,15 @@ class RepositoryImpl(
         }
     }
 
+    /**
+     * Emits cached articles, then refreshes cache with new articles
+     * fetched from the network and emits the updated cached articles
+     */
     override suspend fun getArticles(query: String): Flow<List<Article>> = flow {
+
+        // uncomment to see the UI handling the Repo throwing an exception
+        //throw Exception()
+
         val cachedArticlesCount = articlesDaoService.getArticlesCount(query)
         if (cachedArticlesCount > 0) {
             // if there are cached articles emit them

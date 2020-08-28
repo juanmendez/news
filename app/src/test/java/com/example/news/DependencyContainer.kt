@@ -20,6 +20,7 @@ class DependencyContainer {
     // instantiate all the fake dependencies
     fun build() {
 
+        // create fake article factory
         articleFactory = ArticleFactory()
 
         // create the factory producing the fake data
