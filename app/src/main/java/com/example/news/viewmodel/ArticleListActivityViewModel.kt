@@ -25,7 +25,10 @@ class ArticleListActivityViewModel (
         }
     }
 
-    private val _query: MutableLiveData<String> = MutableLiveData()
+    // initial query initialized to "latest" which will automatically
+    // trigger fetching the latest news and send them to the UI
+    private val _query: MutableLiveData<String> = MutableLiveData("latest")
+    val query : LiveData<String?> = _query
     fun setQuery(query: String) {
         if (query != _query.value) {
             _query.value = query

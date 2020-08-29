@@ -7,7 +7,6 @@ import android.view.Menu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.news.MyApplication
 import com.example.news.R
@@ -16,7 +15,6 @@ import com.example.news.util.InjectorUtil
 import com.example.news.viewmodel.ArticleListActivityViewModel
 import com.example.news.viewmodel.ArticleListActivityViewModelFactory
 import kotlinx.android.synthetic.main.activity_article_list.*
-
 
 class ArticleListActivity : BaseActivity() {
 
@@ -38,24 +36,23 @@ class ArticleListActivity : BaseActivity() {
         setContentView(R.layout.activity_article_list)
         initUI()
         initObservers()
-
-        // get data and update UI
-        viewModel.setQuery("latest")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.activity_article_list_menu, menu)
-        val searchView =
-            menu.findItem(R.id.activity_article_list_menu_search).actionView as SearchView
+        val searchMenu = menu.findItem(R.id.activity_article_list_menu_search)
+        val searchView = searchMenu.actionView as SearchView
         searchView.apply {
             setIconifiedByDefault(true)
         }
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
+            override fun onQueryTextSubmit(input: String?): Boolean {
+                val query = input?.trim()
                 query?.let {
                     viewModel.setQuery(query)
                     this@ArticleListActivity.hideKeyboard()
+                    searchMenu.collapseActionView()
                 }
                 return true
             }
@@ -80,13 +77,16 @@ class ArticleListActivity : BaseActivity() {
 
     private fun initObservers() {
         lifecycle.addObserver(viewModel)
-        viewModel.articles.observe(this, Observer { articles ->
+        viewModel.articles.observe(this, { articles ->
             articles_recyclerview.adapter = ArticlesAdapter(articles, listener)
         })
-        viewModel.errorMessage.observe(this, Observer { msg ->
+        viewModel.errorMessage.observe(this, { msg ->
             msg?.let {
                 showAlertDialog(msg)
             }
+        })
+        viewModel.query.observe(this, { query ->
+            supportActionBar?.title = query
         })
     }
 
