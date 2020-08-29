@@ -5,7 +5,7 @@ import com.example.news.model.cache.ArticlesCacheService
 
 const val FORCE_NEW_ARTICLE_EXCEPTION = "FORCE_NEW_ARTICLE_EXCEPTION"
 const val FORCE_GENERAL_FAILURE = "FORCE_GENERAL_FAILURE"
-const val FORCE_GET_ARTICLES_EXCEPTION = "FORCE_GET_ARTICLES_EXCEPTION"
+const val FORCE_GET_CACHE_ARTICLES_EXCEPTION = "FORCE_GET_CACHE_ARTICLES_EXCEPTION"
 
 // in the real implementation we delegate to DAO,
 // here we fake the database by using a HashMap
@@ -51,7 +51,7 @@ constructor(
         // we need to test the case where an exception is thrown,
         // to that effect we will fake it by sending a query with
         // the value FORCE_GET_ARTICLES_EXCEPTION
-        if (query == FORCE_GET_ARTICLES_EXCEPTION) {
+        if (query == FORCE_GET_CACHE_ARTICLES_EXCEPTION) {
             throw Exception("Something went getting the cached articles.")
         }
 

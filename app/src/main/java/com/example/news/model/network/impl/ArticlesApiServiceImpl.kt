@@ -29,6 +29,9 @@ class ArticlesApiServiceImpl : ArticlesApiService {
         // claudiu.colteu@gmail.com / abcd1234
         const val API_KEY = "7da5d9626af74c1eab78e5e8aee72b0d"
 
+        // use this to see an error thrown to the UI
+        //const val API_KEY = "bad-api-key"
+
         private val builder: Retrofit.Builder by lazy {
             Retrofit.Builder()
                 .baseUrl("http://newsapi.org")

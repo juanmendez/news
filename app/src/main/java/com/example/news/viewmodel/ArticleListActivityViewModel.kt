@@ -35,7 +35,7 @@ class ArticleListActivityViewModel (
 //    val articles: LiveData<List<Article>> = Transformations.switchMap(_query) { query ->
 //        getArticlesJob = Job()
 //        getArticlesJob?.let { job ->
-//            liveData(Dispatchers.IO + job) {
+//            liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
 //                try {
 //                    emit(repository.getCachedArticles(query))
 //                } catch (e: Exception) {
@@ -53,22 +53,18 @@ class ArticleListActivityViewModel (
         getArticlesJob = Job()
         getArticlesJob?.let { job ->
             // We use a LiveData builder to create a coroutine that will run
-            // the Repository asynchronously, consume the response, and emit
-            // a LiveData value, instead of having the Repository returning
-            // LiveData, that way the Repository does not depend on Android
-            // APIs, thus it can be Unit Tested in isolation
-            liveData(Dispatchers.IO + job) {
-
-                // create a coroutine and return its future result
-                // (of type Flow) as an implementation of Deferred
-                val data = getArticlesAsync(query)
-
+            // the Repository asynchronously, and emit the LiveData values,
+            // instead of having the Repository returning LiveData, that way
+            // the Repository does not depend on Android APIs, therefore it
+            // can be Unit Tested
+            liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
                 try {
-                    data
-                        .await() // get the Deferred Flow
-                        .collect { // collect the Flow's List<Article> objects
-                            emit(it) // emit each List<Article> to the LiveData builder
-                        }
+                    // collect the Flow's List<Article> objects
+                    repository.getArticles(query).collect {
+                        // each emit suspends this block's execution until
+                        // the LiveData is set on the main thread
+                        emit(it)
+                    }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         showError(e.message.toString())
@@ -76,9 +72,5 @@ class ArticleListActivityViewModel (
                 }
             }
         }
-    }
-
-    private fun getArticlesAsync(query: String) = viewModelScope.async {
-        repository.getArticles(query) // Flow
     }
 }

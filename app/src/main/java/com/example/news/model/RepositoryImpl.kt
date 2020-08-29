@@ -11,28 +11,14 @@ class RepositoryImpl(
 ) : Repository {
 
     /**
-     * Returns cached articles. If there are no articles in the cache it
-     * makes a network call to fetch them from the network and returns
-     * the updated cached articles
+     * Returns cached articles
      */
     override suspend fun getCachedArticles(query: String): List<Article> {
 
         // uncomment to see the UI handling the Repo throwing an exception
         //throw Exception()
 
-        val cachedArticlesCount = articlesCacheService.getArticlesCount(query)
-        if (cachedArticlesCount == 0) {
-            // fetch articles from network
-            articlesApiService.getArticles(query)?.let {
-                // cache them
-                articlesCacheService.insertArticles(it)
-                // return them
-                return articlesCacheService.getArticles(query)
-            }
-        } else {
-            // return cached articles
-            return articlesCacheService.getArticles(query)
-        }
+        return articlesCacheService.getArticles(query)
     }
 
     /**

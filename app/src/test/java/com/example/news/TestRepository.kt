@@ -1,7 +1,7 @@
 package com.example.news
 
 import com.example.news.di.DependencyContainer
-import com.example.news.mock.FORCE_GET_ARTICLES_EXCEPTION
+import com.example.news.mock.FORCE_GET_CACHE_ARTICLES_EXCEPTION
 import com.example.news.mock.FORCE_GET_NETWORK_ARTICLES_EXCEPTION
 import com.example.news.model.RepositoryImpl
 import com.example.news.model.cache.ArticlesCacheService
@@ -57,26 +57,15 @@ class TestRepository {
         val query = "technology"
 
         val cachedCount = articlesCacheService.getArticlesCount(query)
-        log(this@TestRepository.TAG, "cached count = $cachedCount")
+        log(this@TestRepository.TAG, "cache count = $cachedCount")
         assert(cachedCount == 1)
-        if (cachedCount > 0) {
 
-            // empty cache
-            articlesCacheService.deleteAllArticles()
-
-            // verify it's empty
-            val emptyCount = articlesCacheService.getArticlesCount(query)
-            log(this@TestRepository.TAG, "empty cache count = $emptyCount")
-            assert(emptyCount == 0)
-        }
 
         log(this@TestRepository.TAG, "call Repository's getCachedArticles")
-        repository.getCachedArticles(query)
-
-        // verify cache has articles
-        val newCacheCount = articlesCacheService.getArticlesCount(query)
-        log(this@TestRepository.TAG, "updated cache count = $newCacheCount")
-        assert(newCacheCount == 1)
+        val articles = repository.getCachedArticles(query)
+        assert(articles.isNotEmpty())
+        assert(articles.size == 1)
+        log(this@TestRepository.TAG, "articles displayed = ${articles.size}")
     }
 
     @Test
@@ -84,7 +73,7 @@ class TestRepository {
 
         assertThrows<Exception> {
             log(this@TestRepository.TAG, "call Repository's getCachedArticles and fail")
-            repository.getCachedArticles(FORCE_GET_ARTICLES_EXCEPTION)
+            repository.getCachedArticles(FORCE_GET_CACHE_ARTICLES_EXCEPTION)
         }
     }
 
@@ -94,21 +83,26 @@ class TestRepository {
 
         // verify cache has articles
         val cachedCount = articlesCacheService.getArticlesCount(query)
-        log(this@TestRepository.TAG, "cached count = $cachedCount")
+        log(this@TestRepository.TAG, "cache count = $cachedCount")
         assert(cachedCount == 1)
 
         log(this@TestRepository.TAG, "call Repository's getArticles")
         val stream = repository.getArticles(query)
         var emitCount = 0
-        stream.collect {
-            log(this@TestRepository.TAG, "articles displayed = ${it.size}")
-            assert(it.isNotEmpty())
+        stream.collect { articles ->
+            assert(articles.isNotEmpty())
             emitCount++
             when (emitCount) {
                 // verify cache data size emitted
-                1 -> assert(it.size == 1)
-                // verify refresh cache data size emitted
-                2 -> assert(it.size == 2)
+                1 -> {
+                    log(this@TestRepository.TAG, "cache articles displayed = ${articles.size}")
+                    assert(articles.size == 1)
+                }
+                // verify network-refreshed cache data size emitted
+                2 -> {
+                    log(this@TestRepository.TAG, "network-refreshed cache articles displayed = ${articles.size}")
+                    assert(articles.size == 2)
+                }
             }
         }
 
@@ -121,15 +115,15 @@ class TestRepository {
     @Test
     fun getArticles_failure() = runBlocking {
 
-        log(this@TestRepository.TAG, "call Repository's getArticles and fail on cache")
-        val stream = repository.getArticles(FORCE_GET_ARTICLES_EXCEPTION)
+        val stream = repository.getArticles(FORCE_GET_CACHE_ARTICLES_EXCEPTION)
         assertThrows<Exception> {
+            log(this@TestRepository.TAG, "call Repository's getArticles and fail on cache")
             stream.collect {}
         }
 
-        log(this@TestRepository.TAG, "call Repository's getArticles and fail on network")
         val stream2 = repository.getArticles(FORCE_GET_NETWORK_ARTICLES_EXCEPTION)
         assertThrows<Exception> {
+            log(this@TestRepository.TAG, "call Repository's getArticles and fail on network")
             stream2.collect {}
         }
     }
