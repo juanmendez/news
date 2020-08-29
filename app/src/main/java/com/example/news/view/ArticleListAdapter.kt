@@ -15,8 +15,9 @@ fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false):
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
 }
 
-class ArticlesAdapter (private val articles: List<Article>,
-                       private val listener: OnArticleClickListener
+class ArticlesAdapter(
+    private val articles: List<Article>,
+    private val listener: OnArticleClickListener
 ) : RecyclerView.Adapter<ArticlesAdapter.ArticleHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleHolder {

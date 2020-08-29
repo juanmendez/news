@@ -7,5 +7,6 @@
     <dimen name="article_source_text_size">12sp</dimen>
     <dimen name="article_title_text_size">18sp</dimen>
     <dimen name="article_date_text_size">12sp</dimen>
+    <dimen name="article_content_text_size">18sp</dimen>
     <dimen name="recycler_loading_view_height">80dp</dimen>
 </resources>

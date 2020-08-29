@@ -1,6 +1,7 @@
 package com.example.news.view
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.Menu
@@ -12,6 +13,7 @@ import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
 import com.example.news.util.InjectorUtil
+import com.example.news.view.ArticleActivity.Companion.ARTICLE_EXTRA
 import com.example.news.viewmodel.ArticleListActivityViewModel
 import com.example.news.viewmodel.ArticleListActivityViewModelFactory
 import kotlinx.android.synthetic.main.activity_article_list.*
@@ -22,7 +24,9 @@ class ArticleListActivity : BaseActivity() {
 
     private val listener = object : OnArticleClickListener {
         override fun onArticleClick(article: Article) {
-            // TODO show article.content
+            val intent = Intent(this@ArticleListActivity, ArticleActivity::class.java)
+            intent.putExtra(ARTICLE_EXTRA, article)
+            this@ArticleListActivity.startActivity(intent)
         }
     }
 
