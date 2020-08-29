@@ -36,6 +36,9 @@ class ArticleListActivity : BaseActivity() {
         setContentView(R.layout.activity_article_list)
         initUI()
         initObservers()
+
+        // for the initial data load, triggered within the view model
+        showProgressBar()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -50,6 +53,7 @@ class ArticleListActivity : BaseActivity() {
             override fun onQueryTextSubmit(input: String?): Boolean {
                 val query = input?.trim()
                 query?.let {
+                    showProgressBar()
                     viewModel.setQuery(query)
                     this@ArticleListActivity.hideKeyboard()
                     searchMenu.collapseActionView()
@@ -66,7 +70,6 @@ class ArticleListActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        //linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager = when (resources.configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE ->
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -78,9 +81,11 @@ class ArticleListActivity : BaseActivity() {
     private fun initObservers() {
         lifecycle.addObserver(viewModel)
         viewModel.articles.observe(this, { articles ->
+            hideProgressBar()
             articles_recyclerview.adapter = ArticlesAdapter(articles, listener)
         })
         viewModel.errorMessage.observe(this, { msg ->
+            hideProgressBar()
             msg?.let {
                 showAlertDialog(msg)
             }

@@ -18,13 +18,16 @@ abstract class BaseActivity : AppCompatActivity() {
         // makes the FrameLayout the container of all the Activities that extend this class
         layoutInflater.inflate(layoutResID, activityContentView, true)
 
-        super.setContentView(layoutResID)
+        super.setContentView(rootView)
     }
 
-    fun showProgressBar(show: Boolean) {
-        when (show) {
-            true -> progressBar.visibility = View.VISIBLE
-            false -> progressBar.visibility = View.GONE
-        }
+    fun showProgressBar() {
+        if (progressBar.visibility == View.GONE)
+            progressBar.visibility = View.VISIBLE
+    }
+
+    fun hideProgressBar() {
+        if (progressBar.visibility == View.VISIBLE)
+            progressBar.visibility = View.GONE
     }
 }

@@ -2,6 +2,7 @@ package com.example.news.model
 
 import com.example.news.model.cache.ArticlesCacheService
 import com.example.news.model.network.ArticlesApiService
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -29,6 +30,9 @@ class RepositoryImpl(
 
         // uncomment to see the UI handling the Repo throwing an exception
         //throw Exception()
+
+        // uncomment to see the UI progress bar (APIs and Room are too fast)
+        //delay(2000)
 
         val cachedArticlesCount = articlesCacheService.getArticlesCount(query)
         if (cachedArticlesCount > 0) {
