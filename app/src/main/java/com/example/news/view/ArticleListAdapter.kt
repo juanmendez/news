@@ -41,7 +41,7 @@ class ArticlesAdapter (private val articles: List<Article>,
             if (article.imageUrl.isNotEmpty()) {
                 Picasso.get()
                     .load(article.imageUrl)
-                    .placeholder(R.drawable.ic_baseline_image_24)
+                    .placeholder(android.R.color.darker_gray)
                     .into(view.article_row_image)
             } else {
                 view.article_row_image.setImageDrawable(null)

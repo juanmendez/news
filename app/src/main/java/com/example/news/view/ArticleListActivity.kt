@@ -1,10 +1,12 @@
 package com.example.news.view
 
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.news.MyApplication
 import com.example.news.R
@@ -13,6 +15,7 @@ import com.example.news.util.InjectorUtil
 import com.example.news.viewmodel.ArticleListActivityViewModel
 import com.example.news.viewmodel.ArticleListActivityViewModelFactory
 import kotlinx.android.synthetic.main.activity_article_list.*
+import javax.net.ssl.HostnameVerifier
 
 
 class ArticleListActivity : BaseActivity() {
@@ -41,7 +44,12 @@ class ArticleListActivity : BaseActivity() {
     }
 
     private fun initUI() {
-        linearLayoutManager = LinearLayoutManager(this)
+        //linearLayoutManager = LinearLayoutManager(this)
+        linearLayoutManager = when (resources.configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE ->
+                LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            else -> LinearLayoutManager(this)
+        }
         articles_recyclerview.layoutManager = linearLayoutManager
     }
 
