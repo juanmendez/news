@@ -1,12 +1,15 @@
 package com.example.news.view
 
+import android.app.SearchManager
+import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.Menu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.news.MyApplication
 import com.example.news.R
@@ -15,7 +18,6 @@ import com.example.news.util.InjectorUtil
 import com.example.news.viewmodel.ArticleListActivityViewModel
 import com.example.news.viewmodel.ArticleListActivityViewModelFactory
 import kotlinx.android.synthetic.main.activity_article_list.*
-import javax.net.ssl.HostnameVerifier
 
 
 class ArticleListActivity : BaseActivity() {
@@ -40,7 +42,32 @@ class ArticleListActivity : BaseActivity() {
         initObservers()
 
         // get data and update UI
-        viewModel.setQuery("technology")
+        viewModel.setQuery("latest")
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.activity_article_list_menu, menu)
+        val searchView =
+            menu.findItem(R.id.activity_article_list_menu_search).actionView as SearchView
+        searchView.apply {
+            setIconifiedByDefault(true)
+        }
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    viewModel.setQuery(query)
+                    this@ArticleListActivity.hideKeyboard()
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                // TODO show suggestions based on previous queries
+                return true
+            }
+        })
+        return super.onCreateOptionsMenu(menu)
     }
 
     private fun initUI() {
