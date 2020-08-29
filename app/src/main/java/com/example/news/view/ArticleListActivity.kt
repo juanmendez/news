@@ -1,7 +1,5 @@
 package com.example.news.view
 
-import android.app.SearchManager
-import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
