@@ -14,6 +14,7 @@ import com.example.news.viewmodel.ArticleListActivityViewModel
 import com.example.news.viewmodel.ArticleListActivityViewModelFactory
 import kotlinx.android.synthetic.main.activity_article_list.*
 
+
 class ArticleListActivity : BaseActivity() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager

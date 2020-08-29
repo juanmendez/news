@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_size">20dp</dimen>
+    <dimen name="card_margin_vertical">15dp</dimen>
+    <dimen name="card_margin_horizontal">20dp</dimen>
+    <dimen name="article_image_height">200dp</dimen>
+    <dimen name="article_source_text_size">12sp</dimen>
+    <dimen name="article_title_text_size">18sp</dimen>
+    <dimen name="article_date_text_size">12sp</dimen>
+    <dimen name="recycler_loading_view_height">80dp</dimen>
+</resources>
