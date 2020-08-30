@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="margin_size">20dp</dimen>
-    <dimen name="card_margin_vertical">15dp</dimen>
+    <dimen name="card_padding_horizontal_size">20dp</dimen>
+    <dimen name="card_padding_vertical_size">15dp</dimen>
+    <dimen name="card_margin_vertical">12dp</dimen>
     <dimen name="card_margin_horizontal">20dp</dimen>
     <dimen name="article_image_height">200dp</dimen>
     <dimen name="article_source_text_size">12sp</dimen>

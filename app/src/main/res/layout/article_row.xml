@@ -29,28 +29,48 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="@dimen/margin_size">
+                android:layout_marginStart="@dimen/card_padding_horizontal_size"
+                android:layout_marginTop="@dimen/card_padding_vertical_size"
+                android:layout_marginEnd="@dimen/card_padding_horizontal_size"
+                android:layout_marginBottom="@dimen/card_padding_vertical_size"
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/article_row_source"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/darker_gray"
-                    android:textSize="@dimen/article_source_text_size"/>
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/article_row_source"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/gray_light"
+                        android:textSize="@dimen/article_source_text_size"/>
+
+                    <TextView
+                        android:id="@+id/article_row_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:textColor="@color/gray_light"
+                        android:textSize="@dimen/article_date_text_size"/>
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/article_row_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/black"
+                    android:maxLines="3"
+                    android:ellipsize="end"
                     android:textSize="@dimen/article_title_text_size"/>
 
                 <TextView
-                    android:id="@+id/article_row_date"
+                    android:id="@+id/article_row_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/darker_gray"
+                    android:textColor="@color/gray_dark"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:textSize="@dimen/article_date_text_size"/>
             </LinearLayout>
         </LinearLayout>

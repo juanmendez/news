@@ -13,7 +13,7 @@ import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
 import com.example.news.util.InjectorUtil
-import com.example.news.view.ArticleActivity.Companion.ARTICLE_EXTRA
+import com.example.news.view.WebViewActivity.Companion.URL_EXTRA
 import com.example.news.viewmodel.ArticleListActivityViewModel
 import com.example.news.viewmodel.ArticleListActivityViewModelFactory
 import kotlinx.android.synthetic.main.activity_article_list.*
@@ -24,8 +24,8 @@ class ArticleListActivity : BaseActivity() {
 
     private val listener = object : OnArticleClickListener {
         override fun onArticleClick(article: Article) {
-            val intent = Intent(this@ArticleListActivity, ArticleActivity::class.java)
-            intent.putExtra(ARTICLE_EXTRA, article)
+            val intent = Intent(this@ArticleListActivity, WebViewActivity::class.java)
+            intent.putExtra(URL_EXTRA, article.url)
             this@ArticleListActivity.startActivity(intent)
         }
     }

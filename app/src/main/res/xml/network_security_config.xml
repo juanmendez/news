@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+    <!-- for web view -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+    <!-- for API -->
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">newsapi.org</domain>
     </domain-config>
