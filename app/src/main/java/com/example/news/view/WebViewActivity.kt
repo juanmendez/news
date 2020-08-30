@@ -7,8 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.appcompat.widget.ShareActionProvider
-import androidx.core.view.MenuItemCompat
 import com.example.news.R
 import kotlinx.android.synthetic.main.activity_webview.*
 
@@ -50,15 +48,23 @@ class WebViewActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.activity_webview_menu, menu)
-        val shareItem: MenuItem = menu.findItem(R.id.activity_webview_menu_share)
-        val myShareActionProvider: ShareActionProvider =
-            MenuItemCompat.getActionProvider(shareItem) as ShareActionProvider
-        val myShareIntent = Intent(Intent.ACTION_SEND)
-        myShareIntent.type = "text/plain"
-        myShareIntent.putExtra(Intent.EXTRA_TEXT, url)
-        myShareActionProvider.setShareIntent(myShareIntent)
+        menuInflater.inflate(R.menu.activity_webview_menu, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+       return  when (item.itemId) {
+            R.id.activity_webview_menu_share -> {
+                val sendIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, url)
+                    type = "text/plain"
+                }
+                val shareIntent: Intent = Intent.createChooser(sendIntent, null)
+                this@WebViewActivity.startActivity(shareIntent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
