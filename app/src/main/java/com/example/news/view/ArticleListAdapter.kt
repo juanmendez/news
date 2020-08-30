@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.news.R
 import com.example.news.model.Article
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_article.*
 import kotlinx.android.synthetic.main.article_row.view.*
 
 
@@ -40,17 +41,24 @@ class ArticlesAdapter(
         fun bind(article: Article) {
             this.article = article
             if (article.imageUrl.isNotEmpty()) {
+                view.article_row_image.visibility = View.VISIBLE
                 Picasso.get()
                     .load(article.imageUrl)
                     .placeholder(android.R.color.darker_gray)
                     .into(view.article_row_image)
             } else {
+                view.article_row_image.visibility = View.GONE
                 view.article_row_image.setImageDrawable(null)
             }
             view.article_row_source.text = article.sourceName
             view.article_row_date.text = article.publishedDate
             view.article_row_title.text = article.title
-            view.article_row_content.text = article.content
+            if (article.content.isNullOrEmpty()) {
+                view.article_row_content.visibility = View.GONE
+            } else {
+                view.article_row_content.visibility = View.VISIBLE
+                view.article_row_content.text = article.content
+            }
         }
     }
 }

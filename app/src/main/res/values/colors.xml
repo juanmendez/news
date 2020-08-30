@@ -5,6 +5,7 @@
     <color name="colorAccent">#03DAC5</color>
 
     <color name="background">#ddd</color>
+    <color name="card_background">#FFF</color>
     <color name="white">#FFF</color>
     <color name="black">#000</color>
     <color name="gray_dark">#555</color>
