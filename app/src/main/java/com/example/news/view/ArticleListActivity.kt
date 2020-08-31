@@ -1,10 +1,14 @@
 package com.example.news.view
 
+import android.app.SearchManager
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.provider.SearchRecentSuggestions
 import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
@@ -21,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_article_list.*
 class ArticleListActivity : BaseActivity() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var searchMenu: MenuItem
 
     private val listener = object : OnArticleClickListener {
         override fun onArticleClick(article: Article) {
@@ -41,36 +46,8 @@ class ArticleListActivity : BaseActivity() {
         initUI()
         initObservers()
 
-        // for the initial data load, triggered within the view model
+        // for the initial data load (triggered within the view model)
         showProgressBar()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.activity_article_list_menu, menu)
-        val searchMenu = menu.findItem(R.id.activity_article_list_menu_search)
-        val searchView = searchMenu.actionView as SearchView
-        searchView.apply {
-            setIconifiedByDefault(true)
-        }
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(input: String?): Boolean {
-                val query = input?.trim()
-                query?.let {
-                    showProgressBar()
-                    viewModel.setQuery(query)
-                    this@ArticleListActivity.hideKeyboard()
-                    searchMenu.collapseActionView()
-                }
-                return true
-            }
-
-            override fun onQueryTextChange(p0: String?): Boolean {
-                // TODO show suggestions based on previous queries
-                return true
-            }
-        })
-        return super.onCreateOptionsMenu(menu)
     }
 
     private fun initUI() {
@@ -97,6 +74,85 @@ class ArticleListActivity : BaseActivity() {
         viewModel.query.observe(this, { query ->
             supportActionBar?.title = query
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.activity_article_list_menu, menu)
+        searchMenu = menu.findItem(R.id.activity_article_list_menu_search)
+        val searchView = searchMenu.actionView as SearchView
+
+        // handle search locally
+//        searchView.apply {
+//            setIconifiedByDefault(true)
+//        }
+//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//            override fun onQueryTextSubmit(input: String): Boolean {
+//                search(input.trim())
+//                return true
+//            }
+//
+//            override fun onQueryTextChange(p0: String?): Boolean {
+//                return true
+//            }
+//        })
+//        return super.onCreateOptionsMenu(menu)
+
+        // handle search via a search provider, making this activity the searchable activity
+        // setup SearchView to send a search intent
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        searchView.apply {
+            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            setIconifiedByDefault(true)
+        }
+        return true
+    }
+
+    // receive and handle the search intent sent by the SearchView
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent?.action == Intent.ACTION_SEARCH) {
+            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+
+                // save query to recent suggestions
+                SearchRecentSuggestions(
+                    this,
+                    ArticleSearchSuggestionProvider.AUTHORITY,
+                    ArticleSearchSuggestionProvider.MODE
+                )
+                    .saveRecentQuery(query, null)
+
+                // perform search
+                search(query)
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return  when (item.itemId) {
+            R.id.activity_article_list_menu_clear_history -> {
+                SearchRecentSuggestions(
+                    this,
+                    ArticleSearchSuggestionProvider.AUTHORITY,
+                    ArticleSearchSuggestionProvider.MODE
+                )
+                    .clearHistory()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun search(query: String) {
+        query?.let {
+
+            // update UI
+            showProgressBar()
+            this@ArticleListActivity.hideKeyboard()
+            searchMenu.collapseActionView()
+
+            // perform search
+            viewModel.setQuery(query)
+        }
     }
 
     private fun showAlertDialog(message: String?) {
