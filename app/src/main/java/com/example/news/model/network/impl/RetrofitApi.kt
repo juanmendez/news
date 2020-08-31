@@ -8,5 +8,10 @@ interface RetrofitApi {
 
     // http://newsapi.org/v2/everything?q=technology&apiKey=7da5d9626af74c1eab78e5e8aee72b0d
     @GET("/v2/everything")
-    suspend fun getArticles(@Query("q") query: String, @Query("apiKey") apiKey: String): Response<GetArticlesResponse>
+    suspend fun getArticles(
+        @Query("q") query: String,
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int,
+        @Query("apiKey") apiKey: String
+    ): Response<GetArticlesResponse>
 }
