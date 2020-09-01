@@ -3,6 +3,7 @@ package com.example.news.view
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
@@ -75,5 +76,21 @@ class WebViewActivity : BaseActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    // enable navigating back (using the Android BACK button) in the WebView
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event?.action == KeyEvent.ACTION_DOWN) {
+            when (keyCode) {
+                KeyEvent.KEYCODE_BACK -> {
+                    when (web_view.canGoBack()) {
+                        true -> web_view.goBack()
+                        else -> finish()
+                    }
+                    return true
+                }
+            }
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }
