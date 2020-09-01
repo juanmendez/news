@@ -14,4 +14,12 @@ interface RetrofitApi {
         @Query("pageSize") pageSize: Int,
         @Query("apiKey") apiKey: String
     ): Response<GetArticlesResponse>
+
+    @GET("/v2/top-headlines")
+    suspend fun getTopHeadlines(
+        @Query("country") country: String,
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int,
+        @Query("apiKey") apiKey: String
+    ): Response<GetArticlesResponse>
 }

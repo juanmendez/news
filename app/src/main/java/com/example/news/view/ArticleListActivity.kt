@@ -19,6 +19,7 @@ import com.example.news.model.Article
 import com.example.news.util.InjectorUtil
 import com.example.news.view.WebViewActivity.Companion.URL_EXTRA
 import com.example.news.viewmodel.ArticleListActivityViewModel
+import com.example.news.viewmodel.ArticleListActivityViewModel.Companion.TOP_HEADLINES
 import com.example.news.viewmodel.ArticleListActivityViewModelFactory
 import kotlinx.android.synthetic.main.activity_article_list.*
 
@@ -45,6 +46,7 @@ class ArticleListActivity : BaseActivity() {
         setContentView(R.layout.activity_article_list)
         initUI()
         initObservers()
+        saveQueryToRecentSuggestions(TOP_HEADLINES)
     }
 
     private fun initUI() {
@@ -115,12 +117,7 @@ class ArticleListActivity : BaseActivity() {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
 
                 // save query to recent suggestions
-                SearchRecentSuggestions(
-                    this,
-                    ArticleSearchSuggestionProvider.AUTHORITY,
-                    ArticleSearchSuggestionProvider.MODE
-                )
-                    .saveRecentQuery(query, null)
+                saveQueryToRecentSuggestions(query)
 
                 // perform search
                 search(query)
@@ -153,6 +150,15 @@ class ArticleListActivity : BaseActivity() {
             // perform search
             viewModel.setQuery(query)
         }
+    }
+
+    private fun saveQueryToRecentSuggestions(query: String) {
+        SearchRecentSuggestions(
+            this,
+            ArticleSearchSuggestionProvider.AUTHORITY,
+            ArticleSearchSuggestionProvider.MODE
+        )
+            .saveRecentQuery(query, null)
     }
 
     private fun showAlertDialog(message: String?) {

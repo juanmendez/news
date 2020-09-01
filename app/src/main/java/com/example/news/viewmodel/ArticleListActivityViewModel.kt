@@ -10,6 +10,10 @@ class ArticleListActivityViewModel (
     private val repository: Repository
 ) : ViewModel(), LifecycleObserver {
 
+    companion object {
+        const val TOP_HEADLINES = "Top Headlines"
+    }
+
     private var getArticlesJob: CompletableJob? = null
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -28,8 +32,8 @@ class ArticleListActivityViewModel (
     }
 
     // holds the query data, updated as the user types in a query, and displayed in the ActionBar
-    // initialized to "headlines" which triggers fetching articles on app start
-    private val _query: MutableLiveData<String> = MutableLiveData("headlines")
+    // initialized to "Top Headlines" which triggers fetching articles on app start
+    private val _query: MutableLiveData<String> = MutableLiveData(TOP_HEADLINES)
     val query : LiveData<String?> = _query
     fun setQuery(query: String) {
         if (query != _query.value) {

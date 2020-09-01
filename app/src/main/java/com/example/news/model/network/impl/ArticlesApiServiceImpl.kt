@@ -13,14 +13,17 @@ import java.io.IOException
 class ArticlesApiServiceImpl : ArticlesApiService {
 
     override suspend fun getArticles(query: String): List<Article> {
-        // synchronous Retrofit call that will be executed inside an IO-scoped coroutine
         val response = handleError(
-            INSTANCE.getArticles(
-                query,
-                PAGE,
-                PAGE_SIZE,
-                API_KEY
-            ))
+            when (query) {
+                "Top Headlines" -> {
+                    // synchronous Retrofit call that will be executed inside an IO-scoped coroutine
+                    INSTANCE.getTopHeadlines(COUNTRY, PAGE, PAGE_SIZE, API_KEY)
+                }
+                else -> {
+                    INSTANCE.getArticles(query, PAGE, PAGE_SIZE, API_KEY)
+                }
+            }
+        )
         val networkArticles = response.body()?.articles
         networkArticles?.let {
             return NetworkMapper.networkArticleListToArticleList(query, networkArticles)
@@ -36,6 +39,7 @@ class ArticlesApiServiceImpl : ArticlesApiService {
         const val API_KEY = "7da5d9626af74c1eab78e5e8aee72b0d"
         const val PAGE_SIZE = 50
         const val PAGE = 1
+        const val COUNTRY = "us"
 
         // use this to see an error thrown to the UI
         //const val API_KEY = "bad-api-key"
