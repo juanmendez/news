@@ -21,6 +21,11 @@ class WebViewActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_webview)
+        supportActionBar?.apply {
+            setDisplayShowTitleEnabled(false)
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_baseline_close_24)
+        }
 
         if (intent.hasExtra(URL_EXTRA)) {
             url = intent.getStringExtra(URL_EXTRA)
@@ -34,12 +39,12 @@ class WebViewActivity : BaseActivity() {
 
                     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                         super.onPageStarted(view, url, favicon)
-                        showProgressBar()
+                        showProgressBar(true)
                     }
 
                     override fun onPageFinished(view: WebView?, url: String?) {
                         super.onPageFinished(view, url)
-                        hideProgressBar()
+                        showProgressBar(false)
                     }
                 }
                 web_view.loadUrl(url)
@@ -53,7 +58,11 @@ class WebViewActivity : BaseActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-       return  when (item.itemId) {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
             R.id.activity_webview_menu_share -> {
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND

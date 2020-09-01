@@ -17,41 +17,35 @@ class ArticleListActivityViewModel (
         getArticlesJob?.cancel()
     }
 
+    // holds tha error message data
     private val _errorMessage : MutableLiveData<String?> = MutableLiveData()
     val errorMessage : LiveData<String?> = _errorMessage
     fun showError(value: String?) {
         if (value != _errorMessage.value) {
             _errorMessage.value = value
+            _showProgress.value = false
         }
     }
 
-    // initial query initialized to "latest news" which will automatically
-    // trigger fetching the latest news and send them to the UI
+    // holds the query data, updated as the user types in a query, and displayed in the ActionBar
+    // initialized to "headlines" which triggers fetching articles on app start
     private val _query: MutableLiveData<String> = MutableLiveData("headlines")
     val query : LiveData<String?> = _query
     fun setQuery(query: String) {
         if (query != _query.value) {
             _query.value = query
+            _showProgress.value = true
         }
     }
 
-//    val articles: LiveData<List<Article>> = Transformations.switchMap(_query) { query ->
-//        getArticlesJob = Job()
-//        getArticlesJob?.let { job ->
-//            liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
-//                try {
-//                    emit(repository.getCachedArticles(query))
-//                } catch (e: Exception) {
-//                    withContext(Dispatchers.Main) {
-//                        showError(true)
-//                    }
-//                }
-//            }
-//        }
-//    }
+    // holds the ProgressBar data
+    private val _showProgress: MutableLiveData<Boolean> = MutableLiveData()
+    val showProgress : LiveData<Boolean> = _showProgress
 
-    // switchMap allows to update the UI "live" as the user types in an EditText
-    // and invokes setQuery to update the query with each typed character
+    // holds the RecyclerView data
+    // switchMap would allow to update the UI "live" as the user would for example
+    // type into an EditText and upon each typed character we would invoke setQuery
+    // This capability is not used here
     val articles: LiveData<List<Article>> = Transformations.switchMap(_query) { query ->
         getArticlesJob = Job()
         getArticlesJob?.let { job ->
@@ -67,8 +61,15 @@ class ArticleListActivityViewModel (
                         // each emit suspends this block's execution until
                         // the LiveData is set on the main thread
                         emit(it)
+
+                        // remove progress bar
+                        withContext(Dispatchers.Main) {
+                            _showProgress.value = false
+                        }
                     }
                 } catch (e: Exception) {
+                    // catch exceptions propagated from data sources through
+                    // the repository and inform the user by updating the UI
                     withContext(Dispatchers.Main) {
                         showError(e.message.toString())
                     }
@@ -76,4 +77,22 @@ class ArticleListActivityViewModel (
             }
         }
     }
+
+//    val articles: LiveData<List<Article>> = Transformations.switchMap(_query) { query ->
+//        getArticlesJob = Job()
+//        getArticlesJob?.let { job ->
+//            liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
+//                try {
+//                    emit(repository.getCachedArticles(query))
+//                    withContext(Dispatchers.Main) {
+//                        _showProgress.value = false
+//                    }
+//                } catch (e: Exception) {
+//                    withContext(Dispatchers.Main) {
+//                        showError(true)
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

@@ -45,9 +45,6 @@ class ArticleListActivity : BaseActivity() {
         setContentView(R.layout.activity_article_list)
         initUI()
         initObservers()
-
-        // for the initial data load (triggered within the view model)
-        showProgressBar()
     }
 
     private fun initUI() {
@@ -60,19 +57,23 @@ class ArticleListActivity : BaseActivity() {
     }
 
     private fun initObservers() {
+        // allows the ViewModel to handle the Activity's lifecycle events via annotations
         lifecycle.addObserver(viewModel)
+
+        // init data observers and update the UI
         viewModel.articles.observe(this, { articles ->
-            hideProgressBar()
             articles_recyclerview.adapter = ArticlesAdapter(articles, listener)
         })
         viewModel.errorMessage.observe(this, { msg ->
-            hideProgressBar()
             msg?.let {
                 showAlertDialog(msg)
             }
         })
         viewModel.query.observe(this, { query ->
             supportActionBar?.title = query
+        })
+        viewModel.showProgress.observe(this, { show ->
+            showProgressBar(show)
         })
     }
 
@@ -146,7 +147,6 @@ class ArticleListActivity : BaseActivity() {
         query?.let {
 
             // update UI
-            showProgressBar()
             this@ArticleListActivity.hideKeyboard()
             searchMenu.collapseActionView()
 

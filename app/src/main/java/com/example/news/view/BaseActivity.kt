@@ -21,13 +21,10 @@ abstract class BaseActivity : AppCompatActivity() {
         super.setContentView(rootView)
     }
 
-    fun showProgressBar() {
-        if (progressBar.visibility == View.GONE)
-            progressBar.visibility = View.VISIBLE
-    }
-
-    fun hideProgressBar() {
-        if (progressBar.visibility == View.VISIBLE)
-            progressBar.visibility = View.GONE
+    fun showProgressBar(show: Boolean) {
+        when (show) {
+            true -> progressBar.visibility = View.VISIBLE
+            false -> progressBar.visibility = View.GONE
+        }
     }
 }
