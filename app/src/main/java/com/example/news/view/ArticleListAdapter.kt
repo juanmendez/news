@@ -5,12 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.news.R
 import com.example.news.model.Article
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_article.*
 import kotlinx.android.synthetic.main.article_row.view.*
-
 
 fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
@@ -42,9 +40,8 @@ class ArticlesAdapter(
             this.article = article
             if (article.imageUrl.isNotEmpty()) {
                 view.article_row_image.visibility = View.VISIBLE
-                Picasso.get()
+                Glide.with(view.article_row_image.context)
                     .load(article.imageUrl)
-                    .placeholder(android.R.color.darker_gray)
                     .into(view.article_row_image)
             } else {
                 view.article_row_image.visibility = View.GONE

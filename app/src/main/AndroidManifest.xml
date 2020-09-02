@@ -39,7 +39,6 @@
         <provider android:name=".view.ArticleSearchSuggestionProvider"
             android:authorities="com.example.news.ArticleSearchSuggestionProviderAuthority" />
 
-        <activity android:name=".view.ArticleActivity" />
         <activity android:name=".view.WebViewActivity" />
     </application>
 </manifest>
