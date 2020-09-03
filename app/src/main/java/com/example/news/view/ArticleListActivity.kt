@@ -59,7 +59,10 @@ class ArticleListActivity : BaseActivity() {
     }
 
     private fun initObservers() {
-        // allows the ViewModel to handle the Activity's lifecycle events via annotations
+        // Allows the ViewModel to handle the Activity's lifecycle events
+        // via annotations by implementing LifecycleObserver interface.
+        // AppCompatActivity implements LifeCycleOwner single
+        // method interface and thus exposes getLifecycle.
         lifecycle.addObserver(viewModel)
 
         // init data observers and update the UI

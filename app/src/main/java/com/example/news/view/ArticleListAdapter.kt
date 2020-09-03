@@ -32,6 +32,8 @@ class ArticlesAdapter(
 
     override fun getItemCount() = articles.size
 
+    // SRP (Single Responsibility Principle): A class should have only one reason to change.
+    // Here we only do one thing: bind data to views.
     class ArticleHolder(v: View) : RecyclerView.ViewHolder(v) {
         private var view: View = v
         private var article: Article? = null

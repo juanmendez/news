@@ -2,14 +2,21 @@ package com.example.news.model
 
 import com.example.news.model.cache.ArticlesCacheService
 import com.example.news.model.network.ArticlesApiService
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+// LSP (Liskov Substitution Principle): Objects should be replaceable with subtype instances
+// In the constructor arguments we substitute objects with their subtypes.
+// DIP (Dependency Inversion Principle): depend on abstractions, not on concretions.
+// Constructor-inject interface-abstracted dependencies.
 class RepositoryImpl(
     private val articlesApiService: ArticlesApiService,
     private val articlesCacheService: ArticlesCacheService
 ) : Repository {
+
+    // Dependencies are not instantiated (concretion), instead they are injected
+    // through the constructor. This avoids hard-dependencies and allows faking
+    // dependencies when testing in isolation.
 
     /**
      * Returns cached articles
