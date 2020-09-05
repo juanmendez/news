@@ -45,40 +45,57 @@ class ArticleListActivityViewModel (
     }
 
     // holds the ProgressBar data
+    // MutableLiveData extends LiveData and exposes LiveData's protected methods setValue and
+    // postValue thus allowing updating the stored data. Usually MutableLiveData is used in the
+    // ViewModel to hold the data and then the ViewModel only exposes LiveData reference copies.
     private val _showProgress: MutableLiveData<Boolean> = MutableLiveData()
+    // Reference copy exposed to the Activity for being observed. LiveData has no publicly available
+    // methods to update the stored data (LiveData's setValue is protected) therefore it is safe to
+    // be exposed to the Activity: the Activity will not be able to modify the LiveData value.
     val showProgress : LiveData<Boolean> = _showProgress
 
     // holds the RecyclerView data
-    // switchMap would allow to update the UI "live" as the user would for example
-    // type into an EditText and upon each typed character we would invoke setQuery
-    // This capability is not used here
-    val articles: LiveData<List<Article>> = Transformations.switchMap(_query) { query ->
-        getArticlesJob = Job()
-        getArticlesJob?.let { job ->
-            // We use a LiveData builder to create a coroutine that will run
-            // the Repository asynchronously, and emit the LiveData values,
-            // instead of having the Repository returning LiveData, that way
-            // the Repository does not depend on Android APIs, therefore it
-            // can be Unit Tested
-            liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
-                try {
-                    // collect the Flow's List<Article> objects
-                    repository.getArticles(query).collect {
-                        // each emit suspends this block's execution until
-                        // the LiveData is set on the main thread
-                        emit(it)
+    // The articles data are not modified by the the ViewModel, only rendered,
+    // therefore there is no need for MutableLiveData, LiveData will suffice.
+    val articles: LiveData<List<Article>> =
+        // Fetching the articles depends on the query value, so we use a transformation
+        // to transform one LiveData (the query) into another LiveData (the articles)
+        Transformations.switchMap(_query) { query ->
+            // Only emit the LiveData if the value has changed
+            Transformations.distinctUntilChanged(
+                getArticles(query)
+            )
+    }
 
-                        // remove progress bar
-                        withContext(Dispatchers.Main) {
-                            _showProgress.value = false
-                        }
-                    }
-                } catch (e: Exception) {
-                    // catch exceptions propagated from data sources through
-                    // the repository and inform the user by updating the UI
+    private fun getArticles(query: String): LiveData<List<Article>> {
+        val job = Job()
+
+        // make a copy of the Job instance reference value (pointer to the job Object instance)
+        // so that we can cancel the Job if needed
+        getArticlesJob = job
+
+        // Using liveData builder to create a coroutine that will call the Repository
+        // asynchronously and return the LiveData values, instead of having the Repository
+        // returning LiveData, that way the Repository does not depend on Android APIs,
+        // therefore it can be Unit Tested
+        return liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
+            try {
+                // collect the Flow's List<Article> objects
+                repository.getArticles(query).collect {
+                    // each emit suspends this block's execution until
+                    // the LiveData is set on the main thread
+                    emit(it)
+
+                    // remove progress bar
                     withContext(Dispatchers.Main) {
-                        showError(e.message.toString())
+                        _showProgress.value = false
                     }
+                }
+            } catch (e: Exception) {
+                // catch exceptions propagated from data sources through
+                // the repository and inform the user by updating the UI
+                withContext(Dispatchers.Main) {
+                    showError(e.message.toString())
                 }
             }
         }
