@@ -73,6 +73,9 @@ class TestArticleListActivityViewModel {
             // the query value doesn't matter since we use a fake Repository
             viewModel.setQuery("toto")
 
+            // wait to get the cache results
+            Thread.sleep(500)
+
             // verify the observer receives expected cache data
             verify(articlesObserver).onChanged(expectedCacheArticles)
             viewModel.articles.value?.let {
@@ -107,6 +110,9 @@ class TestArticleListActivityViewModel {
                 "call ViewModel's setQuery and force a Repository failure")
             // force fake Repository to fail
             viewModel.setQuery(FORCE_GET_REPO_ARTICLES_EXCEPTION)
+
+            // wait to get the error
+            Thread.sleep(500)
 
             // verify the observed error message matches the one sent by the fake Repository
             verify(errorMessageObserver).onChanged(expectedErrorMessage)

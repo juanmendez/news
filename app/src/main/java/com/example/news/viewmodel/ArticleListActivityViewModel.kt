@@ -21,6 +21,16 @@ class ArticleListActivityViewModel (
         getArticlesJob?.cancel()
     }
 
+    // holds the ProgressBar data
+    // MutableLiveData extends LiveData and exposes LiveData's protected methods setValue and
+    // postValue thus allowing updating the stored data. Usually MutableLiveData is used in the
+    // ViewModel to hold the data and then the ViewModel only exposes LiveData reference copies.
+    private val _showProgress: MutableLiveData<Boolean> = MutableLiveData()
+    // Reference copy exposed to the Activity for being observed. LiveData has no publicly available
+    // methods to update the stored data (LiveData's setValue is protected) therefore it is safe to
+    // be exposed to the Activity: the Activity will not be able to modify the LiveData value.
+    val showProgress : LiveData<Boolean> = _showProgress
+
     // holds tha error message data
     private val _errorMessage : MutableLiveData<String?> = MutableLiveData()
     val errorMessage : LiveData<String?> = _errorMessage
@@ -32,24 +42,16 @@ class ArticleListActivityViewModel (
     }
 
     // holds the query data, updated as the user types in a query, and displayed in the ActionBar
-    private val _query: MutableLiveData<String> = MutableLiveData()
+    // when creating an empty MutableLiveData by calling MutableLiveData(), its value is null
+    // (see MutableLiveData / LiveData source code)
+    private val _query: MutableLiveData<String> = MutableLiveData() // _query.value is null
     val query : LiveData<String?> = _query
     fun setQuery(query: String) {
-        if (query != _query.value) {
+        if (_query.value == null || _query.value != query) {
             _query.value = query
             _showProgress.value = true
         }
     }
-
-    // holds the ProgressBar data
-    // MutableLiveData extends LiveData and exposes LiveData's protected methods setValue and
-    // postValue thus allowing updating the stored data. Usually MutableLiveData is used in the
-    // ViewModel to hold the data and then the ViewModel only exposes LiveData reference copies.
-    private val _showProgress: MutableLiveData<Boolean> = MutableLiveData()
-    // Reference copy exposed to the Activity for being observed. LiveData has no publicly available
-    // methods to update the stored data (LiveData's setValue is protected) therefore it is safe to
-    // be exposed to the Activity: the Activity will not be able to modify the LiveData value.
-    val showProgress : LiveData<Boolean> = _showProgress
 
     // holds the RecyclerView data
     // The articles data are not modified by the the ViewModel, only rendered,
