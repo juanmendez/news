@@ -23,6 +23,14 @@ class ArticlesDataFactory(
             )
     }
 
+    fun produceUpdatedCacheListOfArticles(): List<Article> {
+        return Gson()
+            .fromJson(
+                getArticlesFromFile("updated_cache.json"),
+                object : TypeToken<List<Article>>() {}.type
+            )
+    }
+
     fun produceHashMapOfArticles(noteList: List<Article>): HashMap<String, Article> {
         val map = HashMap<String, Article>()
         for (note in noteList) {

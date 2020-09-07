@@ -18,6 +18,8 @@ class ArticleListActivityViewModel (
 
     private var getArticlesJob: CompletableJob? = null
 
+    // acting on the Activity's lifecycle: if the Activity is destroyed we cancel the Job, not all
+    // that necessary as the LiveData would not update the UI anyway (it is lifecycle aware)
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         getArticlesJob?.cancel()
@@ -58,10 +60,14 @@ class ArticleListActivityViewModel (
     // The articles data are not modified by the the ViewModel, only rendered,
     // therefore there is no need for MutableLiveData, LiveData will suffice.
     val articles: LiveData<List<Article>> =
-        // Fetching the articles depends on the query value, so we use a transformation
-        // to transform one LiveData (the query) into another LiveData (the articles)
+        // Fetching the articles depends on the query value, using switchMap utility (uses
+        // MediatorLiveData), to transform one LiveData (first switchMap parameter, the query)
+        // into another LiveData (switchMap output, the articles) by applying the lambda function
+        // (second switchMap parameter) to each value set on the input LiveData (the query)
         Transformations.switchMap(_query) { query ->
-            // Only emit the LiveData if the value has changed
+            // Another utility that creates a new LiveData ONLY IF the source LiveData (the query)
+            // value has changed, often used with data backing RecyclerViews. Note that this is
+            // redundant to the code logic we implemented in the setQuery function above.
             Transformations.distinctUntilChanged(
                 getArticles(query)
             )
@@ -70,14 +76,13 @@ class ArticleListActivityViewModel (
     private fun getArticles(query: String): LiveData<List<Article>> {
         val job = Job()
 
-        // make a copy of the Job instance reference value (pointer to the job Object instance)
+        // making a copy of the Job instance reference value (pointer to the job Object instance)
         // so that we can cancel the Job if needed
         getArticlesJob = job
 
-        // Using liveData builder to create a coroutine that will call the Repository
-        // asynchronously and return the LiveData values, instead of having the Repository
-        // returning LiveData, that way the Repository does not depend on Android APIs,
-        // therefore it can be Unit Tested
+        // Using liveData builder to create a coroutine that will call the Repository asynchronously
+        // and return the LiveData values, instead of having the Repository returning LiveData, that
+        // way the Repository does not depend on Android APIs, therefore it can be Unit Tested
         return liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
             try {
                 // collect the Flow's List<Article> objects
