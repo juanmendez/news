@@ -1,26 +1,22 @@
 package com.example.news
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.example.news.di.DependencyContainer
 import com.example.news.factory.ArticlesDataFactory
-import com.example.news.mock.FORCE_GET_REPO_ARTICLES_EXCEPTION
-import com.example.news.mock.REPO_ARTICLES_EXCEPTION_MESSAGE
 import com.example.news.model.Article
 import com.example.news.model.Repository
 import com.example.news.util.*
 import com.example.news.viewmodel.ArticleListActivityViewModel
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
-class TestArticleListActivityViewModel {
+class TestArticleListActivityViewModel2 {
 
     // needed to test LiveData, swaps the background executor used by the Architecture
     // Components with a different one which executes each task synchronously
@@ -37,13 +33,6 @@ class TestArticleListActivityViewModel {
     private val articlesDataFactory: ArticlesDataFactory
     private val repository: Repository
 
-    // mocking the LiveData observers
-    @Mock
-    private lateinit var articlesObserver: Observer<List<Article>>
-
-    @Mock
-    private lateinit var errorMessageObserver: Observer<String?>
-
     init {
         // init fake dependencies
         dependencyContainer.build()
@@ -57,7 +46,7 @@ class TestArticleListActivityViewModel {
     }
 
     @Test
-    fun setQuery_success() {
+    fun setQuery_success2() {
         testCoroutineRule.runBlockingTest {
 
             // expected
@@ -66,52 +55,25 @@ class TestArticleListActivityViewModel {
             val expectedUpdatedCacheArticles: List<Article> =
                 articlesDataFactory.produceUpdatedCacheListOfArticles()
 
-            // no LifeCycle here, hence observe forever
-            viewModel.articles.observeForever(articlesObserver)
-
-            log(this@TestArticleListActivityViewModel.TAG, "call ViewModel's setQuery")
+            log(this@TestArticleListActivityViewModel2.TAG, "call ViewModel's setQuery")
             // the query value doesn't matter since we use a fake Repository
             viewModel.setQuery("toto")
 
-            // verify the observer receives expected cache data
-            verify(articlesObserver).onChanged(expectedCacheArticles)
+            // verify the observed articles match the expected cache data
+            assertEquals(viewModel.articles.getOrAwaitValue(), expectedCacheArticles)
             viewModel.articles.value?.let {
-                logObservedArticles(this@TestArticleListActivityViewModel.TAG, it)
+                logObservedArticles(this@TestArticleListActivityViewModel2.TAG, it)
             }
 
             // wait for the cache to be updated with data from network: FakeRepositoryImpl fakes
             // the network update delay to 1000 ms, so we wait 1500 ms to make sure we got the data
             Thread.sleep(1500)
 
-            // verify the observer receives expected network-updated cache data
-            verify(articlesObserver).onChanged(expectedUpdatedCacheArticles)
+            // verify the observed articles match the expected network-updated cache data
+            assertEquals(viewModel.articles.getOrAwaitValue(), expectedUpdatedCacheArticles)
             viewModel.articles.value?.let {
-                logObservedArticles(this@TestArticleListActivityViewModel.TAG, it)
+                logObservedArticles(this@TestArticleListActivityViewModel2.TAG, it)
             }
-        }
-    }
-
-    @Test
-    fun setQuery_failure() {
-        testCoroutineRule.runBlockingTest {
-
-            val expectedErrorMessage = REPO_ARTICLES_EXCEPTION_MESSAGE
-
-            // observe the error message
-            viewModel.errorMessage.observeForever(errorMessageObserver)
-
-            // need to also observe the articles as they trigger the error
-            viewModel.articles.observeForever(articlesObserver)
-
-            log(this@TestArticleListActivityViewModel.TAG,
-                "call ViewModel's setQuery and force a Repository failure")
-            // force fake Repository to fail
-            viewModel.setQuery(FORCE_GET_REPO_ARTICLES_EXCEPTION)
-
-            // verify the observed error message matches the one sent by the fake Repository
-            verify(errorMessageObserver).onChanged(expectedErrorMessage)
-            log(this@TestArticleListActivityViewModel.TAG,
-                "observed error: ${viewModel.errorMessage.value}")
         }
     }
 }

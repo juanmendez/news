@@ -19,11 +19,14 @@ import com.example.news.model.Article
 import com.example.news.util.InjectorUtil
 import com.example.news.view.WebViewActivity.Companion.URL_EXTRA
 import com.example.news.viewmodel.ArticleListActivityViewModel
-import com.example.news.viewmodel.ArticleListActivityViewModel.Companion.TOP_HEADLINES
 import com.example.news.viewmodel.ArticleListActivityViewModelFactory
 import kotlinx.android.synthetic.main.activity_article_list.*
 
 class ArticleListActivity : BaseActivity() {
+
+    companion object {
+        const val TOP_HEADLINES = "Top Headlines"
+    }
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var searchMenu: MenuItem
@@ -47,6 +50,7 @@ class ArticleListActivity : BaseActivity() {
         initUI()
         initObservers()
         saveQueryToRecentSuggestions(TOP_HEADLINES)
+        viewModel.setQuery(TOP_HEADLINES)
     }
 
     private fun initUI() {
