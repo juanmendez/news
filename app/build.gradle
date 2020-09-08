@@ -87,4 +87,7 @@ dependencies {
     // needed to test coroutines
     // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9'
+
+    // needed to mock the web server for testing ArticlesApiServiceImpl
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.8.1")
 }

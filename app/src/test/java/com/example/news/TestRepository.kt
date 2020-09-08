@@ -7,11 +7,11 @@ import com.example.news.model.RepositoryImpl
 import com.example.news.model.cache.ArticlesCacheService
 import com.example.news.model.network.ArticlesApiService
 import com.example.news.util.TAG
+import com.example.news.util.assertThrows
 import com.example.news.util.log
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.junit.Test
 
 @InternalCoroutinesApi
@@ -34,19 +34,6 @@ class TestRepository {
 
         // init system in test
         repository = RepositoryImpl(articlesApiService, articlesCacheService)
-    }
-
-    private inline fun <reified T : Exception> assertThrows(runnable: () -> Any?) {
-        try {
-            runnable.invoke()
-        } catch (e: Throwable) {
-            if (e is T) {
-                return
-            }
-            Assert.fail("expected ${T::class.qualifiedName} but caught " +
-                    "${e::class.qualifiedName} instead")
-        }
-        Assert.fail("expected ${T::class.qualifiedName}")
     }
 
     @Test

@@ -7,7 +7,10 @@ import com.example.news.model.cache.ArticlesCacheService
 import com.example.news.model.cache.impl.ArticlesCacheServiceImpl
 import com.example.news.model.cache.impl.ArticlesDatabase
 import com.example.news.model.network.ArticlesApiService
+import com.example.news.model.network.impl.ArticlesApi
 import com.example.news.model.network.impl.ArticlesApiServiceImpl
+import com.example.news.model.network.impl.Network
+import retrofit2.Retrofit
 
 object InjectorUtil {
 
@@ -20,8 +23,18 @@ object InjectorUtil {
         return ArticlesCacheServiceImpl(database.articlesDao())
     }
 
+    fun provideRetrofit(): Retrofit {
+        return Network.retrofit
+    }
+
+    fun provideArticlesApi(): ArticlesApi {
+        return Network.articlesApi
+    }
+
     fun provideArticlesApiService(): ArticlesApiService {
-        return ArticlesApiServiceImpl()
+        val retrofit = provideRetrofit()
+        val articlesApi = provideArticlesApi()
+        return ArticlesApiServiceImpl(retrofit, articlesApi)
     }
 
     fun provideRepository(application: MyApplication): Repository {
