@@ -6,11 +6,13 @@ import com.example.news.model.RepositoryImpl
 import com.example.news.model.cache.ArticlesCacheService
 import com.example.news.model.cache.impl.ArticlesCacheServiceImpl
 import com.example.news.model.cache.impl.ArticlesDatabase
+import com.example.news.model.cache.impl.CacheMapper
 import com.example.news.model.network.ArticlesApiService
 import com.example.news.model.network.impl.ArticlesApi
 import com.example.news.model.network.impl.ArticlesApiServiceImpl
 import com.example.news.model.network.impl.Network
 import retrofit2.Retrofit
+import java.text.SimpleDateFormat
 
 object InjectorUtil {
 
@@ -18,9 +20,22 @@ object InjectorUtil {
         return application.database
     }
 
+    fun provideCacheMapper(): CacheMapper {
+        // https://developer.android.com/reference/java/text/SimpleDateFormat
+        // "2020-08-24T14:38:37Z"
+        // "August 08, 2020"
+        return CacheMapper(
+            dateUtil = DateUtil(
+                SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"),
+                SimpleDateFormat("MMMM dd',' YYYY")
+            )
+        )
+    }
+
     fun provideArticlesDaoService(application: MyApplication): ArticlesCacheService {
         val database = provideDatabase(application)
-        return ArticlesCacheServiceImpl(database.articlesDao())
+        val mapper = provideCacheMapper()
+        return ArticlesCacheServiceImpl(database.articlesDao(), mapper)
     }
 
     fun provideRetrofit(): Retrofit {

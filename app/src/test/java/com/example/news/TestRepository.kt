@@ -47,7 +47,6 @@ class TestRepository {
         log(this@TestRepository.TAG, "cache count = $cachedCount")
         assert(cachedCount == 1)
 
-
         log(this@TestRepository.TAG, "call Repository's getCachedArticles")
         val articles = repository.getCachedArticles(query)
         assert(articles.isNotEmpty())
