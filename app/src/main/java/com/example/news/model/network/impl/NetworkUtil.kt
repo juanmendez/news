@@ -31,13 +31,13 @@ private fun parseError(
     return error
 }
 
-fun <T> handleError(
+fun <T> checkResponseThrowError(
     retrofit: Retrofit,
     response: Response<T>
 ): Response<T> {
     if (!response.isSuccessful) {
         parseError(retrofit, response)?.let { apiError ->
-            throw Exception("\nStatus code: ${response.code()}\n\nMessage: ${apiError.message()}")
+            throw Exception("\nStatus code: ${response.code()}\n\nMessage: ${apiError.message}")
         } ?: run {
             throw Exception("Error parsing API error response")
         }

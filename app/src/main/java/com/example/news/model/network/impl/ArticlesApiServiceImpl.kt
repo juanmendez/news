@@ -11,31 +11,26 @@ class ArticlesApiServiceImpl(
 ) : ArticlesApiService {
 
     companion object {
-
-        // https://newsapi.org
-        // claudiu.colteu@gmail.com / abcd1234
-        const val API_KEY = "7da5d9626af74c1eab78e5e8aee72b0d"
         const val PAGE_SIZE = 50
         const val PAGE = 1
         const val COUNTRY = "us"
-
-        // use this to see an error thrown to the UI
-        //const val API_KEY = "bad-api-key"
     }
 
+    // executed inside an IO-scoped coroutine, will throw an Exception in case of network error,
+    // the Exception is propagated through the Repository to the ViewModel that calls the Repo
+    // via coroutines and handled in the ViewModel
     override suspend fun getArticles(query: String): List<Article> {
-        val response = handleError(retrofit,
-            when (query) {
-                "Top Headlines" -> {
-                    // synchronous Retrofit call that will be executed inside an IO-scoped coroutine
-                    articlesApi.getTopHeadlines(COUNTRY, PAGE, PAGE_SIZE, API_KEY)
-                }
-                else -> {
-                    articlesApi.getArticles(query, PAGE, PAGE_SIZE, API_KEY)
-                }
+        val networkResponse = when (query) {
+            "Top Headlines" -> {
+                // synchronous Retrofit call
+                articlesApi.getTopHeadlines(COUNTRY, PAGE, PAGE_SIZE)
             }
-        )
-        val networkArticles = response.body()?.articles
+            else -> {
+                articlesApi.getArticles(query, PAGE, PAGE_SIZE)
+            }
+        }
+        val successResponse = checkResponseThrowError(retrofit, networkResponse)
+        val networkArticles = successResponse.body()?.articles
         networkArticles?.let {
             return NetworkMapper.networkArticleListToArticleList(query, networkArticles)
         } ?: run {
