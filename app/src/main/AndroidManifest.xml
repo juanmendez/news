@@ -35,6 +35,26 @@
                 android:resource="@xml/searchable" />
         </activity>
 
+        <!-- uncomment this for MVI -->
+<!--        <activity-->
+<!--            android:name=".view.MainActivity"-->
+<!--            android:launchMode="singleInstance">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+
+<!--            &lt;!&ndash; make this a searchable activity that receives a search intent &ndash;&gt;-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.SEARCH" />-->
+<!--            </intent-filter>-->
+
+<!--            &lt;!&ndash; specify the searchable configuration &ndash;&gt;-->
+<!--            <meta-data-->
+<!--                android:name="android.app.searchable"-->
+<!--                android:resource="@xml/searchable" />-->
+<!--        </activity>-->
+
         <!-- specify the search suggestion provider -->
         <provider android:name=".view.ArticleSearchSuggestionProvider"
             android:authorities="com.example.news.ArticleSearchSuggestionProviderAuthority" />
