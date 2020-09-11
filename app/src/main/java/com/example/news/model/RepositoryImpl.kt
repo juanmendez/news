@@ -19,17 +19,6 @@ class RepositoryImpl(
     // dependencies when testing in isolation.
 
     /**
-     * Returns cached articles
-     */
-    override suspend fun getCachedArticles(query: String): List<Article> {
-
-        // uncomment to see the UI handling the Repo throwing an exception
-        //throw Exception()
-
-        return articlesCacheService.getArticles(query)
-    }
-
-    /**
      * Emits cached articles, then refreshes cache with new articles
      * fetched from the network and emits the updated cached articles
      */

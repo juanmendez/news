@@ -47,16 +47,36 @@ class ArticleListActivityViewModel2(
     val articles: LiveData<List<Article>> =
         Transformations.switchMap(_query) { query ->
             Transformations.distinctUntilChanged(
-                getArticles(query)
+                when (query) {
+                    TOP_HEADLINES -> getTopHeadlines()
+                    else -> getArticles(query)
+                }
             )
         }
 
     private fun getArticles(query: String): LiveData<List<Article>> {
         val job = Job()
         getArticlesJob = job
-
         return liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
             repository2.getArticles(query).collect { resource ->
+                withContext(Dispatchers.Main) {
+                    _showProgress.value = resource.status == Status.LOADING
+                }
+                resource.data?.let { emit(it) }
+                if (resource.status == Status.ERROR) {
+                    withContext(Dispatchers.Main) {
+                        showError(resource.message.toString())
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getTopHeadlines(): LiveData<List<Article>> {
+        val job = Job()
+        getArticlesJob = job
+        return liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
+            repository2.getHeadlines().collect { resource ->
                 withContext(Dispatchers.Main) {
                     _showProgress.value = resource.status == Status.LOADING
                 }

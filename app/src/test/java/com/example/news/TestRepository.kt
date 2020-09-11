@@ -37,33 +37,6 @@ class TestRepository {
     }
 
     @Test
-    fun getCachedArticles_success() = runBlocking {
-        // we call coroutines, so we block the thread
-        // alternatively we could have called CoroutineScope(IO).launch
-
-        val query = "technology"
-
-        val cachedCount = articlesCacheService.getArticlesCount(query)
-        log(this@TestRepository.TAG, "cache count = $cachedCount")
-        assert(cachedCount == 1)
-
-        log(this@TestRepository.TAG, "call Repository's getCachedArticles")
-        val articles = repository.getCachedArticles(query)
-        assert(articles.isNotEmpty())
-        assert(articles.size == 1)
-        log(this@TestRepository.TAG, "articles displayed = ${articles.size}")
-    }
-
-    @Test
-    fun getCachedArticles_failure() = runBlocking {
-
-        assertThrows<Exception> {
-            log(this@TestRepository.TAG, "call Repository's getCachedArticles and fail")
-            repository.getCachedArticles(FORCE_GET_CACHE_ARTICLES_EXCEPTION)
-        }
-    }
-
-    @Test
     fun getArticles_success() = runBlocking {
         val query = "technology"
 

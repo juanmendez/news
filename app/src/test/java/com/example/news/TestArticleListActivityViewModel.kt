@@ -10,6 +10,7 @@ import com.example.news.model.Article
 import com.example.news.model.Repository
 import com.example.news.util.*
 import com.example.news.viewmodel.ArticleListActivityViewModel
+import junit.framework.Assert
 import kotlinx.coroutines.*
 import org.junit.Rule
 import org.junit.Test
@@ -88,6 +89,39 @@ class TestArticleListActivityViewModel {
 
             // verify the observer receives expected network-updated cache data
             verify(articlesObserver).onChanged(expectedUpdatedCacheArticles)
+            viewModel.articles.value?.let {
+                logObservedArticles(this@TestArticleListActivityViewModel.TAG, it)
+            }
+        }
+    }
+
+    // this is using getOrAwaitValue
+    @Test
+    fun setQuery_success2() {
+        testCoroutineRule.runBlockingTest {
+
+            // expected
+            val expectedCacheArticles: List<Article> =
+                articlesDataFactory.produceCacheListOfArticles()
+            val expectedUpdatedCacheArticles: List<Article> =
+                articlesDataFactory.produceUpdatedCacheListOfArticles()
+
+            log(this@TestArticleListActivityViewModel.TAG, "call ViewModel's setQuery")
+            // the query value doesn't matter since we use a fake Repository
+            viewModel.setQuery("toto")
+
+            // verify the observed articles match the expected cache data
+            Assert.assertEquals(viewModel.articles.getOrAwaitValue(), expectedCacheArticles)
+            viewModel.articles.value?.let {
+                logObservedArticles(this@TestArticleListActivityViewModel.TAG, it)
+            }
+
+            // wait for the cache to be updated with data from network: FakeRepositoryImpl fakes
+            // the network update delay to 1000 ms, so we wait 1500 ms to make sure we got the data
+            Thread.sleep(1500)
+
+            // verify the observed articles match the expected network-updated cache data
+            Assert.assertEquals(viewModel.articles.getOrAwaitValue(), expectedUpdatedCacheArticles)
             viewModel.articles.value?.let {
                 logObservedArticles(this@TestArticleListActivityViewModel.TAG, it)
             }

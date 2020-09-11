@@ -107,22 +107,4 @@ class ArticleListActivityViewModel (
             }
         }
     }
-
-//    val articles: LiveData<List<Article>> = Transformations.switchMap(_query) { query ->
-//        getArticlesJob = Job()
-//        getArticlesJob?.let { job ->
-//            liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
-//                try {
-//                    emit(repository.getCachedArticles(query))
-//                    withContext(Dispatchers.Main) {
-//                        _showProgress.value = false
-//                    }
-//                } catch (e: Exception) {
-//                    withContext(Dispatchers.Main) {
-//                        showError(true)
-//                    }
-//                }
-//            }
-//        }
-//    }
 }

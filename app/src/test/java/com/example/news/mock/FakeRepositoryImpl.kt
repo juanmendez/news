@@ -14,14 +14,6 @@ class FakeRepositoryImpl constructor(
     private val networkArticlesData: HashMap<String, Article>
 ) : Repository {
 
-    override suspend fun getCachedArticles(query: String): List<Article> {
-        val articles: ArrayList<Article> = ArrayList()
-        for (article in cacheArticlesData) {
-            articles.add(article.value)
-        }
-        return articles
-    }
-
     override suspend fun getArticles(query: String): Flow<List<Article>> {
 
         // we need to test the case where an exception is thrown,

@@ -11,46 +11,69 @@ import kotlinx.coroutines.flow.*
 abstract class NetworkBoundResource<CacheObjectType, NetworkObjectType> {
 
     fun asFlow() = flow {
+
+        // emit loading
         emit(Resource.loading(null))
 
-        val dbValue = loadFromDb().first()
-        if (shouldFetch(dbValue)) {
-            emit(Resource.loading(dbValue))
+        val cacheValue = loadFromCache().first()
+
+        if (shouldFetchFromNetwork(cacheValue)) {
+
+            // emit cache data
+            emit(Resource.loading(cacheValue))
+
+            // fetch network data
             when (val apiResponse = fetchFromNetwork()) {
                 is ApiSuccessResponse -> {
-                    saveNetworkResult(processResponse(apiResponse))
-                    emitAll(loadFromDb().map { Resource.success(it) })
+
+                    // update cache with network data
+                    saveNetworkResponseToCache(processResponse(apiResponse))
+
+                    // emit updated cache data
+                    emitAll(loadFromCache().map { Resource.success(it) })
                 }
                 is ApiEmptyResponse -> {
-                    emitAll(loadFromDb().map { Resource.success(it) })
+
+                    // network didn't return anything, return cache data
+                    emitAll(loadFromCache().map { Resource.success(it) })
                 }
                 is ApiErrorResponse -> {
+
+                    // handle error
                     onFetchFailed()
-                    emitAll(loadFromDb().map { Resource.error(apiResponse.errorMessage, it) })
+
+                    // emit error
+                    emitAll(loadFromCache().map { Resource.error(apiResponse.errorMessage, it) })
                 }
             }
+
         } else {
-            emitAll(loadFromDb().map { Resource.success(it) })
+
+            // emit cache data
+            emitAll(loadFromCache().map { Resource.success(it) })
         }
     }
 
     protected open fun onFetchFailed() {
-        // Implement in sub-classes to handle errors
+        // Optional: implement in sub-classes to handle errors
     }
 
     @WorkerThread
     protected open fun processResponse(response: ApiSuccessResponse<NetworkObjectType>) =
         response.body
 
-    @WorkerThread
-    protected abstract suspend fun saveNetworkResult(item: NetworkObjectType)
-
+    /**
+     * Abstract methods to be implemented in concrete classes
+     */
     @MainThread
-    protected abstract fun shouldFetch(data: CacheObjectType?): Boolean
-
-    @MainThread
-    protected abstract fun loadFromDb(): Flow<CacheObjectType>
+    protected abstract fun shouldFetchFromNetwork(data: CacheObjectType?): Boolean
 
     @MainThread
     protected abstract suspend fun fetchFromNetwork(): ApiResponse<NetworkObjectType>
+
+    @WorkerThread
+    protected abstract suspend fun saveNetworkResponseToCache(item: NetworkObjectType)
+
+    @MainThread
+    protected abstract fun loadFromCache(): Flow<CacheObjectType>
 }
