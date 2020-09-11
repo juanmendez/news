@@ -12,12 +12,12 @@ interface ArticlesApi {
         @Query("q") query: String,
         @Query("page") page: Int,
         @Query("pageSize") pageSize: Int
-    ): Response<GetArticlesResponse>
+    ): Response<ArticlesResponse>
 
     @GET("/v2/top-headlines")
     suspend fun getTopHeadlines(
         @Query("country") country: String,
         @Query("page") page: Int,
         @Query("pageSize") pageSize: Int
-    ): Response<GetArticlesResponse>
+    ): Response<ArticlesResponse>
 }

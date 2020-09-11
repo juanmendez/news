@@ -7,7 +7,7 @@ import com.example.news.state.MainStateEvent
 import com.example.news.state.MainViewState
 import com.example.news.util.AbsentLiveData
 
-class MainViewModel(
+class ArticleListActivityViewModel3(
     private val repository: Repository
 ) : ViewModel(), LifecycleObserver {
 

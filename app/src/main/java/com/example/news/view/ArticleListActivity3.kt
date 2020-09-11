@@ -2,7 +2,6 @@ package com.example.news.view
 
 import android.app.SearchManager
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -10,7 +9,6 @@ import android.provider.SearchRecentSuggestions
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.news.MyApplication
@@ -21,26 +19,26 @@ import com.example.news.util.InjectorUtil
 import com.example.news.util.TAG
 import com.example.news.util.log
 import com.example.news.viewmodel.ArticleListActivityViewModel
-import com.example.news.viewmodel.MainViewModel
-import com.example.news.viewmodel.MainViewModelFactory
+import com.example.news.viewmodel.ArticleListActivityViewModel3
+import com.example.news.viewmodel.ArticleListActivityViewModel3Factory
 import kotlinx.android.synthetic.main.activity_article_list.*
 
 // same as ArticleListActivity, but MVI
-class MainActivity : BaseActivity() {
+class ArticleListActivity3 : BaseActivity() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var searchMenu: MenuItem
 
     private val listener = object : OnArticleClickListener {
         override fun onArticleClick(article: Article) {
-            val intent = Intent(this@MainActivity, WebViewActivity::class.java)
+            val intent = Intent(this@ArticleListActivity3, WebViewActivity::class.java)
             intent.putExtra(WebViewActivity.URL_EXTRA, article.url)
-            this@MainActivity.startActivity(intent)
+            this@ArticleListActivity3.startActivity(intent)
         }
     }
 
-    private val viewModel: MainViewModel by viewModels {
+    private val viewModel3: ArticleListActivityViewModel3 by viewModels {
         val repository = InjectorUtil.provideRepository(application as MyApplication)
-        MainViewModelFactory(repository)
+        ArticleListActivityViewModel3Factory(repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,19 +59,19 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initObservers() {
-        lifecycle.addObserver(viewModel)
+        lifecycle.addObserver(viewModel3)
 
-        viewModel.dataState.observe(this, { dataState ->
-            log(this@MainActivity.TAG, "DataState: $dataState")
+        viewModel3.dataState.observe(this, { dataState ->
+            log(this@ArticleListActivity3.TAG, "DataState: $dataState")
             dataState.articles?.let { articles ->
-                viewModel.setArticlesListData(articles)
+                viewModel3.setArticlesListData(articles)
             }
             dataState.query?.let { query ->
-                viewModel.setQueryData(query)
+                viewModel3.setQueryData(query)
             }
         })
 
-        viewModel.viewState.observe(this, { viewState ->
+        viewModel3.viewState.observe(this, { viewState ->
             viewState.articles?.let { articles ->
                 articles_recyclerview.adapter = ArticlesAdapter(articles, listener)
             }
@@ -133,9 +131,9 @@ class MainActivity : BaseActivity() {
 
     private fun search(query: String) {
         query?.let {
-            this@MainActivity.hideKeyboard()
+            this@ArticleListActivity3.hideKeyboard()
             searchMenu.collapseActionView()
-            viewModel.setStateEvent(MainStateEvent.GetArticlesEvent(query))
+            viewModel3.setStateEvent(MainStateEvent.GetArticlesEvent(query))
         }
     }
 
