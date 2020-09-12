@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.news.model.Article
 import com.example.news.model.Repository2
+import com.example.news.util.DoubleTrigger
 import com.example.news.util.network.Status
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -60,6 +61,11 @@ class ArticleListActivityViewModel2(
         }
     }
 
+    private val _page: MutableLiveData<Int> = MutableLiveData(1)
+    fun incrementPage() {
+        _page.value = _page.value?.plus(1)
+    }
+
     // holds the RecyclerView data
     // The articles data are not modified by the the ViewModel, only rendered,
     // therefore there is no need for MutableLiveData, LiveData will suffice.
@@ -68,7 +74,9 @@ class ArticleListActivityViewModel2(
         // MediatorLiveData), to transform one LiveData (first switchMap parameter, the query)
         // into another LiveData (switchMap output, the articles) by applying the lambda function
         // (second switchMap parameter) to each value set on the input LiveData (the query).
-        Transformations.switchMap(_query) { query ->
+        Transformations.switchMap(DoubleTrigger(_query, _page)) { doubleTrigger ->
+            val query: String = doubleTrigger.first ?: ""
+            val page: Int = doubleTrigger.second ?: 1
             val job = Job()
 
             // making a copy of the Job instance reference value (pointer to the job Object
@@ -82,8 +90,8 @@ class ArticleListActivityViewModel2(
                 liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
                     try {
                         val flow = when (query) {
-                            TOP_HEADLINES -> repository2.getHeadlines()
-                            else -> repository2.getArticles(query)
+                            TOP_HEADLINES -> repository2.getTopHeadlines(page)
+                            else -> repository2.getArticles(query, page)
                         }
 
                         // collect the Flow's List<Article> objects

@@ -13,6 +13,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
@@ -27,6 +28,8 @@ class ArticleListActivity2 : BaseActivity() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var searchMenu: MenuItem
+    private lateinit var adapter: ArticlesAdapter
+    private var articles: ArrayList<Article> = arrayListOf()
 
     private val listener = object : OnArticleClickListener {
         override fun onArticleClick(article: Article) {
@@ -50,20 +53,41 @@ class ArticleListActivity2 : BaseActivity() {
     }
 
     private fun initUI() {
+        val scrollListener: RecyclerView.OnScrollListener =
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    when (resources.configuration.orientation) {
+                        Configuration.ORIENTATION_LANDSCAPE ->
+                            if (!articles_recyclerview.canScrollHorizontally(1)) {
+                                viewModel2.incrementPage()
+                            }
+                        else ->
+                            if (!articles_recyclerview.canScrollVertically(1)) {
+                                viewModel2.incrementPage()
+                            }
+                    }
+                }
+            }
         linearLayoutManager = when (resources.configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE ->
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
             else -> LinearLayoutManager(this)
         }
         articles_recyclerview.layoutManager = linearLayoutManager
+        articles_recyclerview.addOnScrollListener(scrollListener)
+        adapter = ArticlesAdapter(articles, listener)
+        articles_recyclerview.adapter = adapter
     }
 
     private fun initObservers() {
         lifecycle.addObserver(viewModel2)
 
         // init data observers and update the UI
-        viewModel2.articles.observe(this, { articles ->
-            articles_recyclerview.adapter = ArticlesAdapter(articles, listener)
+        viewModel2.articles.observe(this, { data ->
+            articles.clear()
+            articles.addAll(data)
+            adapter.notifyDataSetChanged()
         })
         viewModel2.errorMessage.observe(this, { msg ->
             msg?.let {

@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 // depending on the nature of the API. The actual coroutines are then set up in
 // the ViewModel. LiveData gets introduced by the ViewModel, not the Repository.
 interface Repository2 {
-    suspend fun getArticles(query: String): Flow<Resource<List<Article>>>
-    suspend fun getHeadlines(): Flow<Resource<List<Article>>>
+    suspend fun getArticles(query: String, page: Int): Flow<Resource<List<Article>>>
+    suspend fun getTopHeadlines(page: Int): Flow<Resource<List<Article>>>
 }

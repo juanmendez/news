@@ -28,7 +28,7 @@ class Repository2Impl(
         const val TOP_HEADLINES = "Top Headlines"
     }
 
-    override suspend fun getArticles(query: String): Flow<Resource<List<Article>>> {
+    override suspend fun getArticles(query: String, page: Int): Flow<Resource<List<Article>>> {
         return object : NetworkBoundResource<List<Article>, ArticlesResponse>() {
 
             override fun shouldFetchFromNetwork(data: List<Article>?): Boolean {
@@ -37,10 +37,12 @@ class Repository2Impl(
             }
 
             override suspend fun fetchFromNetwork(): ApiResponse<ArticlesResponse> {
-                return ApiResponse.create(apiService2.getArticles(query))
+                // fetch the page from network
+                return ApiResponse.create(apiService2.getArticles(query, page))
             }
 
             override suspend fun saveNetworkResponseToCache(item: ArticlesResponse) {
+                // save the page to cache
                 item.articles?.let { networkArticles ->
                     val articles =
                         NetworkMapper.networkArticleListToArticleList(query, networkArticles)
@@ -50,6 +52,7 @@ class Repository2Impl(
 
             override fun loadFromCache(): Flow<List<Article>> {
                 return flow {
+                    // always emit ALL articles from cache
                     emit(cacheService.getArticles(query))
                 }
             }
@@ -57,7 +60,7 @@ class Repository2Impl(
         }.asFlow()
     }
 
-    override suspend fun getHeadlines(): Flow<Resource<List<Article>>> {
+    override suspend fun getTopHeadlines(page: Int): Flow<Resource<List<Article>>> {
         return object : NetworkBoundResource<List<Article>, ArticlesResponse>() {
 
             override fun shouldFetchFromNetwork(data: List<Article>?): Boolean {
@@ -66,7 +69,7 @@ class Repository2Impl(
             }
 
             override suspend fun fetchFromNetwork(): ApiResponse<ArticlesResponse> {
-                return ApiResponse.create(apiService2.getHeadlines())
+                return ApiResponse.create(apiService2.getTopHeadlines(page))
             }
 
             override suspend fun saveNetworkResponseToCache(item: ArticlesResponse) {
