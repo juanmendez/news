@@ -1,5 +1,6 @@
 package com.example.news.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.news.model.Article
 import com.example.news.model.Repository2
@@ -97,6 +98,7 @@ class ArticleListActivityViewModel2(
                             resource.data?.let {
                                 // each emit suspends this block's execution until
                                 // the LiveData is set on the main thread
+                                Log.d("toto", "display: ${it.size}")
                                 emit(it)
                             }
 

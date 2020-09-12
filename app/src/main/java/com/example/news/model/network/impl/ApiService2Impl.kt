@@ -8,17 +8,15 @@ class ApiService2Impl(
 ) : ApiService2 {
 
     companion object {
-        const val PAGE_SIZE = 50
         const val PAGE = 1
         const val COUNTRY = "us"
     }
 
     override suspend fun getArticles(query: String): Response<ArticlesResponse> {
-        return api.getArticles(query, PAGE, PAGE_SIZE)
+        return api.getArticles(query, PAGE)
     }
 
     override suspend fun getHeadlines(): Response<ArticlesResponse> {
-        return api.getArticles(COUNTRY, PAGE, PAGE_SIZE
-        )
+        return api.getArticles(COUNTRY, PAGE)
     }
 }

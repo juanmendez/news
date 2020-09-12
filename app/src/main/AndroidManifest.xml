@@ -4,9 +4,15 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!--
+    Beginning with Android 6.0 (API level 23), Android offers the Auto Backup feature which is
+    enabled by default. This backs up your Room database (among other things) so that data
+    persists even if you uninstall the app. To disable it use android:allowBackup="false"
+    https://developer.android.com/guide/topics/data/autobackup.html
+    -->
     <application
         android:name=".MyApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"

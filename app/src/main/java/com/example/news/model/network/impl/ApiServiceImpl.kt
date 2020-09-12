@@ -11,7 +11,6 @@ class ApiServiceImpl(
 ) : ApiService {
 
     companion object {
-        const val PAGE_SIZE = 50
         const val PAGE = 1
         const val COUNTRY = "us"
     }
@@ -23,10 +22,10 @@ class ApiServiceImpl(
         val networkResponse = when (query) {
             "Top Headlines" -> {
                 // synchronous Retrofit call
-                api.getTopHeadlines(COUNTRY, PAGE, PAGE_SIZE)
+                api.getTopHeadlines(COUNTRY, PAGE)
             }
             else -> {
-                api.getArticles(query, PAGE, PAGE_SIZE)
+                api.getArticles(query, PAGE)
             }
         }
         val successResponse = checkResponseThrowError(retrofit, networkResponse)
