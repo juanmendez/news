@@ -6,6 +6,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 
+/**
+ * Generic class for handling network requests
+ */
 @FlowPreview
 @ExperimentalCoroutinesApi
 abstract class NetworkBoundResource<CacheObjectType, NetworkObjectType> {

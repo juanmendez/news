@@ -48,7 +48,7 @@ class ArticleListActivityViewModel (
     // holds the query data, updated as the user types in a query, and displayed in the ActionBar
     // When creating an empty MutableLiveData by calling MutableLiveData(), its value is null
     // (see MutableLiveData / LiveData source code). Here we initialize the query to Top Headlines
-    // which will prompt loading the Top Headlines articles
+    // which will prompt loading the Top Headlines articles.
     private val _query: MutableLiveData<String> = MutableLiveData(TOP_HEADLINES)
     val query : LiveData<String?> = _query
     fun setQuery(query: String) {
@@ -65,7 +65,7 @@ class ArticleListActivityViewModel (
         // Fetching the articles depends on the query value, using switchMap utility (uses
         // MediatorLiveData), to transform one LiveData (first switchMap parameter, the query)
         // into another LiveData (switchMap output, the articles) by applying the lambda function
-        // (second switchMap parameter) to each value set on the input LiveData (the query)
+        // (second switchMap parameter) to each value set on the input LiveData (the query).
         Transformations.switchMap(_query) { query ->
             // Another utility that creates a new LiveData ONLY IF the source LiveData (the query)
             // value has changed, often used with data backing RecyclerViews. Note that this is
