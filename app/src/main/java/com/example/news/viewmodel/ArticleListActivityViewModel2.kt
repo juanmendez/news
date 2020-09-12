@@ -61,9 +61,14 @@ class ArticleListActivityViewModel2(
         }
     }
 
+    private var pageIncrementTimestamp: Long = 0
     private val _page: MutableLiveData<Int> = MutableLiveData(1)
     fun incrementPage() {
-        _page.value = _page.value?.plus(1)
+        val now = System.currentTimeMillis()
+        if (now - pageIncrementTimestamp > 1000) {
+            pageIncrementTimestamp = now
+            _page.value = _page.value?.plus(1)
+        }
     }
 
     // holds the RecyclerView data
