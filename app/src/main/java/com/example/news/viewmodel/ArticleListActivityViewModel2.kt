@@ -57,6 +57,8 @@ class ArticleListActivityViewModel2(
     fun setQuery(query: String) {
         if (query != _query.value) {
             _query.value = query
+            pageIncrementTimestamp = 0
+            _page.value = 1
             _showProgress.value = true
         }
     }
