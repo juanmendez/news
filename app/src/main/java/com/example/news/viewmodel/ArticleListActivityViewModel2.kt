@@ -25,7 +25,6 @@ class ArticleListActivityViewModel2(
     private val _showProgress: MutableLiveData<Boolean> = MutableLiveData()
     val showProgress: LiveData<Boolean> = _showProgress
 
-    // holds tha error message data
     private val _errorMessage: MutableLiveData<String?> = MutableLiveData()
     val errorMessage: LiveData<String?> = _errorMessage
     fun showError(value: String?) {
@@ -46,47 +45,26 @@ class ArticleListActivityViewModel2(
 
     val articles: LiveData<List<Article>> =
         Transformations.switchMap(_query) { query ->
+            val job = Job()
+            getArticlesJob = job
             Transformations.distinctUntilChanged(
-                when (query) {
-                    TOP_HEADLINES -> getTopHeadlines()
-                    else -> getArticles(query)
+                liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
+                    val flow = when (query) {
+                        TOP_HEADLINES -> repository2.getHeadlines()
+                        else -> repository2.getArticles(query)
+                    }
+                    flow.collect { resource ->
+                        withContext(Dispatchers.Main) {
+                            _showProgress.value = resource.status == Status.LOADING
+                        }
+                        resource.data?.let { emit(it) }
+                        if (resource.status == Status.ERROR) {
+                            withContext(Dispatchers.Main) {
+                                showError(resource.message.toString())
+                            }
+                        }
+                    }
                 }
             )
         }
-
-    private fun getArticles(query: String): LiveData<List<Article>> {
-        val job = Job()
-        getArticlesJob = job
-        return liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
-            repository2.getArticles(query).collect { resource ->
-                withContext(Dispatchers.Main) {
-                    _showProgress.value = resource.status == Status.LOADING
-                }
-                resource.data?.let { emit(it) }
-                if (resource.status == Status.ERROR) {
-                    withContext(Dispatchers.Main) {
-                        showError(resource.message.toString())
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getTopHeadlines(): LiveData<List<Article>> {
-        val job = Job()
-        getArticlesJob = job
-        return liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
-            repository2.getHeadlines().collect { resource ->
-                withContext(Dispatchers.Main) {
-                    _showProgress.value = resource.status == Status.LOADING
-                }
-                resource.data?.let { emit(it) }
-                if (resource.status == Status.ERROR) {
-                    withContext(Dispatchers.Main) {
-                        showError(resource.message.toString())
-                    }
-                }
-            }
-        }
-    }
 }

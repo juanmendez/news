@@ -1,14 +1,14 @@
 package com.example.news.mock
 
 import com.example.news.model.Article
-import com.example.news.model.network.ArticlesApiService
+import com.example.news.model.network.ApiService
 
 const val FORCE_GET_NETWORK_ARTICLES_EXCEPTION = "FORCE_GET_NETWORK_ARTICLES_EXCEPTION"
 
-class FakeArticlesApiServiceImpl
+class FakeApiServiceImpl
 constructor(
     private val articlesData: HashMap<String, Article>,
-) : ArticlesApiService {
+) : ApiService {
     override suspend fun getArticles(query: String): List<Article> {
 
         // we need to test the case where an exception is thrown,

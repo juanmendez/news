@@ -1,14 +1,14 @@
 package com.example.news.model.cache.impl
 
 import com.example.news.model.Article
-import com.example.news.model.cache.ArticlesCacheService
+import com.example.news.model.cache.CacheService
 
 // This ArticlesCacheService implementation uses DAO/Room
-class ArticlesCacheServiceImpl
+class CacheServiceImpl
 constructor(
     private val articlesDao: ArticlesDao,
     private val mapper: CacheMapper
-) : ArticlesCacheService {
+) : CacheService {
 
     override suspend fun insertArticle(article: Article): Long {
         return articlesDao.insertArticle(mapper.mapToEntity(article))

@@ -1,21 +1,21 @@
 package com.example.news.di
 
-import com.example.news.mock.FakeArticlesApiServiceImpl
-import com.example.news.mock.FakeArticlesCacheServiceImpl
+import com.example.news.mock.FakeApiServiceImpl
+import com.example.news.mock.FakeCacheServiceImpl
 import com.example.news.factory.ArticleFactory
 import com.example.news.factory.ArticlesDataFactory
 import com.example.news.mock.FakeRepositoryImpl
 import com.example.news.model.Repository
-import com.example.news.model.cache.ArticlesCacheService
-import com.example.news.model.network.ArticlesApiService
+import com.example.news.model.cache.CacheService
+import com.example.news.model.network.ApiService
 import com.example.news.util.isUnitTest
 
 class DependencyContainer {
 
     lateinit var articleFactory: ArticleFactory
     lateinit var articlesDataFactory: ArticlesDataFactory
-    lateinit var articlesCacheService: ArticlesCacheService
-    lateinit var articlesApiService: ArticlesApiService
+    lateinit var cacheService: CacheService
+    lateinit var apiService: ApiService
     lateinit var repository: Repository
 
     init {
@@ -36,7 +36,7 @@ class DependencyContainer {
         }
 
         // create the fake cache service implementation
-        articlesCacheService = FakeArticlesCacheServiceImpl(
+        cacheService = FakeCacheServiceImpl(
             // use factory to get a HashMap of articles (fake cache)
             articlesData = articlesDataFactory.produceHashMapOfArticles(
                 articlesDataFactory.produceCacheListOfArticles()
@@ -44,7 +44,7 @@ class DependencyContainer {
         )
 
         // create the fake API service implementation
-        articlesApiService = FakeArticlesApiServiceImpl(
+        apiService = FakeApiServiceImpl(
             // use factory to get a HashMap of articles (fake API)
             articlesData = articlesDataFactory.produceHashMapOfArticles(
                 articlesDataFactory.produceNetworkListOfArticles()

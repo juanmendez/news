@@ -1,11 +1,11 @@
 package com.example.news.model.network.impl
 
-import com.example.news.model.network.ArticlesApiService2
+import com.example.news.model.network.ApiService2
 import retrofit2.Response
 
-class ArticlesApiService2Impl(
-    private val articlesApi: ArticlesApi
-) : ArticlesApiService2 {
+class ApiService2Impl(
+    private val api: Api
+) : ApiService2 {
 
     companion object {
         const val PAGE_SIZE = 50
@@ -14,11 +14,11 @@ class ArticlesApiService2Impl(
     }
 
     override suspend fun getArticles(query: String): Response<ArticlesResponse> {
-        return articlesApi.getArticles(query, PAGE, PAGE_SIZE)
+        return api.getArticles(query, PAGE, PAGE_SIZE)
     }
 
     override suspend fun getHeadlines(): Response<ArticlesResponse> {
-        return articlesApi.getArticles(COUNTRY, PAGE, PAGE_SIZE
+        return api.getArticles(COUNTRY, PAGE, PAGE_SIZE
         )
     }
 }

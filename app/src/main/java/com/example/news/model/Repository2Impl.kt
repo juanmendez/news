@@ -1,7 +1,7 @@
 package com.example.news.model
 
-import com.example.news.model.cache.ArticlesCacheService
-import com.example.news.model.network.ArticlesApiService2
+import com.example.news.model.cache.CacheService
+import com.example.news.model.network.ApiService2
 import com.example.news.model.network.impl.ArticlesResponse
 import com.example.news.model.network.impl.NetworkMapper
 import com.example.news.util.network.ApiResponse
@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class Repository2Impl(
-    private val articlesApiService2: ArticlesApiService2,
-    private val articlesCacheService: ArticlesCacheService
+    private val apiService2: ApiService2,
+    private val cacheService: CacheService
 ) : Repository2 {
 
     companion object {
@@ -29,20 +29,20 @@ class Repository2Impl(
             }
 
             override suspend fun fetchFromNetwork(): ApiResponse<ArticlesResponse> {
-                return ApiResponse.create(articlesApiService2.getArticles(query))
+                return ApiResponse.create(apiService2.getArticles(query))
             }
 
             override suspend fun saveNetworkResponseToCache(item: ArticlesResponse) {
                 item.articles?.let { networkArticles ->
                     val articles =
                         NetworkMapper.networkArticleListToArticleList(query, networkArticles)
-                    articlesCacheService.insertArticles(articles)
+                    cacheService.insertArticles(articles)
                 }
             }
 
             override fun loadFromCache(): Flow<List<Article>> {
                 return flow {
-                    emit(articlesCacheService.getArticles(query))
+                    emit(cacheService.getArticles(query))
                 }
             }
 
@@ -58,20 +58,20 @@ class Repository2Impl(
             }
 
             override suspend fun fetchFromNetwork(): ApiResponse<ArticlesResponse> {
-                return ApiResponse.create(articlesApiService2.getHeadlines())
+                return ApiResponse.create(apiService2.getHeadlines())
             }
 
             override suspend fun saveNetworkResponseToCache(item: ArticlesResponse) {
                 item.articles?.let { networkArticles ->
                     val articles =
                         NetworkMapper.networkArticleListToArticleList(TOP_HEADLINES, networkArticles)
-                    articlesCacheService.insertArticles(articles)
+                    cacheService.insertArticles(articles)
                 }
             }
 
             override fun loadFromCache(): Flow<List<Article>> {
                 return flow {
-                    emit(articlesCacheService.getArticles(TOP_HEADLINES))
+                    emit(cacheService.getArticles(TOP_HEADLINES))
                 }
             }
 

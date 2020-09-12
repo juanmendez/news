@@ -1,14 +1,14 @@
 package com.example.news.model.network.impl
 
 import com.example.news.model.Article
-import com.example.news.model.network.ArticlesApiService
+import com.example.news.model.network.ApiService
 import retrofit2.Retrofit
 
-// This ArticlesApiService implementation uses Retrofit
-class ArticlesApiServiceImpl(
+// This ApiService implementation uses Retrofit
+class ApiServiceImpl(
     private val retrofit: Retrofit,
-    private val articlesApi: ArticlesApi
-) : ArticlesApiService {
+    private val api: Api
+) : ApiService {
 
     companion object {
         const val PAGE_SIZE = 50
@@ -23,10 +23,10 @@ class ArticlesApiServiceImpl(
         val networkResponse = when (query) {
             "Top Headlines" -> {
                 // synchronous Retrofit call
-                articlesApi.getTopHeadlines(COUNTRY, PAGE, PAGE_SIZE)
+                api.getTopHeadlines(COUNTRY, PAGE, PAGE_SIZE)
             }
             else -> {
-                articlesApi.getArticles(query, PAGE, PAGE_SIZE)
+                api.getArticles(query, PAGE, PAGE_SIZE)
             }
         }
         val successResponse = checkResponseThrowError(retrofit, networkResponse)

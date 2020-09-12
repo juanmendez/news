@@ -4,8 +4,8 @@ import com.example.news.di.DependencyContainer
 import com.example.news.mock.FORCE_GET_CACHE_ARTICLES_EXCEPTION
 import com.example.news.mock.FORCE_GET_NETWORK_ARTICLES_EXCEPTION
 import com.example.news.model.RepositoryImpl
-import com.example.news.model.cache.ArticlesCacheService
-import com.example.news.model.network.ArticlesApiService
+import com.example.news.model.cache.CacheService
+import com.example.news.model.network.ApiService
 import com.example.news.util.TAG
 import com.example.news.util.assertThrows
 import com.example.news.util.log
@@ -21,19 +21,19 @@ class TestRepository {
     private val repository: RepositoryImpl
 
     private val dependencyContainer: DependencyContainer = DependencyContainer()
-    private val articlesCacheService: ArticlesCacheService
-    private val articlesApiService: ArticlesApiService
+    private val cacheService: CacheService
+    private val apiService: ApiService
 
     init {
         // init fake dependencies
         dependencyContainer.build()
 
         // fake data sources
-        articlesCacheService = dependencyContainer.articlesCacheService
-        articlesApiService = dependencyContainer.articlesApiService
+        cacheService = dependencyContainer.cacheService
+        apiService = dependencyContainer.apiService
 
         // init system in test
-        repository = RepositoryImpl(articlesApiService, articlesCacheService)
+        repository = RepositoryImpl(apiService, cacheService)
     }
 
     @Test
@@ -41,7 +41,7 @@ class TestRepository {
         val query = "technology"
 
         // verify cache has articles
-        val cachedCount = articlesCacheService.getArticlesCount(query)
+        val cachedCount = cacheService.getArticlesCount(query)
         log(this@TestRepository.TAG, "cache count = $cachedCount")
         assert(cachedCount == 1)
 
@@ -66,7 +66,7 @@ class TestRepository {
         }
 
         // verify cache was updated with new articles
-        val newCacheCount = articlesCacheService.getArticlesCount(query)
+        val newCacheCount = cacheService.getArticlesCount(query)
         log(this@TestRepository.TAG, "updated cache count = $newCacheCount")
         assert(newCacheCount == 2)
     }

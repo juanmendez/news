@@ -1,7 +1,7 @@
 package com.example.news.model
 
-import com.example.news.model.cache.ArticlesCacheService
-import com.example.news.model.network.ArticlesApiService
+import com.example.news.model.cache.CacheService
+import com.example.news.model.network.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.flow
 // DIP (Dependency Inversion Principle): depend on abstractions, not on concretions.
 // Constructor-inject interface-abstracted dependencies.
 class RepositoryImpl(
-    private val articlesApiService: ArticlesApiService,
-    private val articlesCacheService: ArticlesCacheService
+    private val apiService: ApiService,
+    private val cacheService: CacheService
 ) : Repository {
 
     // Dependencies are not instantiated (concretion), instead they are injected
@@ -30,17 +30,17 @@ class RepositoryImpl(
         // uncomment to see the UI progress bar (APIs and Room are too fast)
         //delay(2000)
 
-        val cachedArticlesCount = articlesCacheService.getArticlesCount(query)
+        val cachedArticlesCount = cacheService.getArticlesCount(query)
         if (cachedArticlesCount > 0) {
             // if there are cached articles emit them
-            emit(articlesCacheService.getArticles(query))
+            emit(cacheService.getArticles(query))
         }
         // fetch new articles from network
-        articlesApiService.getArticles(query)?.let {
+        apiService.getArticles(query)?.let {
             // save them to cache
-            articlesCacheService.insertArticles(it)
+            cacheService.insertArticles(it)
             // emit them
-            emit(articlesCacheService.getArticles(query))
+            emit(cacheService.getArticles(query))
         }
     }
 }

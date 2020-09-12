@@ -1,7 +1,7 @@
 package com.example.news.mock
 
 import com.example.news.model.Article
-import com.example.news.model.cache.ArticlesCacheService
+import com.example.news.model.cache.CacheService
 
 const val FORCE_NEW_ARTICLE_EXCEPTION = "FORCE_NEW_ARTICLE_EXCEPTION"
 const val FORCE_GENERAL_FAILURE = "FORCE_GENERAL_FAILURE"
@@ -9,10 +9,10 @@ const val FORCE_GET_CACHE_ARTICLES_EXCEPTION = "FORCE_GET_CACHE_ARTICLES_EXCEPTI
 
 // in the real implementation we delegate to DAO,
 // here we fake the database by using a HashMap
-class FakeArticlesCacheServiceImpl
+class FakeCacheServiceImpl
 constructor(
     private val articlesData: HashMap<String, Article>,
-) : ArticlesCacheService {
+) : CacheService {
     override suspend fun insertArticle(article: Article): Long {
 
         // we need to test if the DAO throws an exception

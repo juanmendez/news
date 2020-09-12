@@ -3,8 +3,8 @@ package com.example.news
 import com.example.news.di.DependencyContainer
 import com.example.news.factory.ArticlesDataFactory
 import com.example.news.model.Article
-import com.example.news.model.network.impl.ArticlesApiServiceImpl
-import com.example.news.model.network.impl.ArticlesApi
+import com.example.news.model.network.impl.ApiServiceImpl
+import com.example.news.model.network.impl.Api
 import com.example.news.util.TAG
 import com.example.news.util.assertThrows
 import com.example.news.util.log
@@ -20,15 +20,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.net.HttpURLConnection
 
 @InternalCoroutinesApi
-class TestArticlesApiService {
+class TestApiService {
 
     // this is the system in test
-    private lateinit var articlesApiService: ArticlesApiServiceImpl
+    private lateinit var articlesApiService: ApiServiceImpl
 
     // mocks
     private lateinit var mockWebServer: MockWebServer
     private lateinit var retrofit: Retrofit
-    private lateinit var articlesApi: ArticlesApi
+    private lateinit var api: Api
 
     private val dependencyContainer: DependencyContainer = DependencyContainer()
     private val articlesDataFactory: ArticlesDataFactory
@@ -50,11 +50,11 @@ class TestArticlesApiService {
             .baseUrl(mockWebServer.url("/"))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        articlesApi = retrofit
-            .create(ArticlesApi::class.java)
+        api = retrofit
+            .create(Api::class.java)
 
         // init system in test
-        articlesApiService = ArticlesApiServiceImpl(retrofit, articlesApi)
+        articlesApiService = ApiServiceImpl(retrofit, api)
     }
 
     @After
@@ -74,12 +74,12 @@ class TestArticlesApiService {
             .setBody(mockResponseBody())
         mockWebServer.enqueue(response)
 
-        log(this@TestArticlesApiService.TAG, "call getArticles")
+        log(this@TestApiService.TAG, "call getArticles")
         val articles: List<Article> = articlesApiService.getArticles("technology")
 
-        log(this@TestArticlesApiService.TAG, "returned articles count: ${articles.size}")
+        log(this@TestApiService.TAG, "returned articles count: ${articles.size}")
         assert(articles.size == 1)
-        log(this@TestArticlesApiService.TAG, "article title: ${articles[0].title}")
+        log(this@TestApiService.TAG, "article title: ${articles[0].title}")
         val received = articles[0]
         val expected = expectedNetworkArticles[0]
         assert(received.author == expected.author)
@@ -100,7 +100,7 @@ class TestArticlesApiService {
         mockWebServer.enqueue(response)
 
         assertThrows<Exception> {
-            log(this@TestArticlesApiService.TAG, "call getArticles and fail")
+            log(this@TestApiService.TAG, "call getArticles and fail")
             articlesApiService.getArticles("technology")
         }
     }

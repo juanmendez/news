@@ -5,15 +5,15 @@ import com.example.news.model.Repository
 import com.example.news.model.Repository2
 import com.example.news.model.Repository2Impl
 import com.example.news.model.RepositoryImpl
-import com.example.news.model.cache.ArticlesCacheService
-import com.example.news.model.cache.impl.ArticlesCacheServiceImpl
+import com.example.news.model.cache.CacheService
+import com.example.news.model.cache.impl.CacheServiceImpl
 import com.example.news.model.cache.impl.ArticlesDatabase
 import com.example.news.model.cache.impl.CacheMapper
-import com.example.news.model.network.ArticlesApiService
-import com.example.news.model.network.ArticlesApiService2
-import com.example.news.model.network.impl.ArticlesApi
-import com.example.news.model.network.impl.ArticlesApiService2Impl
-import com.example.news.model.network.impl.ArticlesApiServiceImpl
+import com.example.news.model.network.ApiService
+import com.example.news.model.network.ApiService2
+import com.example.news.model.network.impl.Api
+import com.example.news.model.network.impl.ApiService2Impl
+import com.example.news.model.network.impl.ApiServiceImpl
 import com.example.news.model.network.impl.Network
 import retrofit2.Retrofit
 import java.text.SimpleDateFormat
@@ -36,40 +36,40 @@ object InjectorUtil {
         )
     }
 
-    fun provideArticlesDaoService(application: MyApplication): ArticlesCacheService {
+    fun provideCacheService(application: MyApplication): CacheService {
         val database = provideDatabase(application)
         val mapper = provideCacheMapper()
-        return ArticlesCacheServiceImpl(database.articlesDao(), mapper)
+        return CacheServiceImpl(database.articlesDao(), mapper)
     }
 
     fun provideRetrofit(): Retrofit {
         return Network.retrofit
     }
 
-    fun provideArticlesApi(): ArticlesApi {
-        return Network.articlesApi
+    fun provideApi(): Api {
+        return Network.API
     }
 
-    fun provideArticlesApiService(): ArticlesApiService {
+    fun provideApiService(): ApiService {
         val retrofit = provideRetrofit()
-        val articlesApi = provideArticlesApi()
-        return ArticlesApiServiceImpl(retrofit, articlesApi)
+        val articlesApi = provideApi()
+        return ApiServiceImpl(retrofit, articlesApi)
     }
 
-    fun provideArticlesApiService2(): ArticlesApiService2 {
-        val articlesApi = provideArticlesApi()
-        return ArticlesApiService2Impl(articlesApi)
+    fun provideApiService2(): ApiService2 {
+        val articlesApi = provideApi()
+        return ApiService2Impl(articlesApi)
     }
 
     fun provideRepository(application: MyApplication): Repository {
-        val articlesApiService = provideArticlesApiService()
-        val articlesDaoService = provideArticlesDaoService(application)
+        val articlesApiService = provideApiService()
+        val articlesDaoService = provideCacheService(application)
         return RepositoryImpl(articlesApiService, articlesDaoService)
     }
 
     fun provideRepository2(application: MyApplication): Repository2 {
-        val articlesApiService2 = provideArticlesApiService2()
-        val articlesDaoService = provideArticlesDaoService(application)
+        val articlesApiService2 = provideApiService2()
+        val articlesDaoService = provideCacheService(application)
         return Repository2Impl(articlesApiService2, articlesDaoService)
     }
 }

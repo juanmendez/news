@@ -27,7 +27,7 @@ object Network {
     }
 
     // Singleton Retrofit API instance
-    val articlesApi: ArticlesApi by lazy {
-        createService(retrofit, ArticlesApi::class.java)
+    val API: Api by lazy {
+        createService(retrofit, Api::class.java)
     }
 }
