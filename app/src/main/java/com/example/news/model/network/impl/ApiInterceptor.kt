@@ -1,12 +1,12 @@
 package com.example.news.model.network.impl
 
-import android.util.Log
+import com.example.news.util.log
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 
-class ApiKeyInterceptor : Interceptor {
+class ApiInterceptor : Interceptor {
 
     companion object {
 
@@ -36,7 +36,7 @@ class ApiKeyInterceptor : Interceptor {
             .addQueryParameter(PARAM_NAME_API_KEY, PARAM_VALUE_API_KEY)
             .build()
         val request: Request = originalRequest.newBuilder().url(url).build()
-        Log.d("toto", "" + request.url().toString())
+        log("toto", request.url().toString())
         return chain.proceed(request)
     }
 }

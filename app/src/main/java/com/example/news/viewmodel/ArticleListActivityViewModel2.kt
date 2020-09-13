@@ -1,10 +1,9 @@
 package com.example.news.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.news.model.Article
 import com.example.news.model.Repository2
-import com.example.news.util.DoubleTrigger
+import com.example.news.util.log
 import com.example.news.util.network.Status
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -44,32 +43,36 @@ class ArticleListActivityViewModel2(
     fun showError(value: String?) {
         if (value != _errorMessage.value) {
             _errorMessage.value = value
-            _showProgress.value = false
         }
     }
 
-    // holds the query data, updated as the user types in a query, and displayed in the ActionBar
-    // When creating an empty MutableLiveData by calling MutableLiveData(), its value is null
-    // (see MutableLiveData / LiveData source code). Here we initialize the query to Top Headlines
-    // which will prompt loading the Top Headlines articles.
-    private val _query: MutableLiveData<String> = MutableLiveData(TOP_HEADLINES)
-    val query: LiveData<String?> = _query
+    // holds the query and page data, updated as the user types in a query (and displayed in the
+    // ActionBar) OR as the user scrolls to the bottom (requesting a new page)
+    // Initialized to the first page of the Top Headlines
+    // Note:
+    //    private val _query: MutableLiveData<String> = MutableLiveData(TOP_HEADLINES)
+    //    private val _page: MutableLiveData<Int> = MutableLiveData(1)
+    //    private val _trigger = DoubleTrigger<String, Int>(_query, _page)
+    // would not have worked as it would have triggered twice (once on query init and once on page
+    // init), and would have triggered twice on query update (once on query update and once on page
+    // reset to 1)
+    private val _trigger: MutableLiveData<Pair<String?, Int?>> = MutableLiveData(TOP_HEADLINES to 1)
+    val trigger: LiveData<Pair<String?, Int?>> = _trigger
     fun setQuery(query: String) {
-        if (query != _query.value) {
-            _query.value = query
-            pageIncrementTimestamp = 0
-            _page.value = 1
-            _showProgress.value = true
+        _trigger.apply {
+            if (value != null && query != value?.first) {
+                value = query to 1
+            }
         }
     }
-
     private var pageIncrementTimestamp: Long = 0
-    private val _page: MutableLiveData<Int> = MutableLiveData(1)
     fun incrementPage() {
         val now = System.currentTimeMillis()
         if (now - pageIncrementTimestamp > 1000) {
             pageIncrementTimestamp = now
-            _page.value = _page.value?.plus(1)
+            _trigger.apply {
+                value = value?.first to value?.second?.plus(1)
+            }
         }
     }
 
@@ -77,22 +80,24 @@ class ArticleListActivityViewModel2(
     // The articles data are not modified by the the ViewModel, only rendered,
     // therefore there is no need for MutableLiveData, LiveData will suffice.
     val articles: LiveData<List<Article>> =
-        // Fetching the articles depends on the query value, using switchMap utility (uses
-        // MediatorLiveData), to transform one LiveData (first switchMap parameter, the query)
+        // Fetching the articles depends on the trigger value, using switchMap utility (uses
+        // MediatorLiveData), to transform one LiveData (first switchMap parameter, the trigger)
         // into another LiveData (switchMap output, the articles) by applying the lambda function
-        // (second switchMap parameter) to each value set on the input LiveData (the query).
-        Transformations.switchMap(DoubleTrigger(_query, _page)) { doubleTrigger ->
-            val query: String = doubleTrigger.first ?: ""
-            val page: Int = doubleTrigger.second ?: 1
+        // (second switchMap parameter) to each value set on the input LiveData (the trigger).
+        Transformations.switchMap(_trigger) { trigger ->
+
+            log("toto", "trigger = $trigger")
+
+            val query: String = trigger.first ?: ""
+            val page: Int = trigger.second ?: 1
             val job = Job()
 
             // making a copy of the Job instance reference value (pointer to the job Object
             // instance) so that we can cancel the Job if needed
             getArticlesJob = job
 
-            // Another utility that creates a new LiveData ONLY IF the source LiveData (the query)
-            // value has changed, often used with data backing RecyclerViews. Note that this is
-            // redundant to the code logic we implemented in the setQuery function above.
+            // Another utility that creates a new LiveData ONLY IF the source LiveData (the trigger)
+            // value has changed, often used with data backing RecyclerViews.
             Transformations.distinctUntilChanged(
                 liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
                     try {
@@ -113,7 +118,6 @@ class ArticleListActivityViewModel2(
                             resource.data?.let {
                                 // each emit suspends this block's execution until
                                 // the LiveData is set on the main thread
-                                Log.d("toto", "display: ${it.size}")
                                 emit(it)
                             }
 

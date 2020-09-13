@@ -10,7 +10,7 @@ object Network {
     // to automatically add it to every single API call
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
-            .addInterceptor(ApiKeyInterceptor())
+            .addInterceptor(ApiInterceptor())
             .build()
     }
 

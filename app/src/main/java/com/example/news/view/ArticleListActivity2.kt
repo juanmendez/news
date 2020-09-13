@@ -85,6 +85,7 @@ class ArticleListActivity2 : BaseActivity() {
 
         // init data observers and update the UI
         viewModel2.articles.observe(this, { data ->
+            //logArticles("Displaying", data)
             articles.clear()
             articles.addAll(data)
             adapter.notifyDataSetChanged()
@@ -94,8 +95,12 @@ class ArticleListActivity2 : BaseActivity() {
                 showAlertDialog(msg)
             }
         })
-        viewModel2.query.observe(this, { query ->
-            supportActionBar?.title = query
+        viewModel2.trigger.observe(this, { trigger ->
+            if (supportActionBar?.title != trigger.first) {
+                // scroll to top if the query has changed
+                articles_recyclerview.scrollToPosition(0)
+                supportActionBar?.title = trigger.first
+            }
         })
         viewModel2.showProgress.observe(this, { show ->
             showProgressBar(show)
