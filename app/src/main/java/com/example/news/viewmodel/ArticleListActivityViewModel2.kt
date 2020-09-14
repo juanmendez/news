@@ -49,6 +49,7 @@ class ArticleListActivityViewModel2(
     // holds the query and page data, updated as the user types in a query (and displayed in the
     // ActionBar) OR as the user scrolls to the bottom (requesting a new page)
     // Initialized to the first page of the Top Headlines
+    //
     // Note:
     //    private val _query: MutableLiveData<String> = MutableLiveData(TOP_HEADLINES)
     //    private val _page: MutableLiveData<Int> = MutableLiveData(1)
@@ -56,6 +57,13 @@ class ArticleListActivityViewModel2(
     // would not have worked as it would have triggered twice (once on query init and once on page
     // init), and would have triggered twice on query update (once on query update and once on page
     // reset to 1)
+    //
+    // Note:
+    //    private val _query: MutableLiveData<String> = MutableLiveData(TOP_HEADLINES)
+    //    private val _page: MutableLiveData<Int> = MutableLiveData(1)
+    //    private val _trigger = _query.combineAndCompute(_page) { query, page -> query to page }
+    // would not have worked as it would have triggered twice on query update (once on query update
+    // and once on page reset to 1)
     private val _trigger: MutableLiveData<Pair<String?, Int?>> = MutableLiveData(TOP_HEADLINES to 1)
     val trigger: LiveData<Pair<String?, Int?>> = _trigger
     fun setQuery(query: String) {
