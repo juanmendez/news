@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.news.util.network
 
 import androidx.annotation.WorkerThread
@@ -12,18 +28,17 @@ import kotlinx.coroutines.withContext
 
 /**
  * Generic class for handling network requests
+ *
+ * CacheObjectType - database cache object type
+ * NetworkObjectType - network request object type
  */
-// CacheObject - comes from cache (database cache)
-// NetworkObject - comes from network API (network request)
 abstract class NetworkBoundResourceLiveData<CacheObjectType, NetworkObjectType> {
 
     private val results: MediatorLiveData<Resource<CacheObjectType>> = MediatorLiveData()
 
     init {
-        // update LiveData for loading status
         results.value = Resource.loading(null)
 
-        // observe LiveData from cache
         val dbSource: LiveData<CacheObjectType> = loadFromDb()
 
         results.addSource(dbSource, Observer<CacheObjectType> { cacheObject ->
@@ -39,7 +54,7 @@ abstract class NetworkBoundResourceLiveData<CacheObjectType, NetworkObjectType> 
     }
 
     private fun fetchFromNetwork(dbSource: LiveData<CacheObjectType>) {
-        // update LiveData for loading status
+
         results.addSource(dbSource, Observer<CacheObjectType> { cacheObject ->
             setValue(Resource.loading(cacheObject))
         })
@@ -54,7 +69,6 @@ abstract class NetworkBoundResourceLiveData<CacheObjectType, NetworkObjectType> 
                 is ApiSuccessResponse -> {
                     GlobalScope.launch(Dispatchers.IO) {
 
-                        // save data to db
                         saveCallResult(processNetworkObject(response))
 
                         withContext(Dispatchers.Main) {
@@ -67,7 +81,6 @@ abstract class NetworkBoundResourceLiveData<CacheObjectType, NetworkObjectType> 
                     }
                 }
                 is ApiEmptyResponse -> {
-                    // API didn't return anything, we still return the cache data
                     GlobalScope.launch(Dispatchers.Main) {
                         results.addSource(loadFromDb(), Observer<CacheObjectType> { cacheObject ->
                             setValue(Resource.success(cacheObject))
@@ -93,6 +106,13 @@ abstract class NetworkBoundResourceLiveData<CacheObjectType, NetworkObjectType> 
         }
     }
 
+    // Returns a LiveData object that represents the resource implemented in the base class
+    fun asLiveData(): LiveData<Resource<CacheObjectType>> = results
+
+    /**
+     * Abstract methods to be implemented in concrete classes
+     */
+
     // Called to save the result of the API response into the database
     @WorkerThread
     protected abstract fun saveCallResult(item: NetworkObjectType)
@@ -109,8 +129,4 @@ abstract class NetworkBoundResourceLiveData<CacheObjectType, NetworkObjectType> 
     // Called to create the API call.
     @MainThread
     protected abstract fun createCall(): LiveData<ApiResponse<NetworkObjectType>>
-
-    // Returns a LiveData object that represents the resource that's implemented
-    // in the base class.
-    fun asLiveData(): LiveData<Resource<CacheObjectType>> = results
 }

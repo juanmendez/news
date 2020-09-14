@@ -3,32 +3,37 @@ package com.example.news.viewmodel
 import androidx.lifecycle.*
 import com.example.news.model.Article
 import com.example.news.model.Repository
-import com.example.news.state.MainStateEvent
-import com.example.news.state.MainViewState
+import com.example.news.state.ArticleListStateEvent
+import com.example.news.state.ArticleListViewState
 import com.example.news.util.AbsentLiveData
 
 class ArticleListActivityViewModel3(
     private val repository: Repository
 ) : ViewModel(), LifecycleObserver {
 
-    private val _stateEvent: MutableLiveData<MainStateEvent> = MutableLiveData()
-    private val _viewState: MutableLiveData<MainViewState> = MutableLiveData()
+    companion object {
+        const val TOP_HEADLINES = "Top Headlines"
+    }
+
+    private val _stateEvent: MutableLiveData<ArticleListStateEvent> = MutableLiveData()
+    private val _viewState: MutableLiveData<ArticleListViewState> = MutableLiveData()
 
     // MVI: single LiveData data exposed to View
-    val viewState: LiveData<MainViewState> = _viewState
+    val viewState: LiveData<ArticleListViewState> = _viewState
 
-    val dataState: LiveData<MainViewState> =
+    val dataState: LiveData<ArticleListViewState> =
         Transformations.switchMap(_stateEvent) { stateEvent ->
             stateEvent?.let {
                 handleStateEvent(it)
             }
         }
 
-    private fun handleStateEvent(stateEvent: MainStateEvent): LiveData<MainViewState> {
+    private fun handleStateEvent(stateEvent: ArticleListStateEvent): LiveData<ArticleListViewState> {
         return when (stateEvent) {
-            is MainStateEvent.GetArticlesEvent -> {
+            is ArticleListStateEvent.GetArticlesEvent -> {
+
                 // TODO for testing purposes until we plug in the Repo
-                return object : LiveData<MainViewState>() {
+                return object : LiveData<ArticleListViewState>() {
                     override fun onActive() {
                         super.onActive()
                         val articles: ArrayList<Article> = ArrayList()
@@ -47,20 +52,20 @@ class ArticleListActivityViewModel3(
                                 content = ""
                             )
                         )
-                        value = MainViewState(articles = articles)
+                        value = ArticleListViewState(articles = articles)
                     }
                 }
             }
-            is MainStateEvent.None -> {
+            is ArticleListStateEvent.None -> {
                 AbsentLiveData.create()
             }
         }
     }
 
-    private fun getCurrentViewStateOrNew(): MainViewState {
+    private fun getCurrentViewStateOrNew(): ArticleListViewState {
         return viewState.value?.let {
             it
-        } ?: MainViewState()
+        } ?: ArticleListViewState()
     }
 
     fun setArticlesListData(articles: List<Article>) {
@@ -75,7 +80,7 @@ class ArticleListActivityViewModel3(
         _viewState.value = update
     }
 
-    fun setStateEvent(event: MainStateEvent) {
+    fun setStateEvent(event: ArticleListStateEvent) {
         _stateEvent.value = event
     }
 }

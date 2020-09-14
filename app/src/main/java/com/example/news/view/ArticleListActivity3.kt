@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
-import com.example.news.state.MainStateEvent
+import com.example.news.state.ArticleListStateEvent
 import com.example.news.util.InjectorUtil
 import com.example.news.util.TAG
 import com.example.news.util.log
@@ -46,7 +46,7 @@ class ArticleListActivity3 : BaseActivity() {
         setContentView(R.layout.activity_article_list)
         initUI()
         initObservers()
-        saveQueryToRecentSuggestions(ArticleListActivityViewModel.TOP_HEADLINES)
+        saveQueryToRecentSuggestions(ArticleListActivityViewModel3.TOP_HEADLINES)
     }
 
     private fun initUI() {
@@ -133,7 +133,7 @@ class ArticleListActivity3 : BaseActivity() {
         query?.let {
             this@ArticleListActivity3.hideKeyboard()
             searchMenu.collapseActionView()
-            viewModel3.setStateEvent(MainStateEvent.GetArticlesEvent(query))
+            viewModel3.setStateEvent(ArticleListStateEvent.GetArticlesEvent(query))
         }
     }
 
