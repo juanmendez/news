@@ -11,6 +11,10 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
@@ -18,7 +22,6 @@ import com.example.news.state.ArticleListStateEvent
 import com.example.news.util.InjectorUtil
 import com.example.news.util.TAG
 import com.example.news.util.log
-import com.example.news.viewmodel.ArticleListActivityViewModel
 import com.example.news.viewmodel.ArticleListActivityViewModel3
 import com.example.news.viewmodel.ArticleListActivityViewModel3Factory
 import kotlinx.android.synthetic.main.activity_article_list.*
@@ -27,6 +30,8 @@ import kotlinx.android.synthetic.main.activity_article_list.*
 class ArticleListActivity3 : BaseActivity() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var searchMenu: MenuItem
+    private lateinit var adapter: ArticlesAdapter
+    private var articles: ArrayList<Article> = arrayListOf()
 
     private val listener = object : OnArticleClickListener {
         override fun onArticleClick(article: Article) {
@@ -56,6 +61,30 @@ class ArticleListActivity3 : BaseActivity() {
             else -> LinearLayoutManager(this)
         }
         articles_recyclerview.layoutManager = linearLayoutManager
+
+        // Glide request manager, used in the list adapter
+        val requestManager = Glide.with(this).setDefaultRequestOptions(
+            RequestOptions()
+                .placeholder(R.color.gray_light)
+                .error(R.color.white)
+        )
+
+        // Glide Preloader
+        val viewPreloadSizeProvider: ViewPreloadSizeProvider<String> = ViewPreloadSizeProvider()
+
+        adapter = ArticlesAdapter(articles, listener, requestManager, viewPreloadSizeProvider)
+
+        // Glide Preloader
+        val recyclerViewPreloader: RecyclerViewPreloader<String> =
+            RecyclerViewPreloader(
+                Glide.with(this),
+                adapter,
+                viewPreloadSizeProvider,
+                10
+            )
+        articles_recyclerview.addOnScrollListener(recyclerViewPreloader)
+
+        articles_recyclerview.adapter = adapter
     }
 
     private fun initObservers() {
@@ -72,8 +101,10 @@ class ArticleListActivity3 : BaseActivity() {
         })
 
         viewModel3.viewState.observe(this, { viewState ->
-            viewState.articles?.let { articles ->
-                articles_recyclerview.adapter = ArticlesAdapter(articles, listener)
+            viewState.articles?.let { data ->
+                articles.clear()
+                articles.addAll(data)
+                adapter.notifyDataSetChanged()
             }
             viewState.query?.let { query ->
                 supportActionBar?.title = query

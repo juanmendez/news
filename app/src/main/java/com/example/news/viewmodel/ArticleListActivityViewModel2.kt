@@ -139,6 +139,7 @@ class ArticleListActivityViewModel2(
                     } catch (e: Exception) {
                         // catch Retrofit exception thrown in Airplane mode
                         withContext(Dispatchers.Main) {
+                            _showProgress.value = false
                             showError(e.message.toString())
                         }
                     }

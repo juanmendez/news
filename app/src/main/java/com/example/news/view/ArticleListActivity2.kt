@@ -14,6 +14,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
@@ -52,7 +56,47 @@ class ArticleListActivity2 : BaseActivity() {
         saveQueryToRecentSuggestions(TOP_HEADLINES)
     }
 
+    /**
+     * https://bumptech.github.io/glide/int/recyclerview.html
+     * The RecyclerView integration library makes the RecyclerViewPreloader available in your
+     * application. RecyclerViewPreloader can automatically load images just ahead of where a
+     * user is scrolling in a RecyclerView. Combined with the right image size and an effective
+     * disk cache strategy, this library can dramatically decrease the number of loading
+     * tiles/indicators users see when scrolling through lists of images by ensuring that the
+     * images the user is about to reach are already in memory.
+     */
     private fun initUI() {
+
+        linearLayoutManager = when (resources.configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE ->
+                LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            else -> LinearLayoutManager(this)
+        }
+        articles_recyclerview.layoutManager = linearLayoutManager
+
+        // Glide request manager, used in the list adapter
+        val requestManager = Glide.with(this).setDefaultRequestOptions(
+            RequestOptions()
+                .placeholder(R.color.gray_light)
+                .error(R.color.white)
+        )
+
+        // Glide Preloader
+        val viewPreloadSizeProvider: ViewPreloadSizeProvider<String> = ViewPreloadSizeProvider()
+
+        adapter = ArticlesAdapter(articles, listener, requestManager, viewPreloadSizeProvider)
+
+        // Glide Preloader
+        val recyclerViewPreloader: RecyclerViewPreloader<String> =
+            RecyclerViewPreloader(
+                Glide.with(this),
+                adapter,
+                viewPreloadSizeProvider,
+                10
+            )
+        articles_recyclerview.addOnScrollListener(recyclerViewPreloader)
+
+        // triggering loading new pages as we scroll to the bottom of the list
         val scrollListener: RecyclerView.OnScrollListener =
             object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -69,14 +113,8 @@ class ArticleListActivity2 : BaseActivity() {
                     }
                 }
             }
-        linearLayoutManager = when (resources.configuration.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE ->
-                LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-            else -> LinearLayoutManager(this)
-        }
-        articles_recyclerview.layoutManager = linearLayoutManager
         articles_recyclerview.addOnScrollListener(scrollListener)
-        adapter = ArticlesAdapter(articles, listener)
+
         articles_recyclerview.adapter = adapter
     }
 

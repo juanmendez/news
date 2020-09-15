@@ -13,6 +13,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
@@ -27,6 +31,8 @@ class ArticleListActivity : BaseActivity() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var searchMenu: MenuItem
+    private lateinit var adapter: ArticlesAdapter
+    private var articles: ArrayList<Article> = arrayListOf()
 
     private val listener = object : OnArticleClickListener {
         override fun onArticleClick(article: Article) {
@@ -56,6 +62,30 @@ class ArticleListActivity : BaseActivity() {
             else -> LinearLayoutManager(this)
         }
         articles_recyclerview.layoutManager = linearLayoutManager
+
+        // Glide request manager, used in the list adapter
+        val requestManager = Glide.with(this).setDefaultRequestOptions(
+            RequestOptions()
+                .placeholder(R.color.gray_light)
+                .error(R.color.white)
+        )
+
+        // Glide Preloader
+        val viewPreloadSizeProvider: ViewPreloadSizeProvider<String> = ViewPreloadSizeProvider()
+
+        adapter = ArticlesAdapter(articles, listener, requestManager, viewPreloadSizeProvider)
+
+        // Glide Preloader
+        val recyclerViewPreloader: RecyclerViewPreloader<String> =
+            RecyclerViewPreloader(
+                Glide.with(this),
+                adapter,
+                viewPreloadSizeProvider,
+                10
+            )
+        articles_recyclerview.addOnScrollListener(recyclerViewPreloader)
+
+        articles_recyclerview.adapter = adapter
     }
 
     private fun initObservers() {
@@ -66,8 +96,10 @@ class ArticleListActivity : BaseActivity() {
         lifecycle.addObserver(viewModel)
 
         // init data observers and update the UI
-        viewModel.articles.observe(this, { articles ->
-            articles_recyclerview.adapter = ArticlesAdapter(articles, listener)
+        viewModel.articles.observe(this, { data ->
+            articles.clear()
+            articles.addAll(data)
+            adapter.notifyDataSetChanged()
         })
         viewModel.errorMessage.observe(this, { msg ->
             msg?.let {
