@@ -14,8 +14,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
