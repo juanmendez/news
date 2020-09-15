@@ -11,10 +11,6 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
@@ -61,29 +57,7 @@ class ArticleListActivity3 : BaseActivity() {
             else -> LinearLayoutManager(this)
         }
         articles_recyclerview.layoutManager = linearLayoutManager
-
-        // Glide request manager, used in the list adapter
-        val requestManager = Glide.with(this).setDefaultRequestOptions(
-            RequestOptions()
-                .placeholder(R.color.gray_light)
-                .error(R.color.white)
-        )
-
-        // Glide Preloader
-        val viewPreloadSizeProvider: ViewPreloadSizeProvider<String> = ViewPreloadSizeProvider()
-
-        adapter = ArticlesAdapter(articles, listener, requestManager, viewPreloadSizeProvider)
-
-        // Glide Preloader
-        val recyclerViewPreloader: RecyclerViewPreloader<String> =
-            RecyclerViewPreloader(
-                Glide.with(this),
-                adapter,
-                viewPreloadSizeProvider,
-                10
-            )
-        articles_recyclerview.addOnScrollListener(recyclerViewPreloader)
-
+        adapter = ArticlesAdapter(articles, listener)
         articles_recyclerview.adapter = adapter
     }
 

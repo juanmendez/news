@@ -66,15 +66,7 @@ dependencies {
     // For control over item selection of both touch and mouse driven selection
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0-rc01"
 
-    //implementation "com.squareup.picasso:picasso:2.71828"
-    // java.lang.RuntimeException: Canvas: trying to draw too large(144609280bytes) bitmap.
-    // at com.squareup.picasso.PicassoDrawable.draw(PicassoDrawable.java:109)
     implementation "com.github.bumptech.glide:glide:4.11.0"
-    // https://bumptech.github.io/glide/int/recyclerview.html
-    implementation ("com.github.bumptech.glide:recyclerview-integration:4.11.0") {
-        // Excludes the support library because it's already included by Glide.
-        transitive = false
-    }
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0-alpha02"
 
