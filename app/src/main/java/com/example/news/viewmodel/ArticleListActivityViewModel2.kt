@@ -3,6 +3,7 @@ package com.example.news.viewmodel
 import androidx.lifecycle.*
 import com.example.news.model.Article
 import com.example.news.model.Repository2
+import com.example.news.util.TOP_HEADLINES
 import com.example.news.util.log
 import com.example.news.util.network.Status
 import kotlinx.coroutines.*
@@ -13,10 +14,6 @@ import kotlinx.coroutines.flow.collect
 class ArticleListActivityViewModel2(
     private val repository2: Repository2
 ) : ViewModel(), LifecycleObserver {
-
-    companion object {
-        const val TOP_HEADLINES = "Top Headlines"
-    }
 
     private var getArticlesJob: CompletableJob? = null
 

@@ -1,5 +1,6 @@
 package com.example.news.model.network.impl
 
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -11,6 +12,7 @@ object Network {
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(ApiInterceptor())
+            .addNetworkInterceptor(StethoInterceptor())  // for viewing network calls in Chrome Browser @ chrome://inspect
             .build()
     }
 

@@ -11,10 +11,6 @@ class ArticleListActivityViewModel3(
     private val repository: Repository
 ) : ViewModel(), LifecycleObserver {
 
-    companion object {
-        const val TOP_HEADLINES = "Top Headlines"
-    }
-
     private val _stateEvent: MutableLiveData<ArticleListStateEvent> = MutableLiveData()
     private val _viewState: MutableLiveData<ArticleListViewState> = MutableLiveData()
 

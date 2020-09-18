@@ -4,12 +4,18 @@ import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.news.model.cache.impl.ArticlesDatabase
+import com.facebook.stetho.Stetho
 
 class MyApplication : Application() {
 
     // singleton database instance
     val database: ArticlesDatabase
         get() = ArticlesDatabase.getInstance(this)
+
+    override fun onCreate() {
+        super.onCreate()
+        Stetho.initializeWithDefaults(this)
+    }
 
     // support for Dark Mode
     override fun onConfigurationChanged(newConfig: Configuration) {

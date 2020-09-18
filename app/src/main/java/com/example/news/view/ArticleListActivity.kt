@@ -17,9 +17,9 @@ import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
 import com.example.news.util.InjectorUtil
+import com.example.news.util.TOP_HEADLINES
 import com.example.news.view.WebViewActivity.Companion.URL_EXTRA
 import com.example.news.viewmodel.ArticleListActivityViewModel
-import com.example.news.viewmodel.ArticleListActivityViewModel.Companion.TOP_HEADLINES
 import com.example.news.viewmodel.ArticleListActivityViewModelFactory
 import kotlinx.android.synthetic.main.activity_article_list.*
 

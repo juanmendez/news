@@ -1,0 +1,15 @@
+[
+  {
+    "id": "1",
+    "query": "Top Headlines",
+    "sourceId": "google",
+    "sourceName": "Google",
+    "author": "Google",
+    "title": "Google Search",
+    "description": "Google Search web page",
+    "url": "https://www.google.com",
+    "imageUrl": "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
+    "publishedDate": 1893456000000,
+    "content": "This is the Google Search web page."
+  }
+]

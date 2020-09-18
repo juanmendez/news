@@ -17,6 +17,7 @@ import com.example.news.model.Article
 import com.example.news.state.ArticleListStateEvent
 import com.example.news.util.InjectorUtil
 import com.example.news.util.TAG
+import com.example.news.util.TOP_HEADLINES
 import com.example.news.util.log
 import com.example.news.viewmodel.ArticleListActivityViewModel3
 import com.example.news.viewmodel.ArticleListActivityViewModel3Factory
@@ -47,7 +48,7 @@ class ArticleListActivity3 : BaseActivity() {
         setContentView(R.layout.activity_article_list)
         initUI()
         initObservers()
-        saveQueryToRecentSuggestions(ArticleListActivityViewModel3.TOP_HEADLINES)
+        saveQueryToRecentSuggestions(TOP_HEADLINES)
     }
 
     private fun initUI() {

@@ -4,6 +4,7 @@ import com.example.news.model.cache.CacheService
 import com.example.news.model.network.ApiService2
 import com.example.news.model.network.impl.ArticlesResponse
 import com.example.news.model.network.impl.NetworkMapper
+import com.example.news.util.TOP_HEADLINES
 import com.example.news.util.network.ApiResponse
 import com.example.news.util.network.NetworkBoundResource
 import com.example.news.util.network.Resource
@@ -22,11 +23,6 @@ class Repository2Impl(
     // Dependencies are not instantiated (concretion), instead they are injected
     // through the constructor. This avoids hard-dependencies and allows faking
     // dependencies when testing in isolation.
-
-    companion object {
-        // needs to be stored in the cache alongside with the top headlines articles
-        const val TOP_HEADLINES = "Top Headlines"
-    }
 
     override suspend fun getArticles(query: String, page: Int): Flow<Resource<List<Article>>> {
         return object : NetworkBoundResource<List<Article>, ArticlesResponse>() {
