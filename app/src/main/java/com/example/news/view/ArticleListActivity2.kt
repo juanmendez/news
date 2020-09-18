@@ -52,15 +52,6 @@ class ArticleListActivity2 : BaseActivity() {
         saveQueryToRecentSuggestions(TOP_HEADLINES)
     }
 
-    /**
-     * https://bumptech.github.io/glide/int/recyclerview.html
-     * The RecyclerView integration library makes the RecyclerViewPreloader available in your
-     * application. RecyclerViewPreloader can automatically load images just ahead of where a
-     * user is scrolling in a RecyclerView. Combined with the right image size and an effective
-     * disk cache strategy, this library can dramatically decrease the number of loading
-     * tiles/indicators users see when scrolling through lists of images by ensuring that the
-     * images the user is about to reach are already in memory.
-     */
     private fun initUI() {
         linearLayoutManager = when (resources.configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE ->
@@ -88,6 +79,9 @@ class ArticleListActivity2 : BaseActivity() {
         articles_recyclerview.addOnScrollListener(scrollListener)
         adapter = ArticlesAdapter(articles, listener)
         articles_recyclerview.adapter = adapter
+        swipe_refresh.setOnRefreshListener {
+            viewModel2.refresh()
+        }
     }
 
     private fun initObservers() {
@@ -114,6 +108,11 @@ class ArticleListActivity2 : BaseActivity() {
         })
         viewModel2.showProgress.observe(this, { show ->
             showProgressBar(show)
+        })
+        viewModel2.refreshing.observe(this, { refreshing ->
+            if (refreshing == false) {
+                swipe_refresh.isRefreshing = false
+            }
         })
     }
 

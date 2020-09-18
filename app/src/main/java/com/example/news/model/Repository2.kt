@@ -9,4 +9,6 @@ import kotlinx.coroutines.flow.Flow
 interface Repository2 {
     suspend fun getArticles(query: String, page: Int): Flow<Resource<List<Article>>>
     suspend fun getTopHeadlines(page: Int): Flow<Resource<List<Article>>>
+    suspend fun deleteArticles(query: String)
+    suspend fun deleteAllArticles()
 }

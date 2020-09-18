@@ -26,6 +26,10 @@ constructor(
         return articlesDao.getArticlesCount(query)
     }
 
+    override suspend fun deleteArticles(query: String): Int {
+        return articlesDao.deleteArticles(query)
+    }
+
     override suspend fun deleteAllArticles(): Int {
         return articlesDao.deleteAllArticles()
     }

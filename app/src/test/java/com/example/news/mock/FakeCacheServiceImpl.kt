@@ -77,6 +77,19 @@ constructor(
         return count
     }
 
+    override suspend fun deleteArticles(query: String): Int {
+        var deletedArticlesCount = 0
+        val iterator = articlesData.keys.iterator()
+        while (iterator.hasNext()) {
+            val key = iterator.next()
+            if (articlesData[key]?.query?.contains(query) == true) {
+                iterator.remove()
+                deletedArticlesCount++
+            }
+        }
+        return deletedArticlesCount
+    }
+
     override suspend fun deleteAllArticles(): Int {
         val deletedArticlesCount = articlesData.size
         articlesData.clear()

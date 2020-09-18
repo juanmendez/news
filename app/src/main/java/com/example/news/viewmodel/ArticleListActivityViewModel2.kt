@@ -46,6 +46,23 @@ class ArticleListActivityViewModel2(
         }
     }
 
+    // holds tha error message data
+    private var _refreshing: MutableLiveData<Boolean> = MutableLiveData(false)
+    val refreshing: LiveData<Boolean> = _refreshing
+    fun refresh() {
+        val query = _trigger.value?.first
+        if (!query.isNullOrBlank()) {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository2.deleteArticles(query)
+                withContext(Dispatchers.Main) {
+                    _trigger.apply {
+                        value = query to 1
+                    }
+                }
+            }
+        }
+    }
+
     // holds the query and page data, updated as the user types in a query (and displayed in the
     // ActionBar) OR as the user scrolls to the bottom (requesting a new page)
     // Initialized to the first page of the Top Headlines
@@ -133,6 +150,13 @@ class ArticleListActivityViewModel2(
                             if (resource.status == Status.ERROR) {
                                 withContext(Dispatchers.Main) {
                                     showError(resource.message.toString())
+                                }
+                            }
+
+                            // update refresh spinner
+                            if (page == 1) {
+                                withContext(Dispatchers.Main) {
+                                    _refreshing.value = false
                                 }
                             }
                         }

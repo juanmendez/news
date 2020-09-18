@@ -91,4 +91,12 @@ class Repository2Impl(
 
         }.asFlow()
     }
+
+    override suspend fun deleteArticles(query: String) {
+        cacheService.deleteArticles(query)
+    }
+
+    override suspend fun deleteAllArticles() {
+        cacheService.deleteAllArticles()
+    }
 }

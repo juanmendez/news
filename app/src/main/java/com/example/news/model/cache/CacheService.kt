@@ -12,5 +12,7 @@ interface CacheService {
 
     suspend fun getArticlesCount(query: String): Int
 
+    suspend fun deleteArticles(query: String): Int
+
     suspend fun deleteAllArticles(): Int
 }

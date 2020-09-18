@@ -20,6 +20,9 @@ interface ArticlesDao {
     @Query("SELECT COUNT(*) FROM articles WHERE `query` LIKE :query")
     suspend fun getArticlesCount(query: String?): Int
 
+    @Query("DELETE FROM articles WHERE `query` LIKE :query")
+    suspend fun deleteArticles(query: String?): Int
+
     @Query("DELETE FROM articles")
     suspend fun deleteAllArticles(): Int
 }
