@@ -1,12 +1,12 @@
 package com.example.news.workers
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.news.model.cache.impl.ArticleEntity
 import com.example.news.model.cache.impl.ArticlesDatabase
 import com.example.news.util.ARTICLES_DATA_FILENAME
+import com.example.news.util.log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
@@ -29,8 +29,8 @@ class SeedDatabaseWorker(
                     Result.success()
                 }
             }
-        } catch (ex: Exception) {
-            Log.e(TAG, "Error seeding database", ex)
+        } catch (e: Exception) {
+            log(TAG, "Error seeding database $e")
             Result.failure()
         }
     }

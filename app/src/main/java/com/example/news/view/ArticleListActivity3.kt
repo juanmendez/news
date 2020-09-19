@@ -16,9 +16,7 @@ import com.example.news.R
 import com.example.news.model.Article
 import com.example.news.state.ArticleListStateEvent
 import com.example.news.util.InjectorUtil
-import com.example.news.util.TAG
 import com.example.news.util.TOP_HEADLINES
-import com.example.news.util.log
 import com.example.news.viewmodel.ArticleListActivityViewModel3
 import com.example.news.viewmodel.ArticleListActivityViewModel3Factory
 import kotlinx.android.synthetic.main.activity_article_list.*
@@ -66,9 +64,8 @@ class ArticleListActivity3 : BaseActivity() {
         lifecycle.addObserver(viewModel3)
 
         viewModel3.dataState.observe(this, { dataState ->
-            log(this@ArticleListActivity3.TAG, "DataState: $dataState")
             dataState.articles?.let { articles ->
-                viewModel3.setArticlesListData(articles)
+                viewModel3.setArticlesData(articles)
             }
             dataState.query?.let { query ->
                 viewModel3.setQueryData(query)

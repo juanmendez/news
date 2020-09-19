@@ -19,9 +19,11 @@ package com.example.news.util.network
 /**
  * Status of a resource that is provided to the UI.
  *
+ * These are usually created by the Repository classes where they return `LiveData<Resource<T>>`
+ * to pass back the latest data to the UI with its fetch status.
  *
- * These are usually created by the Repository classes where they return
- * `LiveData<Resource<T>>` to pass back the latest data to the UI with its fetch status.
+ * Or the Repository class may return `Flow<Resource<T>>` to the ViewModel and let it collect the
+ * data via coroutines and build LiveData for UI updates.
  */
 enum class Status {
     SUCCESS,

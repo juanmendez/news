@@ -11,10 +11,10 @@ import com.example.news.util.network.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-// LSP (Liskov Substitution Principle): Objects should be replaceable with subtype instances
+// LSP (Liskov Substitution Principle): Objects should be replaceable with subtype instances.
 // In the constructor arguments we substitute objects with their subtypes.
 // DIP (Dependency Inversion Principle): depend on abstractions, not on concretions.
-// Constructor-inject interface-abstracted dependencies.
+// In the constructor we inject interface-abstracted dependencies.
 class Repository2Impl(
     private val apiService2: ApiService2,
     private val cacheService: CacheService

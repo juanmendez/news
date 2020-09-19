@@ -63,7 +63,7 @@
 
         <!-- uncomment this for MVI -->
 <!--        <activity-->
-<!--            android:name=".view.MainActivity"-->
+<!--            android:name=".view.ArticleListActivity3"-->
 <!--            android:launchMode="singleInstance">-->
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->

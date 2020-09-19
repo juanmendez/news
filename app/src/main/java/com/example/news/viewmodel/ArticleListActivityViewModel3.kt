@@ -6,12 +6,17 @@ import com.example.news.model.Repository
 import com.example.news.state.ArticleListStateEvent
 import com.example.news.state.ArticleListViewState
 import com.example.news.util.AbsentLiveData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 
 class ArticleListActivityViewModel3(
     private val repository: Repository
 ) : ViewModel(), LifecycleObserver {
 
-    private val _stateEvent: MutableLiveData<ArticleListStateEvent> = MutableLiveData()
+    private val _stateEvent: MutableLiveData<ArticleListStateEvent> = MutableLiveData(
+        // initial value that triggers fetching the top headlines
+        ArticleListStateEvent.GetArticlesEvent("Top Headlines")
+    )
     private val _viewState: MutableLiveData<ArticleListViewState> = MutableLiveData()
 
     // MVI: single LiveData data exposed to View
@@ -27,31 +32,18 @@ class ArticleListActivityViewModel3(
     private fun handleStateEvent(stateEvent: ArticleListStateEvent): LiveData<ArticleListViewState> {
         return when (stateEvent) {
             is ArticleListStateEvent.GetArticlesEvent -> {
-
-                // TODO for testing purposes until we plug in the Repo
-                return object : LiveData<ArticleListViewState>() {
-                    override fun onActive() {
-                        super.onActive()
-                        val articles: ArrayList<Article> = ArrayList()
-                        articles.add(
-                            Article(
-                                id = "101",
-                                query = "technology",
-                                sourceId = "102",
-                                sourceName = "IGN",
-                                author = "John Doe",
-                                title = "Xbox Series X Launch Date",
-                                description = "The Xbox Series X will launch on November 10th.",
-                                url = "",
-                                imageUrl = "",
-                                publishedDate = "September 12, 2020",
-                                content = ""
-                            )
-                        )
-                        value = ArticleListViewState(articles = articles)
+                return liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+                    try {
+                        repository.getArticles(stateEvent.query).collect {
+                            emit(ArticleListViewState(articles = it, query = stateEvent.query))
+                        }
+                    } catch (e: Exception) {
+                        // TODO catch exceptions propagated from data sources through
+                        //  the repository and inform the user by updating the UI
                     }
                 }
             }
+
             is ArticleListStateEvent.None -> {
                 AbsentLiveData.create()
             }
@@ -64,7 +56,7 @@ class ArticleListActivityViewModel3(
         } ?: ArticleListViewState()
     }
 
-    fun setArticlesListData(articles: List<Article>) {
+    fun setArticlesData(articles: List<Article>) {
         val update = getCurrentViewStateOrNew()
         update.articles = articles
         _viewState.value = update
