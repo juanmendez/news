@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.news.util.network
+package com.example.news.util
 
 import androidx.annotation.WorkerThread
 import androidx.annotation.MainThread

@@ -1,6 +1,6 @@
 package com.example.news.model
 
-import com.example.news.util.network.Resource
+import com.example.news.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 // The Repository should expose suspend functions, or return Channel/Flow objects,

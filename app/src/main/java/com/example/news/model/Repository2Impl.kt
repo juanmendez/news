@@ -5,9 +5,9 @@ import com.example.news.model.network.ApiService2
 import com.example.news.model.network.impl.ArticlesResponse
 import com.example.news.model.network.impl.NetworkMapper
 import com.example.news.util.TOP_HEADLINES
-import com.example.news.util.network.ApiResponse
-import com.example.news.util.network.NetworkBoundResource
-import com.example.news.util.network.Resource
+import com.example.news.util.ApiResponse
+import com.example.news.util.NetworkBoundResource
+import com.example.news.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

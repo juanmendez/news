@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.news.util.network
+package com.example.news.util
 
 /**
  * Status of a resource that is provided to the UI.

@@ -23,7 +23,7 @@ class ApiInterceptor : Interceptor {
         const val PARAM_VALUE_PAGE_SIZE = "10"
 
         // use this to see an error thrown to the UI
-        //const val API_KEY_PARAM_VALUE = "bad-api-key"
+        //const val PARAM_VALUE_API_KEY = "bad-api-key"
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {

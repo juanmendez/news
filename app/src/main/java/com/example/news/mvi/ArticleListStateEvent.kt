@@ -1,4 +1,4 @@
-package com.example.news.state
+package com.example.news.mvi
 
 sealed class ArticleListStateEvent {
     class GetArticlesEvent(val query: String) : ArticleListStateEvent()

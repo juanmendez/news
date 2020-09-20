@@ -5,7 +5,7 @@ import com.example.news.model.Article
 import com.example.news.model.Repository2
 import com.example.news.util.TOP_HEADLINES
 import com.example.news.util.log
-import com.example.news.util.network.Status
+import com.example.news.util.Status
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 

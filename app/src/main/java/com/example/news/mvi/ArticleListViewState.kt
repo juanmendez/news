@@ -1,4 +1,4 @@
-package com.example.news.state
+package com.example.news.mvi
 
 import com.example.news.model.Article
 

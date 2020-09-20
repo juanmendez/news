@@ -9,12 +9,13 @@ import android.provider.SearchRecentSuggestions
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
-import com.example.news.state.ArticleListStateEvent
+import com.example.news.mvi.ArticleListStateEvent
 import com.example.news.util.InjectorUtil
 import com.example.news.util.TOP_HEADLINES
 import com.example.news.viewmodel.ArticleListActivityViewModel3
@@ -37,8 +38,8 @@ class ArticleListActivity3 : BaseActivity() {
     }
 
     private val viewModel3: ArticleListActivityViewModel3 by viewModels {
-        val repository = InjectorUtil.provideRepository(application as MyApplication)
-        ArticleListActivityViewModel3Factory(repository)
+        val repository3 = InjectorUtil.provideRepository3(application as MyApplication)
+        ArticleListActivityViewModel3Factory(repository3)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,12 +64,25 @@ class ArticleListActivity3 : BaseActivity() {
     private fun initObservers() {
         lifecycle.addObserver(viewModel3)
 
+        // MVI: a single data state LiveData object contains the state of the View (Activity)
         viewModel3.dataState.observe(this, { dataState ->
-            dataState.articles?.let { articles ->
-                viewModel3.setArticlesData(articles)
+
+            // update articles and query
+            dataState.data?.let { articleListViewState ->
+                articleListViewState.articles?.let { articles ->
+                    viewModel3.setArticlesData(articles)
+                }
+                articleListViewState.query?.let { query ->
+                    viewModel3.setQueryData(query)
+                }
             }
-            dataState.query?.let { query ->
-                viewModel3.setQueryData(query)
+
+            // update progress bar
+            showProgressBar(dataState.loading)
+
+            // show error
+            dataState.message?.let { message ->
+                showAlertDialog(message)
             }
         })
 
@@ -82,16 +96,6 @@ class ArticleListActivity3 : BaseActivity() {
                 supportActionBar?.title = query
             }
         })
-
-//        // init data observers and update the UI
-//        viewModel.errorMessage.observe(this, { msg ->
-//            msg?.let {
-//                showAlertDialog(msg)
-//            }
-//        })
-//        viewModel.showProgress.observe(this, { show ->
-//            showProgressBar(show)
-//        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -149,18 +153,14 @@ class ArticleListActivity3 : BaseActivity() {
             .saveRecentQuery(query, null)
     }
 
-//    private fun showAlertDialog(message: String?) {
-//        val dialogBuilder = AlertDialog.Builder(this)
-//        dialogBuilder
-//            .setMessage(message ?: "Something went wrong...")
-//            .setCancelable(false)
-//            .setPositiveButton("Ok", DialogInterface.OnClickListener { _, _ ->
-//                run {
-//                    viewModel.showError(null)
-//                }
-//            })
-//        val alert = dialogBuilder.create()
-//        alert.setTitle("Error")
-//        alert.show()
-//    }
+    private fun showAlertDialog(message: String?) {
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder
+            .setMessage(message ?: "Something went wrong...")
+            .setCancelable(false)
+            .setPositiveButton("Ok", null)
+        val alert = dialogBuilder.create()
+        alert.setTitle("Error")
+        alert.show()
+    }
 }
