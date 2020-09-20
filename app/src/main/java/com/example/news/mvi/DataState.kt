@@ -1,9 +1,17 @@
 package com.example.news.mvi
 
+/**
+ * DataState is a ViewState wrapper that adds loading state and a potential error message.
+ *
+ * Its data and message are wrapped in an Event as they will be consumed by the UI and should
+ * not be showed again. For example if you set the Airplane mode ON, you will get and show an
+ * error message. As you rotate the phone that error message will be shown again unless wrapped
+ * in a consumable Event.
+ */
 data class DataState<T>(
-    var message: String? = null,
+    var message: Event<String>? = null,
     var loading: Boolean = false,
-    val data: T?
+    val data: Event<T>?
 ) {
     companion object {
 
@@ -12,9 +20,9 @@ data class DataState<T>(
             data: T? = null
         ): DataState<T> {
             return DataState(
-                message = message,
+                message = Event.messageEvent(message),
                 loading = false,
-                data = data
+                data = Event.dataEvent(data)
             )
         }
 
@@ -22,7 +30,7 @@ data class DataState<T>(
             message: String
         ): DataState<T> {
             return DataState(
-                message =  message,
+                message =  Event(message),
                 loading = false,
                 data = null
             )

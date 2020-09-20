@@ -68,12 +68,14 @@ class ArticleListActivity3 : BaseActivity() {
         viewModel3.dataState.observe(this, { dataState ->
 
             // update articles and query
-            dataState.data?.let { articleListViewState ->
-                articleListViewState.articles?.let { articles ->
-                    viewModel3.setArticlesData(articles)
-                }
-                articleListViewState.query?.let { query ->
-                    viewModel3.setQueryData(query)
+            dataState.data?.let { event ->
+                event.getContentIfNotHandled()?.let { articleListViewState ->
+                    articleListViewState.articles?.let { articles ->
+                        viewModel3.setArticlesData(articles)
+                    }
+                    articleListViewState.query?.let { query ->
+                        viewModel3.setQueryData(query)
+                    }
                 }
             }
 
@@ -81,8 +83,10 @@ class ArticleListActivity3 : BaseActivity() {
             showProgressBar(dataState.loading)
 
             // show error
-            dataState.message?.let { message ->
-                showAlertDialog(message)
+            dataState.message?.let { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    showAlertDialog(message)
+                }
             }
         })
 
