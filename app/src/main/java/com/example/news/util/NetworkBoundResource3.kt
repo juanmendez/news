@@ -1,8 +1,8 @@
-package com.example.news.mvi
+package com.example.news.util
 
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
-import com.example.news.util.*
+import com.example.news.mvi.DataState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.*
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-abstract class NetworkBoundResource<ResponseType, ViewStateType> {
+abstract class NetworkBoundResource3<ResponseType, ViewStateType> {
 
     fun asFlow() = flow<DataState<ViewStateType>> {
         emit(DataState.loading(true))

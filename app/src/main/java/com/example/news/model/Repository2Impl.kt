@@ -6,7 +6,7 @@ import com.example.news.model.network.impl.ArticlesResponse
 import com.example.news.model.network.impl.NetworkMapper
 import com.example.news.util.TOP_HEADLINES
 import com.example.news.util.ApiResponse
-import com.example.news.util.NetworkBoundResource
+import com.example.news.util.NetworkBoundResource2
 import com.example.news.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -25,7 +25,7 @@ class Repository2Impl(
     // dependencies when testing in isolation.
 
     override suspend fun getArticles(query: String, page: Int): Flow<Resource<List<Article>>> {
-        return object : NetworkBoundResource<List<Article>, ArticlesResponse>() {
+        return object : NetworkBoundResource2<List<Article>, ArticlesResponse>() {
 
             override fun shouldFetchFromNetwork(data: List<Article>?): Boolean {
                 // we always want the latest articles
@@ -57,7 +57,7 @@ class Repository2Impl(
     }
 
     override suspend fun getTopHeadlines(page: Int): Flow<Resource<List<Article>>> {
-        return object : NetworkBoundResource<List<Article>, ArticlesResponse>() {
+        return object : NetworkBoundResource2<List<Article>, ArticlesResponse>() {
 
             override fun shouldFetchFromNetwork(data: List<Article>?): Boolean {
                 // we always want the latest articles

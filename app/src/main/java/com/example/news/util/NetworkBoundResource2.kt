@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.*
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-abstract class NetworkBoundResource<CacheObjectType, NetworkObjectType> {
+abstract class NetworkBoundResource2<CacheObjectType, NetworkObjectType> {
 
     fun asFlow() = flow {
 

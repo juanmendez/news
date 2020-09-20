@@ -42,8 +42,7 @@ class ArticleListActivityViewModel3(
                             emit(dataState)
                         }
                     } catch (e: Exception) {
-                        // TODO catch exceptions propagated from data sources through
-                        //  the repository and inform the user by updating the UI
+                        emit(DataState.error<ArticleListViewState>("Error. Check network status."))
                     }
                 }
             }
