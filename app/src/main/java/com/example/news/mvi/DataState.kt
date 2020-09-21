@@ -1,7 +1,7 @@
 package com.example.news.mvi
 
 /**
- * DataState is a ViewState wrapper that adds loading state and a potential error message.
+ * DataState is a ViewState wrapper that adds a loading state and an error message to the View data.
  *
  * Its data and message are wrapped in an Event as they will be consumed by the UI and should
  * not be showed again. For example if you set the Airplane mode ON, you will get and show an

@@ -22,7 +22,11 @@ import com.example.news.viewmodel.ArticleListActivityViewModel3
 import com.example.news.viewmodel.ArticleListActivityViewModel3Factory
 import kotlinx.android.synthetic.main.activity_article_list.*
 
-// same as ArticleListActivity, but MVI
+/**
+ * Same as ArticleListActivity, but implements MVI Architecture.
+ * In response to user actions the View sends StateEvents to the ViewModel. The ViewModel handles
+ * the StateEvents via the Repository and sends back ViewStates wrapped in DataStates to the View.
+ */
 class ArticleListActivity3 : BaseActivity() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var searchMenu: MenuItem
@@ -64,25 +68,30 @@ class ArticleListActivity3 : BaseActivity() {
     private fun initObservers() {
         lifecycle.addObserver(viewModel3)
 
-        // MVI: a single data state LiveData object contains the state of the View (Activity)
+        /**
+         * MVI Architecture: the View observes the DataState which contains the state of the
+         * whole View: its data, which will be set to the ViewState (observed for UI updates)
+         * and its state (loading state, error state).
+         */
         viewModel3.dataState.observe(this, { dataState ->
 
-            // update articles and query
+            /**
+             * Update ViewState.
+             */
             dataState.data?.let { event ->
                 event.getContentIfNotHandled()?.let { articleListViewState ->
-                    articleListViewState.articles?.let { articles ->
-                        viewModel3.setArticlesData(articles)
-                    }
-                    articleListViewState.query?.let { query ->
-                        viewModel3.setQueryData(query)
-                    }
+                    viewModel3.setViewState(articleListViewState)
                 }
             }
 
-            // update progress bar
+            /**
+             * Update loading state.
+             */
             showProgressBar(dataState.loading)
 
-            // show error
+            /**
+             * Update error state.
+             */
             dataState.message?.let { event ->
                 event.getContentIfNotHandled()?.let { message ->
                     showAlertDialog(message)
@@ -90,6 +99,9 @@ class ArticleListActivity3 : BaseActivity() {
             }
         })
 
+        /**
+         * MVI Architecture: the View observes the ViewState for UI updates.
+         */
         viewModel3.viewState.observe(this, { viewState ->
             viewState.articles?.let { data ->
                 articles.clear()
@@ -144,6 +156,10 @@ class ArticleListActivity3 : BaseActivity() {
         query?.let {
             this@ArticleListActivity3.hideKeyboard()
             searchMenu.collapseActionView()
+            /**
+             * MVI Architecture: user actions triggers events being sent from View to ViewModel.
+             * Here we send GetArticlesEvent to the ViewModel when the user performs a search.
+             */
             viewModel3.setStateEvent(ArticleListStateEvent.GetArticlesEvent(query))
         }
     }

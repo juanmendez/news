@@ -10,6 +10,11 @@ import com.example.news.util.ApiResponse
 import com.example.news.util.ApiSuccessResponse
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * MVI Architecture: the Repository returns a flow of ViewState wrapped in DataState
+ * (to add a loading state and an error state) in response to a StateEvent sent from
+ * the View to the ViewModel.
+ */
 class Repository3Impl(
     private val apiService3: ApiService3
 ) : Repository3 {

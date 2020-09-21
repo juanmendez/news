@@ -1,31 +1,38 @@
 package com.example.news.viewmodel
 
 import androidx.lifecycle.*
-import com.example.news.model.Article
-import com.example.news.model.Repository
 import com.example.news.model.Repository3
 import com.example.news.mvi.ArticleListStateEvent
 import com.example.news.mvi.ArticleListViewState
 import com.example.news.mvi.DataState
 import com.example.news.util.AbsentLiveData
-import com.example.news.util.Status
+import com.example.news.util.TOP_HEADLINES
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.withContext
 
 class ArticleListActivityViewModel3(
     private val repository3: Repository3
 ) : ViewModel(), LifecycleObserver {
 
     private val _stateEvent: MutableLiveData<ArticleListStateEvent> = MutableLiveData(
-        // initial value that triggers fetching the top headlines
-        ArticleListStateEvent.GetArticlesEvent("Top Headlines")
+        /**
+         * initial StateEvent value that triggers fetching the top headlines
+         */
+        ArticleListStateEvent.GetArticlesEvent(TOP_HEADLINES)
     )
     private val _viewState: MutableLiveData<ArticleListViewState> = MutableLiveData()
 
-    // MVI: single LiveData data exposed to View
+    /**
+     * MVI Architecture: all the View data is maintained into a single ViewState LiveData
+     * object exposed to the View for observation.
+     */
     val viewState: LiveData<ArticleListViewState> = _viewState
 
+    /**
+     * MVI Architecture: in response to StateEvents received from the View, ViewStates
+     * wrapped in DataStates (for adding loading and error state) are emitted from the
+     * Repository to the the View.
+     */
     val dataState: LiveData<DataState<ArticleListViewState>> =
         Transformations.switchMap(_stateEvent) { stateEvent ->
             stateEvent?.let {
@@ -33,8 +40,16 @@ class ArticleListActivityViewModel3(
             }
         }
 
+    /**
+     * MVI Architecture: upon user actions events are sent from View to ViewModel.
+     * This function handles the events received from the View.
+     */
     private fun handleStateEvent(stateEvent: ArticleListStateEvent): LiveData<DataState<ArticleListViewState>> {
         return when (stateEvent) {
+
+            /**
+             * Handle GetArticlesEvent.
+             */
             is ArticleListStateEvent.GetArticlesEvent -> {
                 return liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
                     try {
@@ -47,6 +62,9 @@ class ArticleListActivityViewModel3(
                 }
             }
 
+            /**
+             * Handle None event.
+             */
             is ArticleListStateEvent.None -> {
                 AbsentLiveData.create()
             }
@@ -59,18 +77,22 @@ class ArticleListActivityViewModel3(
         } ?: ArticleListViewState()
     }
 
-    fun setArticlesData(articles: List<Article>) {
+    fun setViewState(articleListViewState: ArticleListViewState) {
         val update = getCurrentViewStateOrNew()
-        update.articles = articles
+        articleListViewState.articles?.let { articles ->
+            update.articles = articles
+        }
+        articleListViewState.query?.let { query ->
+            update.query = query
+        }
         _viewState.value = update
     }
 
-    fun setQueryData(query: String) {
-        val update = getCurrentViewStateOrNew()
-        update.query = query
-        _viewState.value = update
-    }
-
+    /**
+     * MVI Architecture: upon user actions events are sent from View to ViewModel.
+     * This function receives the event from the View and triggers handleStateEvent
+     * to process the event.
+     */
     fun setStateEvent(event: ArticleListStateEvent) {
         _stateEvent.value = event
     }
