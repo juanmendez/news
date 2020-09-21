@@ -77,7 +77,7 @@ class ArticleListActivityViewModel3(
         } ?: ArticleListViewState()
     }
 
-    fun setViewState(articleListViewState: ArticleListViewState) {
+    fun updateViewState(articleListViewState: ArticleListViewState) {
         val update = getCurrentViewStateOrNew()
         articleListViewState.articles?.let { articles ->
             update.articles = articles

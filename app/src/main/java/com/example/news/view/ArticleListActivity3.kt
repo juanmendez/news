@@ -80,7 +80,7 @@ class ArticleListActivity3 : BaseActivity() {
              */
             dataState.data?.let { event ->
                 event.getContentIfNotHandled()?.let { articleListViewState ->
-                    viewModel3.setViewState(articleListViewState)
+                    viewModel3.updateViewState(articleListViewState)
                 }
             }
 
