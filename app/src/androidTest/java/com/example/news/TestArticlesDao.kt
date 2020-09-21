@@ -29,9 +29,13 @@ class TestArticlesDao {
 
     @Before
     fun initDb() {
+
+        // init dependencies
         database = Room.inMemoryDatabaseBuilder(
             InstrumentationRegistry.getInstrumentation().targetContext,
             ArticlesDatabase::class.java).build()
+
+        // init system in test
         articlesDao = database.articlesDao()
     }
 

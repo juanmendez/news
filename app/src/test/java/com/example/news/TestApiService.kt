@@ -46,6 +46,7 @@ class TestApiService {
         mockWebServer = MockWebServer()
         mockWebServer.start()
 
+        // init dependencies
         retrofit = Retrofit.Builder()
             .baseUrl(mockWebServer.url("/"))
             .addConverterFactory(GsonConverterFactory.create())

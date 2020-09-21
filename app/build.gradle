@@ -90,6 +90,7 @@ dependencies {
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9'
 
     // needed to mock the web server for testing ArticlesApiServiceImpl
+    implementation("com.squareup.okhttp3:okhttp:3.13.1")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.8.1")
 
     // http://facebook.github.io/stetho/
