@@ -19,6 +19,7 @@ object Network {
     private val builder: Retrofit.Builder by lazy {
         Retrofit.Builder()
             .baseUrl("http://newsapi.org")
+            .addConverterFactory(NullOnEmptyConverterFactory())
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
     }
