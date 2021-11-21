@@ -2,7 +2,6 @@ package com.example.news.view
 
 import android.app.SearchManager
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -24,6 +23,9 @@ import com.example.news.viewmodel.ArticleListActivityViewModel2
 import com.example.news.viewmodel.ArticleListActivityViewModel2Factory
 import kotlinx.android.synthetic.main.activity_article_list.*
 
+/**
+ * Same as ArticleListActivity, implements MVVM architecture
+ */
 class ArticleListActivity2 : BaseActivity() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
@@ -39,6 +41,9 @@ class ArticleListActivity2 : BaseActivity() {
         }
     }
 
+    // instantiates the ViewModel using a factory, constructor-injects the repository interface
+    // implementation needed by the ViewModel instance, the repository needs the application context
+    // for caching purposes
     private val viewModel2: ArticleListActivityViewModel2 by viewModels {
         val repository2 = InjectorUtil.provideRepository2(application as MyApplication)
         ArticleListActivityViewModel2Factory(repository2)
@@ -85,11 +90,13 @@ class ArticleListActivity2 : BaseActivity() {
     }
 
     private fun initObservers() {
+        // AppCompatActivity implements LifeCycleOwner single method interface and exposes it via
+        // getLifecycle. By adding the ViewModel as an observer we allow the ViewModel to handle
+        // the Activity's lifecycle events via annotations
         lifecycle.addObserver(viewModel2)
 
         // init data observers and update the UI
         viewModel2.articles.observe(this, { data ->
-            //logArticles("Displaying", data)
             articles.clear()
             articles.addAll(data)
             adapter.notifyDataSetChanged()
@@ -121,6 +128,8 @@ class ArticleListActivity2 : BaseActivity() {
         searchMenu = menu.findItem(R.id.activity_article_list_menu_search)
         val searchView = searchMenu.actionView as SearchView
 
+        // handle search via a search provider, making this activity the searchable activity
+        // setup SearchView to send a search intent
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchView.apply {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
@@ -129,6 +138,7 @@ class ArticleListActivity2 : BaseActivity() {
         return true
     }
 
+    // receive and handle the search intent sent by the SearchView
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent?.action == Intent.ACTION_SEARCH) {
@@ -155,9 +165,13 @@ class ArticleListActivity2 : BaseActivity() {
     }
 
     private fun search(query: String) {
-        query?.let {
+        query.let {
+
+            // update UI
             this@ArticleListActivity2.hideKeyboard()
             searchMenu.collapseActionView()
+
+            // perform search
             viewModel2.setQuery(query)
         }
     }
@@ -176,11 +190,12 @@ class ArticleListActivity2 : BaseActivity() {
         dialogBuilder
             .setMessage(message ?: "Something went wrong...")
             .setCancelable(false)
-            .setPositiveButton("Ok", DialogInterface.OnClickListener { _, _ ->
+            .setPositiveButton("Ok") { _, _ ->
                 run {
+                    // clear the error message data once the user dismissed the error dialog
                     viewModel2.showError(null)
                 }
-            })
+            }
         val alert = dialogBuilder.create()
         alert.setTitle("Error")
         alert.show()

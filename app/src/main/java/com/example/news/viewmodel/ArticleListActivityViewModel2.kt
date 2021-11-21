@@ -10,7 +10,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
 // implements LifecycleObserver so that it can act upon the Activity's lifecycle events
-// (if added as an observer to the Activity's lifecycle, in the Activity's code)
+// (if added as an observer to the Activity's lifecycle in the Activity's code)
 class ArticleListActivityViewModel2(
     private val repository2: Repository2
 ) : ViewModel(), LifecycleObserver {
@@ -43,9 +43,12 @@ class ArticleListActivityViewModel2(
         }
     }
 
-    // holds tha error message data
+    // holds tha refreshing data, true if the user initiated a refresh, false once the data was
+    // fetched
     private var _refreshing: MutableLiveData<Boolean> = MutableLiveData(false)
     val refreshing: LiveData<Boolean> = _refreshing
+    // called when the user swipes to refresh: if there is a query delete all articles
+    // in the cache for the given query and re-fetch (query, 1)
     fun refresh() {
         val query = _trigger.value?.first
         if (!query.isNullOrBlank()) {
@@ -60,9 +63,11 @@ class ArticleListActivityViewModel2(
         }
     }
 
-    // holds the query and page data, updated as the user types in a query (and displayed in the
-    // ActionBar) OR as the user scrolls to the bottom (requesting a new page)
-    // Initialized to the first page of the Top Headlines
+    // The trigger mutable live data holds the (query, page) pair (page is the page index)
+    // The trigger is updated
+    // - when the user types in a new query (displayed in the ActionBar): (query, 1)
+    // - when the user scrolls to the bottom (requesting a new page): (query, index + 1)
+    // The trigger is initialized to ("Top Headlines", 1)
     //
     // Note:
     //    private val _query: MutableLiveData<String> = MutableLiveData(TOP_HEADLINES)
@@ -80,18 +85,23 @@ class ArticleListActivityViewModel2(
     // and once on page reset to 1)
     private val _trigger: MutableLiveData<Pair<String?, Int?>> = MutableLiveData(TOP_HEADLINES to 1)
     val trigger: LiveData<Pair<String?, Int?>> = _trigger
+    // called by the UI when the user types in a query, updates the trigger
     fun setQuery(query: String) {
         _trigger.apply {
+            // if the user typed in a new query then update the trigger value to (query, 1)
             if (value != null && query != value?.first) {
                 value = query to 1
             }
         }
     }
+    // used to avoid multiple trigger updates as the user scrolls to the bottom
     private var pageIncrementTimestamp: Long = 0
+    // called by the UI when the user scrolls to the bottom, updates the trigger
     fun incrementPage() {
         val now = System.currentTimeMillis()
         if (now - pageIncrementTimestamp > 1000) {
             pageIncrementTimestamp = now
+            // the user scrolled to the bottom, increment the page
             _trigger.apply {
                 value = value?.first to value?.second?.plus(1)
             }
@@ -102,7 +112,7 @@ class ArticleListActivityViewModel2(
     // The articles data are not modified by the the ViewModel, only rendered,
     // therefore there is no need for MutableLiveData, LiveData will suffice.
     val articles: LiveData<List<Article>> =
-        // Fetching the articles depends on the trigger value, using switchMap utility (uses
+        // Fetching the articles depends on the trigger value, using switchMap utility (which uses
         // MediatorLiveData), to transform one LiveData (first switchMap parameter, the trigger)
         // into another LiveData (switchMap output, the articles) by applying the lambda function
         // (second switchMap parameter) to each value set on the input LiveData (the trigger).
@@ -118,8 +128,8 @@ class ArticleListActivityViewModel2(
             // instance) so that we can cancel the Job if needed
             getArticlesJob = job
 
-            // Another utility that creates a new LiveData ONLY IF the source LiveData (the trigger)
-            // value has changed, often used with data backing RecyclerViews.
+            // distinctUntilChanged utility creates a new LiveData ONLY IF the source LiveData
+            // (the trigger) value has changed, often used with data backing RecyclerViews
             Transformations.distinctUntilChanged(
                 liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
                     try {

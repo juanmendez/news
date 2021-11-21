@@ -41,6 +41,9 @@ class ArticleListActivity3 : BaseActivity() {
         }
     }
 
+    // instantiates the ViewModel using a factory, constructor-injects the repository interface
+    // implementation needed by the ViewModel instance, the repository needs the application context
+    // for caching purposes
     private val viewModel3: ArticleListActivityViewModel3 by viewModels {
         val repository3 = InjectorUtil.provideRepository3(application as MyApplication)
         ArticleListActivityViewModel3Factory(repository3)
@@ -66,17 +69,20 @@ class ArticleListActivity3 : BaseActivity() {
     }
 
     private fun initObservers() {
+        // AppCompatActivity implements LifeCycleOwner single method interface and exposes it via
+        // getLifecycle. By adding the ViewModel as an observer we allow the ViewModel to handle
+        // the Activity's lifecycle events via annotations
         lifecycle.addObserver(viewModel3)
 
-        /**
+        /*
          * MVI Architecture: the View observes the DataState which contains the state of the
          * whole View: its data, which will be set to the ViewState (observed for UI updates)
          * and its state (loading state, error state).
          */
         viewModel3.dataState.observe(this, { dataState ->
 
-            /**
-             * Update ViewState.
+            /*
+             * Update ViewState
              */
             dataState.data?.let { event ->
                 event.getContentIfNotHandled()?.let { articleListViewState ->
@@ -84,13 +90,13 @@ class ArticleListActivity3 : BaseActivity() {
                 }
             }
 
-            /**
-             * Update loading state.
+            /*
+             * Update loading state
              */
             showProgressBar(dataState.loading)
 
-            /**
-             * Update error state.
+            /*
+             * Update error state
              */
             dataState.message?.let { event ->
                 event.getContentIfNotHandled()?.let { message ->
@@ -99,7 +105,7 @@ class ArticleListActivity3 : BaseActivity() {
             }
         })
 
-        /**
+        /*
          * MVI Architecture: the View observes the ViewState for UI updates.
          */
         viewModel3.viewState.observe(this, { viewState ->
@@ -119,6 +125,8 @@ class ArticleListActivity3 : BaseActivity() {
         searchMenu = menu.findItem(R.id.activity_article_list_menu_search)
         val searchView = searchMenu.actionView as SearchView
 
+        // handle search via a search provider, making this activity the searchable activity
+        // setup SearchView to send a search intent
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchView.apply {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
@@ -127,6 +135,7 @@ class ArticleListActivity3 : BaseActivity() {
         return true
     }
 
+    // receive and handle the search intent sent by the SearchView
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent?.action == Intent.ACTION_SEARCH) {
@@ -153,11 +162,11 @@ class ArticleListActivity3 : BaseActivity() {
     }
 
     private fun search(query: String) {
-        query?.let {
+        query.let {
             this@ArticleListActivity3.hideKeyboard()
             searchMenu.collapseActionView()
             /**
-             * MVI Architecture: user actions triggers events being sent from View to ViewModel.
+             * MVI Architecture: user actions trigger events being sent from View to ViewModel.
              * Here we send GetArticlesEvent to the ViewModel when the user performs a search.
              */
             viewModel3.setStateEvent(ArticleListStateEvent.GetArticlesEvent(query))

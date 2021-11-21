@@ -2,7 +2,6 @@ package com.example.news.view
 
 import android.app.SearchManager
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -23,6 +22,9 @@ import com.example.news.viewmodel.ArticleListActivityViewModel
 import com.example.news.viewmodel.ArticleListActivityViewModelFactory
 import kotlinx.android.synthetic.main.activity_article_list.*
 
+/**
+ * Implements MVVM architecture
+ */
 class ArticleListActivity : BaseActivity() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
@@ -38,6 +40,9 @@ class ArticleListActivity : BaseActivity() {
         }
     }
 
+    // instantiates the ViewModel using a factory, constructor-injects the repository interface
+    // implementation needed by the ViewModel instance, the repository needs the application context
+    // for caching purposes
     private val viewModel: ArticleListActivityViewModel by viewModels {
         val repository = InjectorUtil.provideRepository(application as MyApplication)
         ArticleListActivityViewModelFactory(repository)
@@ -63,10 +68,9 @@ class ArticleListActivity : BaseActivity() {
     }
 
     private fun initObservers() {
-        // Allows the ViewModel to handle the Activity's lifecycle events
-        // via annotations by implementing LifecycleObserver interface.
-        // AppCompatActivity implements LifeCycleOwner single
-        // method interface and thus exposes getLifecycle.
+        // AppCompatActivity implements LifeCycleOwner single method interface and exposes it via
+        // getLifecycle. By adding the ViewModel as an observer we allow the ViewModel to handle
+        // the Activity's lifecycle events via annotations
         lifecycle.addObserver(viewModel)
 
         // init data observers and update the UI
@@ -150,7 +154,7 @@ class ArticleListActivity : BaseActivity() {
     }
 
     private fun search(query: String) {
-        query?.let {
+        query.let {
 
             // update UI
             this@ArticleListActivity.hideKeyboard()
@@ -175,11 +179,11 @@ class ArticleListActivity : BaseActivity() {
         dialogBuilder
             .setMessage(message ?: "Something went wrong...")
             .setCancelable(false)
-            .setPositiveButton("Ok", DialogInterface.OnClickListener { _, _ ->
+            .setPositiveButton("Ok") { _, _ ->
                 run {
                     viewModel.showError(null)
                 }
-            })
+            }
         val alert = dialogBuilder.create()
         alert.setTitle("Error")
         alert.show()

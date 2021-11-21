@@ -8,7 +8,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
 // implements LifecycleObserver so that it can act upon the Activity's lifecycle events
-// (if added as an observer to the Activity's lifecycle, in the Activity's code)
+// (if added as an observer to the Activity's lifecycle in the Activity's code)
 class ArticleListActivityViewModel (
     private val repository: Repository
 ) : ViewModel(), LifecycleObserver {
