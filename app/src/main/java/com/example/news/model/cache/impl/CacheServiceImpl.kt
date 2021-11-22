@@ -3,7 +3,9 @@ package com.example.news.model.cache.impl
 import com.example.news.model.Article
 import com.example.news.model.cache.CacheService
 
-// This ArticlesCacheService implementation uses DAO/Room
+/**
+ * Implementation of the cache service using DAO and Room
+ */
 class CacheServiceImpl
 constructor(
     private val articlesDao: ArticlesDao,

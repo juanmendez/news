@@ -9,7 +9,7 @@ constructor(
     private val timeToDateFormat: SimpleDateFormat
 ) {
     fun dateToTime(date: String): Long {
-        return dateToTimeFormat.parse(date).time
+        return dateToTimeFormat.parse(date)?.time ?: 0
     }
 
     fun timeToDate(time: Long): String {

@@ -19,7 +19,7 @@ package com.example.news.util
 import retrofit2.Response
 
 /**
- * Common class used by API responses.
+ * Sealed class defining the various api responses: success / error / empty.
  * @param <T> the type of the response object
  */
 @Suppress("unused") // T is used in extending classes
@@ -27,10 +27,20 @@ sealed class ApiResponse<T> {
 
     companion object {
 
+        /**
+         * Create api response from [Throwable]
+         * @param error
+         * @return [ApiResponse]
+         */
         fun <T> create(error: Throwable): ApiErrorResponse<T> {
             return ApiErrorResponse(error.message ?: "Unknown error.\nCheck network connection.")
         }
 
+        /**
+         * Create api response from [Response]
+         * @param response
+         * @return [ApiResponse]
+         */
         fun <T> create(response: Response<T>): ApiResponse<T> {
             return if (response.isSuccessful) {
                 val body = response.body()
@@ -52,8 +62,17 @@ sealed class ApiResponse<T> {
     }
 }
 
+/**
+ * Success api response
+ */
 data class ApiSuccessResponse<T>(val body: T) : ApiResponse<T>()
 
+/**
+ * Error api response
+ */
 data class ApiErrorResponse<T>(val errorMessage: String) : ApiResponse<T>()
 
+/**
+ * Empty api response
+ */
 class ApiEmptyResponse<T> : ApiResponse<T>()

@@ -13,6 +13,10 @@ import com.example.news.model.network.impl.*
 import retrofit2.Retrofit
 import java.text.SimpleDateFormat
 
+/**
+ * Injector singleton used to provide various object instances
+ * (in lieu of a dependency injection framework)
+ */
 object InjectorUtil {
 
     fun provideDatabase(application: MyApplication): ArticlesDatabase {

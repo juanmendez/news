@@ -8,6 +8,8 @@ import com.example.news.util.TOP_HEADLINES
 import com.example.news.util.ApiResponse
 import com.example.news.util.NetworkBoundResource2
 import com.example.news.util.Resource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -24,6 +26,8 @@ class Repository2Impl(
     // through the constructor. This avoids hard-dependencies and allows faking
     // dependencies when testing in isolation.
 
+    @FlowPreview
+    @ExperimentalCoroutinesApi
     override suspend fun getArticles(query: String, page: Int): Flow<Resource<List<Article>>> {
         return object : NetworkBoundResource2<List<Article>, ArticlesResponse>() {
 
@@ -37,9 +41,9 @@ class Repository2Impl(
                 return ApiResponse.create(apiService2.getArticles(query, page))
             }
 
-            override suspend fun saveNetworkResponseToCache(item: ArticlesResponse) {
+            override suspend fun saveNetworkResponseToCache(data: ArticlesResponse) {
                 // save the page to cache
-                item.articles?.let { networkArticles ->
+                data.articles?.let { networkArticles ->
                     val articles =
                         NetworkMapper.networkArticleListToArticleList(query, networkArticles)
                     cacheService.insertArticles(articles)
@@ -56,6 +60,8 @@ class Repository2Impl(
         }.asFlow()
     }
 
+    @FlowPreview
+    @ExperimentalCoroutinesApi
     override suspend fun getTopHeadlines(page: Int): Flow<Resource<List<Article>>> {
         return object : NetworkBoundResource2<List<Article>, ArticlesResponse>() {
 
@@ -68,8 +74,8 @@ class Repository2Impl(
                 return ApiResponse.create(apiService2.getTopHeadlines(page))
             }
 
-            override suspend fun saveNetworkResponseToCache(item: ArticlesResponse) {
-                item.articles?.let { networkArticles ->
+            override suspend fun saveNetworkResponseToCache(data: ArticlesResponse) {
+                data.articles?.let { networkArticles ->
                     val articles =
                         NetworkMapper.networkArticleListToArticleList(
                             TOP_HEADLINES,

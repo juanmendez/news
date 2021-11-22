@@ -19,7 +19,7 @@ package com.example.news.util
 import androidx.lifecycle.LiveData
 
 /**
- * A LiveData class that has `null` value.
+ * A LiveData class of `null` value.
  */
 class AbsentLiveData<T : Any?> private constructor(): LiveData<T>() {
     init {

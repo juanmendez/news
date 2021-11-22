@@ -32,19 +32,40 @@ enum class Status {
 }
 
 /**
- * A generic class that holds a value with its loading status.
- * @param <T>
+ * A generic class that holds a resource,
+ * basically it wraps state (status) alongside data (data, message)
+ * @param T the [Resource] data type
+ * @param status the [Status] of the [Resource]
+ * @param data the [Resource] data
+ * @param message the [Resource] error message
  */
 data class Resource<out T>(val status: Status, val data: T?, val message: String?) {
     companion object {
+
+        /**
+         * Generates a [Status.SUCCESS] [Resource]
+         * @param data the [Resource] data
+         * @return a success [Resource]
+         */
         fun <T> success(data: T?): Resource<T> {
             return Resource(Status.SUCCESS, data, null)
         }
 
+        /**
+         * Generates a [Status.ERROR] [Resource]
+         * @param msg the [Resource] error message
+         * @param data the [Resource] data
+         * @return an error [Resource]
+         */
         fun <T> error(msg: String, data: T?): Resource<T> {
             return Resource(Status.ERROR, data, msg)
         }
 
+        /**
+         * Generates a [Status.LOADING] [Resource]
+         * @param data the [Resource] data
+         * @return a loading [Resource]
+         */
         fun <T> loading(data: T?): Resource<T> {
             return Resource(Status.LOADING, data, null)
         }

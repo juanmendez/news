@@ -32,6 +32,9 @@ import kotlinx.coroutines.flow.*
 @ExperimentalCoroutinesApi
 abstract class NetworkBoundResource2<CacheObjectType, NetworkObjectType> {
 
+    /**
+     * Creates the flow of data, cache and network.
+     */
     fun asFlow() = flow {
 
         // emit loading
@@ -84,18 +87,37 @@ abstract class NetworkBoundResource2<CacheObjectType, NetworkObjectType> {
     protected open fun processResponse(response: ApiSuccessResponse<NetworkObjectType>) =
         response.body
 
-    /**
+    /*
      * Abstract methods to be implemented in concrete classes
+     */
+
+    /**
+     * Whether should fetch network data or not
+     * @param data the cache data
+     * @return [Boolean] true if network data should be fetched, business logic may be depending on
+     * the cache data
      */
     @MainThread
     protected abstract fun shouldFetchFromNetwork(data: CacheObjectType?): Boolean
 
+    /**
+     * Fetches data from network
+     * @return [ApiResponse] containing the network data
+     */
     @MainThread
     protected abstract suspend fun fetchFromNetwork(): ApiResponse<NetworkObjectType>
 
+    /**
+     * Saves the network data to cache
+     * @param data the network data to be saved to cache
+     */
     @WorkerThread
-    protected abstract suspend fun saveNetworkResponseToCache(item: NetworkObjectType)
+    protected abstract suspend fun saveNetworkResponseToCache(data: NetworkObjectType)
 
+    /**
+     * Loads data from cache
+     * @return [Flow] of the cache data
+     */
     @MainThread
     protected abstract fun loadFromCache(): Flow<CacheObjectType>
 }

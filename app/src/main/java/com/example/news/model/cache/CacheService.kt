@@ -2,7 +2,9 @@ package com.example.news.model.cache
 
 import com.example.news.model.Article
 
-// abstracts Room functionality so that it can be mocked in Unit Tests
+/**
+ * Interface abstracting the cache service functionality
+ */
 interface CacheService {
     suspend fun insertArticle(article: Article): Long
 
