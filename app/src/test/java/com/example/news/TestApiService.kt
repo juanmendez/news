@@ -1,7 +1,7 @@
 package com.example.news
 
-import com.example.news.di.DependencyContainer
-import com.example.news.factory.ArticlesDataFactory
+import com.example.news.di.FakeDependencyContainer
+import com.example.news.factory.FakeArticlesDataFactory
 import com.example.news.model.Article
 import com.example.news.model.network.impl.ApiServiceImpl
 import com.example.news.model.network.impl.Api
@@ -25,20 +25,23 @@ class TestApiService {
     // this is the system in test
     private lateinit var articlesApiService: ApiServiceImpl
 
-    // mocks
+    // mock
     private lateinit var mockWebServer: MockWebServer
+
+    // dependencies
     private lateinit var retrofit: Retrofit
     private lateinit var api: Api
 
-    private val dependencyContainer: DependencyContainer = DependencyContainer()
-    private val articlesDataFactory: ArticlesDataFactory
+    // fakes
+    private val fakeDependencyContainer: FakeDependencyContainer = FakeDependencyContainer()
+    private val fakeArticlesDataFactory: FakeArticlesDataFactory
 
     init {
         // init fake dependencies
-        dependencyContainer.build()
+        fakeDependencyContainer.build()
 
-        // fake data sources
-        articlesDataFactory = dependencyContainer.articlesDataFactory
+        // fake data source
+        fakeArticlesDataFactory = fakeDependencyContainer.fakeArticlesDataFactory
     }
 
     @Before
@@ -68,39 +71,50 @@ class TestApiService {
 
         // expected
         val expectedNetworkArticles: List<Article> =
-            articlesDataFactory.produceNetworkListOfArticles()
+            fakeArticlesDataFactory.produceFakeNetworkListOfArticles()
+        val expectedNetworkArticlesSize = 1
 
+        // enqueue mock response into mock web server
         val response = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
             .setBody(mockResponseBody())
         mockWebServer.enqueue(response)
 
+        // make the api call
         log(this@TestApiService.TAG, "call getArticles")
-        val articles: List<Article> = articlesApiService.getArticles("technology")
+        val actualNetworkArticles: List<Article> = articlesApiService.getArticles("technology")
 
-        log(this@TestApiService.TAG, "returned articles count: ${articles.size}")
-        assert(articles.size == 1)
-        log(this@TestApiService.TAG, "article title: ${articles[0].title}")
-        val received = articles[0]
+        // assert number of received articles matches the expected value
+        log(this@TestApiService.TAG, "returned articles count: ${actualNetworkArticles.size}")
+        assert(actualNetworkArticles.size == expectedNetworkArticlesSize)
+
+        // assert the actual received article matches the expected article
+        log(this@TestApiService.TAG, "article title: ${actualNetworkArticles[0].title}")
+        val actual = actualNetworkArticles[0]
         val expected = expectedNetworkArticles[0]
-        assert(received.author == expected.author)
-        assert(received.content == expected.content)
-        assert(received.description == expected.description)
-        assert(received.imageUrl == expected.imageUrl)
-        assert(received.query == expected.query)
-        assert(received.sourceId == expected.sourceId)
-        assert(received.sourceName == expected.sourceName)
-        assert(received.title == expected.title)
-        assert(received.url == expected.url)
+        assert(actual.author == expected.author)
+        assert(actual.content == expected.content)
+        assert(actual.description == expected.description)
+        assert(actual.imageUrl == expected.imageUrl)
+        assert(actual.query == expected.query)
+        assert(actual.sourceId == expected.sourceId)
+        assert(actual.sourceName == expected.sourceName)
+        assert(actual.title == expected.title)
+        assert(actual.url == expected.url)
     }
 
     @Test
     fun getArticles_failure() = runBlocking {
+
+        // enqueue mock response into the mock web server
         val response = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_NOT_FOUND)
         mockWebServer.enqueue(response)
 
+        // assert the api call throws an exception
         assertThrows<Exception> {
+
+            // make the api call
             log(this@TestApiService.TAG, "call getArticles and fail")
             articlesApiService.getArticles("technology")
         }

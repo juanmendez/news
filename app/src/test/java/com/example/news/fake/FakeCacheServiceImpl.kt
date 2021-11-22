@@ -1,4 +1,4 @@
-package com.example.news.mock
+package com.example.news.fake
 
 import com.example.news.model.Article
 import com.example.news.model.cache.CacheService
@@ -7,11 +7,20 @@ const val FORCE_NEW_ARTICLE_EXCEPTION = "FORCE_NEW_ARTICLE_EXCEPTION"
 const val FORCE_GENERAL_FAILURE = "FORCE_GENERAL_FAILURE"
 const val FORCE_GET_CACHE_ARTICLES_EXCEPTION = "FORCE_GET_CACHE_ARTICLES_EXCEPTION"
 
-// in the real implementation we delegate to DAO,
-// here we fake the database by using a HashMap
+/**
+ * Fake cache service implementation used in Unit Tests
+ * A mock needs to be told what to reply with when a certain method is invoked during test, while
+ * a fake is an actual implementation of the functionality (usually an interface) and allows for
+ * specific behavior.
+ * Here this fake implementation of the CacheService allows to test the case where an exception is
+ * thrown when calling insertArticle and we do that by calling insertArticle with the article.id
+ * parameter equal to FORCE_NEW_ARTICLE_EXCEPTION.
+ * We also constructor inject a hash map with the fake cached articles thus faking the articles
+ * database (in the real CacheService we delegate to DAO).
+ */
 class FakeCacheServiceImpl
 constructor(
-    private val articlesData: HashMap<String, Article>,
+    private val fakeCacheArticlesData: HashMap<String, Article>,
 ) : CacheService {
     override suspend fun insertArticle(article: Article): Long {
 
@@ -30,7 +39,7 @@ constructor(
         }
 
         // insert article in fake database
-        articlesData[article.id] = article
+        fakeCacheArticlesData[article.id] = article
 
         // this mocks an article being successfully inserted
         // in the database, which would return 1
@@ -41,7 +50,7 @@ constructor(
         val results = LongArray(articles.size)
         for ((index, article) in articles.withIndex()) {
             results[index] = 1
-            articlesData[article.id] = article
+            fakeCacheArticlesData[article.id] = article
         }
         return results
     }
@@ -59,7 +68,7 @@ constructor(
 
         // search in the fake database (HashMap)
         // to match what a database search would do
-        for (article in articlesData.values) {
+        for (article in fakeCacheArticlesData.values) {
             if (article.query.contains(query)) {
                 results.add(article)
             }
@@ -69,7 +78,7 @@ constructor(
 
     override suspend fun getArticlesCount(query: String): Int {
         var count = 0
-        for (article in articlesData.values) {
+        for (article in fakeCacheArticlesData.values) {
             if (article.query.contains(query)) {
                 count++
             }
@@ -79,10 +88,10 @@ constructor(
 
     override suspend fun deleteArticles(query: String): Int {
         var deletedArticlesCount = 0
-        val iterator = articlesData.keys.iterator()
+        val iterator = fakeCacheArticlesData.keys.iterator()
         while (iterator.hasNext()) {
             val key = iterator.next()
-            if (articlesData[key]?.query?.contains(query) == true) {
+            if (fakeCacheArticlesData[key]?.query?.contains(query) == true) {
                 iterator.remove()
                 deletedArticlesCount++
             }
@@ -91,8 +100,8 @@ constructor(
     }
 
     override suspend fun deleteAllArticles(): Int {
-        val deletedArticlesCount = articlesData.size
-        articlesData.clear()
+        val deletedArticlesCount = fakeCacheArticlesData.size
+        fakeCacheArticlesData.clear()
         return deletedArticlesCount
     }
 }

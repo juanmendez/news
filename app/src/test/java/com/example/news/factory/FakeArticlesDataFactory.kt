@@ -4,10 +4,13 @@ import com.example.news.model.Article
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class ArticlesDataFactory(
+/**
+ * Factory for fake cache and network (remote cache) articles.
+ */
+class FakeArticlesDataFactory(
     private val testClassLoader: ClassLoader
 ) {
-    fun produceCacheListOfArticles(): List<Article> {
+    fun produceFakeCacheListOfArticles(): List<Article> {
         return Gson()
             .fromJson(
                 getArticlesFromFile("cache.json"),
@@ -15,7 +18,7 @@ class ArticlesDataFactory(
             )
     }
 
-    fun produceNetworkListOfArticles(): List<Article> {
+    fun produceFakeNetworkListOfArticles(): List<Article> {
         return Gson()
             .fromJson(
                 getArticlesFromFile("network.json"),
@@ -23,7 +26,7 @@ class ArticlesDataFactory(
             )
     }
 
-    fun produceUpdatedCacheListOfArticles(): List<Article> {
+    fun produceFakeUpdatedCacheListOfArticles(): List<Article> {
         return Gson()
             .fromJson(
                 getArticlesFromFile("updated_cache.json"),
@@ -31,7 +34,7 @@ class ArticlesDataFactory(
             )
     }
 
-    fun produceHashMapOfArticles(noteList: List<Article>): HashMap<String, Article> {
+    fun produceFakeHashMapOfArticles(noteList: List<Article>): HashMap<String, Article> {
         val map = HashMap<String, Article>()
         for (note in noteList) {
             map[note.id] = note

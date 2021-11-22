@@ -28,19 +28,22 @@ class TestArticlesDao {
     }
 
     @Before
-    fun initDb() {
+    fun setup() {
 
         // init dependencies
-        database = Room.inMemoryDatabaseBuilder(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            ArticlesDatabase::class.java).build()
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val databaseBuilder = Room.inMemoryDatabaseBuilder(
+            context,
+            ArticlesDatabase::class.java
+        )
+        database = databaseBuilder.build()
 
         // init system in test
         articlesDao = database.articlesDao()
     }
 
     @After
-    fun closeDb() {
+    fun teardown() {
         database.close()
     }
 

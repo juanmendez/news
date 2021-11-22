@@ -2,10 +2,10 @@ package com.example.news
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.example.news.di.DependencyContainer
-import com.example.news.factory.ArticlesDataFactory
-import com.example.news.mock.FORCE_GET_REPO_ARTICLES_EXCEPTION
-import com.example.news.mock.REPO_ARTICLES_EXCEPTION_MESSAGE
+import com.example.news.di.FakeDependencyContainer
+import com.example.news.factory.FakeArticlesDataFactory
+import com.example.news.fake.FORCE_GET_REPO_ARTICLES_EXCEPTION
+import com.example.news.fake.REPO_ARTICLES_EXCEPTION_MESSAGE
 import com.example.news.model.Article
 import com.example.news.model.Repository
 import com.example.news.util.*
@@ -34,8 +34,8 @@ class TestArticleListActivityViewModel {
     // this is the system in test
     private val viewModel: ArticleListActivityViewModel
 
-    private val dependencyContainer: DependencyContainer = DependencyContainer()
-    private val articlesDataFactory: ArticlesDataFactory
+    private val fakeDependencyContainer: FakeDependencyContainer = FakeDependencyContainer()
+    private val fakeArticlesDataFactory: FakeArticlesDataFactory
     private val repository: Repository
 
     // mocking the LiveData observers
@@ -47,11 +47,11 @@ class TestArticleListActivityViewModel {
 
     init {
         // init fake dependencies
-        dependencyContainer.build()
+        fakeDependencyContainer.build()
 
         // fake data sources
-        articlesDataFactory = dependencyContainer.articlesDataFactory
-        repository = dependencyContainer.repository
+        fakeArticlesDataFactory = fakeDependencyContainer.fakeArticlesDataFactory
+        repository = fakeDependencyContainer.fakeRepository
 
         // init system in test
         viewModel = ArticleListActivityViewModel(repository)
@@ -63,9 +63,9 @@ class TestArticleListActivityViewModel {
 
             // expected
             val expectedCacheArticles: List<Article> =
-                articlesDataFactory.produceCacheListOfArticles()
+                fakeArticlesDataFactory.produceFakeCacheListOfArticles()
             val expectedUpdatedCacheArticles: List<Article> =
-                articlesDataFactory.produceUpdatedCacheListOfArticles()
+                fakeArticlesDataFactory.produceFakeUpdatedCacheListOfArticles()
 
             // no LifeCycle here, hence observe forever
             viewModel.articles.observeForever(articlesObserver)
@@ -102,9 +102,9 @@ class TestArticleListActivityViewModel {
 
             // expected
             val expectedCacheArticles: List<Article> =
-                articlesDataFactory.produceCacheListOfArticles()
+                fakeArticlesDataFactory.produceFakeCacheListOfArticles()
             val expectedUpdatedCacheArticles: List<Article> =
-                articlesDataFactory.produceUpdatedCacheListOfArticles()
+                fakeArticlesDataFactory.produceFakeUpdatedCacheListOfArticles()
 
             log(this@TestArticleListActivityViewModel.TAG, "call ViewModel's setQuery")
             // the query value doesn't matter since we use a fake Repository

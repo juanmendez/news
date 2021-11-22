@@ -1,4 +1,4 @@
-package com.example.news.mock
+package com.example.news.fake
 
 import com.example.news.model.Article
 import com.example.news.model.Repository
@@ -9,9 +9,19 @@ import kotlinx.coroutines.flow.flow
 const val FORCE_GET_REPO_ARTICLES_EXCEPTION = "FORCE_GET_REPO_ARTICLES_EXCEPTION"
 const val REPO_ARTICLES_EXCEPTION_MESSAGE = "Failed getting articles from Repository."
 
+/**
+ * Fake repository implementation used in Unit Tests
+ * A mock needs to be told what to reply with when a certain method is invoked during test, while
+ * a fake is an actual implementation of the functionality (usually an interface) and allows for
+ * specific behavior.
+ * Here this fake implementation of the Repository allows to test the case where an exception is
+ * thrown when calling getArticles and we do that by calling getArticles with the query parameter
+ * equal to FORCE_GET_REPO_ARTICLES_EXCEPTION.
+ * We also constructor inject hash maps with the fake cached and network (remote cached) articles.
+ */
 class FakeRepositoryImpl constructor(
-    private val cacheArticlesData: HashMap<String, Article>,
-    private val networkArticlesData: HashMap<String, Article>
+    private val fakeCacheArticlesData: HashMap<String, Article>,
+    private val fakeNetworkArticlesData: HashMap<String, Article>
 ) : Repository {
 
     override suspend fun getArticles(query: String): Flow<List<Article>> {
@@ -25,7 +35,7 @@ class FakeRepositoryImpl constructor(
 
         return flow {
             val articles: ArrayList<Article> = ArrayList()
-            for (article in cacheArticlesData) {
+            for (article in fakeCacheArticlesData) {
                 articles.add(article.value)
             }
             emit(articles)
@@ -33,7 +43,7 @@ class FakeRepositoryImpl constructor(
             // fake network update delay
             delay(1000)
 
-            for (article in networkArticlesData) {
+            for (article in fakeNetworkArticlesData) {
                 articles.add(article.value)
             }
             emit(articles)
