@@ -6,6 +6,10 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 
+/**
+ * Api interceptor setting up common API values such as the API Key, language, sorting order and
+ * page size.
+ */
 class ApiInterceptor : Interceptor {
 
     companion object {

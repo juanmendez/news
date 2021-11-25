@@ -3,6 +3,12 @@ package com.example.news.model
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
+/**
+ * The domain model for storing the data for an article.
+ * This model is used in the Repository and subsequent upper layers.
+ * Below the repository we have entity models: a network entity model for the api service, and a
+ * cache entity model for the cache service.
+ */
 @Parcelize
 data class Article (
     val id: String,

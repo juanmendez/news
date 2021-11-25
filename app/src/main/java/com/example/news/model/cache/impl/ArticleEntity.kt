@@ -4,6 +4,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/**
+ * Data class mapped to a table in the SQLite database, storing the articles data
+ */
 @Entity(tableName = "articles")
 data class ArticleEntity(
     @PrimaryKey var id: String,

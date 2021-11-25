@@ -13,18 +13,25 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-// LSP (Liskov Substitution Principle): Objects should be replaceable with subtype instances.
-// In the constructor arguments we substitute objects with their subtypes.
-// DIP (Dependency Inversion Principle): depend on abstractions, not on concretions.
-// In the constructor we inject interface-abstracted dependencies.
+/**
+ * In this application the cache is the data source. The network articles are just saved in the
+ * cache.
+ *
+ * The data flows as follows:
+ * UI -> ViewModel -> Repository -> ApiService -> [ArticleNetwork] -> NetworkMapper -> [Article]
+ * -> Repository -> CacheService -> [ArticleEntity] -> DAO -> Room -> DAO -> [ArticleEntity]
+ * -> CacheService -> [Article] -> Repository -> ViewModel -> UI
+ *
+ * LSP (Liskov Substitution Principle): Objects should be replaceable with subtype instances.
+ * DIP (Dependency Inversion Principle): depend on abstractions, not on concretions.
+ * Here the dependencies, api service and cache service, are not instantiated (concretion), instead
+ * we inject interface-abstracted dependencies. This avoids hard-dependencies and allows faking
+ * dependencies when testing in isolation.
+ */
 class Repository2Impl(
     private val apiService2: ApiService2,
     private val cacheService: CacheService
 ) : Repository2 {
-
-    // Dependencies are not instantiated (concretion), instead they are injected
-    // through the constructor. This avoids hard-dependencies and allows faking
-    // dependencies when testing in isolation.
 
     @FlowPreview
     @ExperimentalCoroutinesApi

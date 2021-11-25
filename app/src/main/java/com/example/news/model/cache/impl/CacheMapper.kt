@@ -4,6 +4,11 @@ import com.example.news.model.Article
 import com.example.news.util.DateUtil
 import com.example.news.util.EntityMapper
 
+/**
+ * Maps between cache entity model [ArticleEntity] and domain model [Article].
+ * Maps both ways from cache model to domain model and also from domain model to the cache entity
+ * model. This is because we read from the cache and we also write into the cache.
+ */
 class CacheMapper
 constructor(
     private val dateUtil: DateUtil

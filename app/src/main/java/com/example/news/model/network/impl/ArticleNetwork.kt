@@ -1,5 +1,8 @@
 package com.example.news.model.network.impl
 
+/**
+ * Network entity model for storing article data
+ */
 data class ArticleNetwork (
     val source: Source?,
     val author: String?,

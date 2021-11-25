@@ -4,7 +4,12 @@ import com.example.news.model.Article
 import com.example.news.model.cache.CacheService
 
 /**
- * Implementation of the cache service using DAO and Room
+ * Implementation of the cache service interface using DAO and Room
+ * Note that this implementation uses the CacheMapper to map from the domain model [Article] into
+ * the cache entity model [ArticleEntity] when writing to the database and map from the cache
+ * entity model [ArticleEntity] to the domain model [Article] when reading from the database.
+ * This way the repository and subsequent upper layers only use the domain model and the cache
+ * entity model is only used by the cache service.
  */
 class CacheServiceImpl
 constructor(

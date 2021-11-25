@@ -12,12 +12,20 @@ import com.example.news.workers.SeedDatabaseWorker
 @Database(entities = [ArticleEntity::class], version = 1)
 abstract class ArticlesDatabase : RoomDatabase() {
 
+    /**
+     * DAO accessor
+     * At compile time the ArticlesDao interface implementation is generated and hooked to this
+     * accessor method.
+     */
     abstract fun articlesDao(): ArticlesDao
 
     companion object {
         @Volatile
         private var INSTANCE: ArticlesDatabase? = null
 
+        /**
+         * Database instance accessor
+         */
         fun getInstance(context: Context): ArticlesDatabase =
             INSTANCE ?: synchronized(this) {
                 INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
