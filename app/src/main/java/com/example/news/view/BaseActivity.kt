@@ -6,6 +6,10 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.news.R
 
+/**
+ * Base Activity class managing the progress bar.
+ * Any subclass will inherit the progress bar functionality.
+ */
 abstract class BaseActivity : AppCompatActivity() {
 
     lateinit var progressBar: ProgressBar

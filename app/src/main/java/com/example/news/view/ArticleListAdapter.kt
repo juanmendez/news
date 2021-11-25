@@ -14,6 +14,9 @@ fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false):
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
 }
 
+/**
+ * Adapter binding the articles data to the RecyclerView UI component.
+ */
 class ArticlesAdapter(
     private val articles: List<Article>,
     private val listener: OnArticleClickListener

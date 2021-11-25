@@ -10,6 +10,14 @@ import com.example.news.util.TOP_HEADLINES
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 
+/**
+ * ViewModel for the ArticleListActivity3. Maintains its data and business logic.
+ *
+ * Implements LifecycleObserver so that it can act upon the Activity's lifecycle events if needed.
+ * It requires that the Activity holding this ViewModel's instance adding the ViewModel as an
+ * observer to the Activity's lifecycle in the Activity's code:
+ * lifecycle.addObserver(viewModel)
+ */
 class ArticleListActivityViewModel3(
     private val repository3: Repository3
 ) : ViewModel(), LifecycleObserver {

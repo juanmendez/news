@@ -9,6 +9,10 @@ import kotlinx.coroutines.flow.Flow
  * The Repository should expose suspend functions, or return Channel/Flow objects, depending on
  * the nature of the API. The actual coroutines are then set up in the ViewModel. LiveData gets
  * introduced by the ViewModel, not the Repository.
+ *
+ * This repository interface returns a flow of [Resource] (bundled data and [Status]) via its
+ * methods. This relieves the burden on the upper layers (ViewModel) to manage state, such as the
+ * loading state or the error state.
  */
 interface Repository2 {
 

@@ -32,8 +32,15 @@ enum class Status {
 }
 
 /**
- * A generic class that holds a resource,
- * basically it wraps state (status) alongside data (data, message)
+ * A generic class that wraps a generic data of type [T] a message [String] and a [Status].
+ *
+ * This is done in order to bundle the loading state with the data. This relieves the responsibility
+ * on the upper layers (ViewModel) to manage the data state such as the loading state (and its
+ * associated progress indicator), the error state (and its error dialog), and finally the nominal
+ * success state. The Repository will first emit a Resource to indicate the loading state, later it
+ * will emit another Resource once the data is retrieved, and eventually a different Resource in
+ * case of an error.
+ *
  * @param T the [Resource] data type
  * @param status the [Status] of the [Resource]
  * @param data the [Resource] data
