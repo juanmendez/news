@@ -19,6 +19,7 @@ import com.example.news.model.Article
 import com.example.news.mvi.ArticleListStateEvent
 import com.example.news.util.InjectorUtil
 import com.example.news.util.TOP_HEADLINES
+import com.example.news.util.log
 import com.example.news.viewmodel.ArticleListActivityViewModel3
 import com.example.news.viewmodel.ArticleListActivityViewModel3Factory
 import kotlinx.android.synthetic.main.activity_article_list.*
@@ -114,6 +115,8 @@ class ArticleListActivity3 : BaseActivity() {
          * and its state (loading state, error state).
          */
         viewModel3.dataState.observe(this, { dataState ->
+
+            log("toto", "$dataState")
 
             // update ViewState
             dataState.data?.let { event ->

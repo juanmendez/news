@@ -59,4 +59,7 @@ data class Article (
         result = 31 * result + content.hashCode()
         return result
     }
+
+    // for logging purposes
+    override fun toString() = "${javaClass.simpleName}($id)"
 }

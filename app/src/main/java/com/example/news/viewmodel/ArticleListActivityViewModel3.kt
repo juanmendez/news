@@ -87,13 +87,15 @@ class ArticleListActivityViewModel3(
         // so that we can cancel the Job if needed
         getArticlesJob = job
 
+        log("toto", "$stateEvent")
+
         return when (stateEvent) {
 
             // handle GetArticlesEvent event
             is ArticleListStateEvent.GetArticlesEvent -> {
                 return liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
                     try {
-                        log("toto", "GetArticlesEvent: query=${stateEvent.query} page=${stateEvent.page}")
+                        //log("toto", "GetArticlesEvent: query=${stateEvent.query} page=${stateEvent.page}")
                         repository3.getArticles(stateEvent.query, stateEvent.page).collect { dataState ->
                             emit(dataState)
                         }
@@ -112,7 +114,7 @@ class ArticleListActivityViewModel3(
                         if (!query.isNullOrBlank() && page != null) {
                             try {
                                 page++
-                                log("toto", "IncrementPageEvent: query=$query page=$page")
+                                //log("toto", "IncrementPageEvent: query=$query page=$page")
                                 repository3.getArticles(query, page).collect { dataState ->
                                     emit(dataState)
                                 }
@@ -132,7 +134,7 @@ class ArticleListActivityViewModel3(
                         if (!query.isNullOrBlank()) {
                             try {
                                 repository3.deleteArticles(query)
-                                log("toto", "RefreshEvent: query=$query page=1")
+                                //log("toto", "RefreshEvent: query=$query page=1")
                                 repository3.getArticles(query, 1).collect { dataState ->
                                     emit(dataState)
                                 }

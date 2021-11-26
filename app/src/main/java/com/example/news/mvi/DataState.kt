@@ -4,9 +4,9 @@ package com.example.news.mvi
  * DataState is a data wrapper that adds a loading state and an error message to the data.
  *
  * The data and message are wrapped in a consumable [Event] as they will be consumed by the UI and
- * should not be showed again. For example if you set the Airplane mode ON, you will get and show
- * an error message. As you rotate the phone that error message will be shown again unless wrapped
- * into a consumable [Event].
+ * should not be showed again. For example if the Airplane mode is set to ON, the UI will receive
+ * and display an error message. If the phone changes orientations that error message will be
+ * displayed again (LiveData) unless wrapped into a consumable [Event].
  *
  * The wrapped data is usually the ViewState ([ArticleListViewState] for example)
  *
@@ -52,7 +52,7 @@ data class DataState<T>(
             message: String
         ): DataState<T> {
             return DataState(
-                message =  Event(message),
+                message = Event(message),
                 loading = false,
                 data = null
             )
@@ -76,5 +76,15 @@ data class DataState<T>(
                 data = Event.dataEvent(data)
             )
         }
+    }
+
+    // for logging purposes
+    override fun toString(): String {
+        val sb = StringBuilder("${javaClass.simpleName}(")
+        sb.append("loading=$loading, ")
+        sb.append("message=${message?.peekContent() ?: null}, ")
+        sb.append("data=${data?.peekContent() ?: null}")
+        sb.append(")")
+        return sb.toString()
     }
 }
