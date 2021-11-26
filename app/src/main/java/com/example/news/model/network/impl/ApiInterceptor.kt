@@ -1,5 +1,6 @@
 package com.example.news.model.network.impl
 
+import com.example.news.BuildConfig
 import com.example.news.util.log
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
@@ -19,9 +20,7 @@ class ApiInterceptor : Interceptor {
         const val PARAM_NAME_SORT_BY = "sortBy"
         const val PARAM_NAME_PAGE_SIZE = "pageSize"
 
-        // https://newsapi.org
-        // claudiu.colteu@gmail.com / abcd1234
-        const val PARAM_VALUE_API_KEY = "7da5d9626af74c1eab78e5e8aee72b0d"
+        const val PARAM_VALUE_API_KEY = BuildConfig.API_KEY
         const val PARAM_VALUE_LANGUAGE = "en"
         const val PARAM_VALUE_SORT_BY = "publishedAt"
         const val PARAM_VALUE_PAGE_SIZE = "10"
