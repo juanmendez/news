@@ -1,37 +1,25 @@
 package com.example.news.mvi
 
 /**
- * Used as a wrapper for data that is exposed via a LiveData that represents an event.
+ * A data wrapper transforming the data into a consumable event.
+ *
+ * Used for exposed via LiveData so that it does not update once consumed. For example if you set
+ * the Airplane mode ON, you will get and show an error message. As you rotate the phone that error
+ * message will be shown again unless wrapped into a consumable event.
+ *
+ * @param T the data type
+ * @param content the data
  */
 class Event<T>(private val content: T) {
 
-    var hasBeenHandled = false
-        private set // Allow external read but not write
-
-    /**
-     * Returns the content and prevents its use again.
-     */
-    fun getContentIfNotHandled(): T? {
-        return if (hasBeenHandled) {
-            null
-        } else {
-            hasBeenHandled = true
-            content
-        }
-    }
-
-    /**
-     * Returns the content, even if it's already been handled.
-     */
-    fun peekContent(): T = content
-
-    override fun toString(): String {
-        return "Event(content=$content,hasBeenHandled=$hasBeenHandled)"
-    }
-
     companion object {
 
-        // we don't want an event if there's no data
+        /**
+         * Wraps generic data into a consumable [Event]
+         * @param T the data type
+         * @param data the data to be wrapped
+         * @return the data wrapped into an [Event], null if the data is null
+         */
         fun <T> dataEvent(data: T?): Event<T>? {
             data?.let {
                 return Event(it)
@@ -39,12 +27,45 @@ class Event<T>(private val content: T) {
             return null
         }
 
-        // we don't want an event if there is no message
+        /**
+         * Wraps a [String] into a consumable [Event]
+         * @param message the [String] to be wrapped
+         * @return the message wrapped into an [Event], null if the message is null
+         */
         fun messageEvent(message: String?): Event<String>? {
             message?.let {
                 return Event(message)
             }
             return null
         }
+    }
+
+    /**
+     * true if the data was consumed, false otherwise
+     */
+    var consumed = false
+        private set // Allow external read but not write
+
+    /**
+     * Returns the data if not consumed, otherwise returns null
+     * @return the data if it was not consumed, null otherwise
+     */
+    fun getContentIfNotConsumed(): T? {
+        return if (consumed) {
+            null
+        } else {
+            consumed = true
+            content
+        }
+    }
+
+    /**
+     * Allows peeking at the data without consuming it
+     * @return the data
+     */
+    fun peekContent(): T = content
+
+    override fun toString(): String {
+        return "Event(data=$content, consumed=$consumed)"
     }
 }

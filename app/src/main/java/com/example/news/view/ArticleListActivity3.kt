@@ -117,7 +117,7 @@ class ArticleListActivity3 : BaseActivity() {
 
             // update ViewState
             dataState.data?.let { event ->
-                event.getContentIfNotHandled()?.let { articleListViewState ->
+                event.getContentIfNotConsumed()?.let { articleListViewState ->
                     viewModel3.updateViewState(articleListViewState)
                 }
             }
@@ -127,7 +127,7 @@ class ArticleListActivity3 : BaseActivity() {
 
             // update error state
             dataState.message?.let { event ->
-                event.getContentIfNotHandled()?.let { message ->
+                event.getContentIfNotConsumed()?.let { message ->
                     showAlertDialog(message)
                 }
             }

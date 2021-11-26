@@ -4,7 +4,12 @@ import com.example.news.model.Article
 import com.example.news.model.network.ApiService
 import retrofit2.Retrofit
 
-// This ApiService implementation uses Retrofit
+/**
+ * Implementation of the [ApiService]
+ * The network response is parsed into data. Errors are handled by propagating exceptions to the
+ * upper layers: api service -> repository -> view model.
+ * In the end the ViewModel catches the exceptions and notifies the UI about the error.
+ */
 class ApiServiceImpl(
     private val retrofit: Retrofit,
     private val api: Api
@@ -16,8 +21,8 @@ class ApiServiceImpl(
     }
 
     // executed inside an IO-scoped coroutine, will throw an Exception in case of network error,
-    // the Exception is propagated through the Repository to the ViewModel that calls the Repo
-    // via coroutines and handled in the ViewModel
+    // the Exception is propagated through the Repository to the ViewModel (calling the Repository
+    // via coroutines) and handled in the ViewModel
     override suspend fun getArticles(query: String): List<Article> {
         val networkResponse = when (query) {
             "Top Headlines" -> {

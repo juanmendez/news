@@ -22,11 +22,11 @@ constructor(
     }
 
     override suspend fun insertArticles(articles: List<Article>): LongArray {
-        return articlesDao.insertArticles(mapper.articleListToEntityList(articles))
+        return articlesDao.insertArticles(mapper.articleListToArticleEntityList(articles))
     }
 
     override suspend fun getArticles(query: String): List<Article> {
-        return mapper.entityListToArticleList(articlesDao.getArticles(query))
+        return mapper.articleEntityListToArticleList(articlesDao.getArticles(query))
     }
 
     override suspend fun getArticlesCount(query: String): Int {

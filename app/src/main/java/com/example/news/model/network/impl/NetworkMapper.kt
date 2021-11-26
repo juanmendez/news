@@ -1,6 +1,7 @@
 package com.example.news.model.network.impl
 
 import com.example.news.model.Article
+import com.example.news.model.network.impl.data.ArticleNetwork
 import kotlin.collections.ArrayList
 
 /**

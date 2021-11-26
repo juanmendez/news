@@ -10,8 +10,20 @@ import java.lang.reflect.Type
  * to avoid crashing with [java.io.EOFException] inside the GSON parser
  */
 class NullOnEmptyConverterFactory : Converter.Factory() {
-    override fun responseBodyConverter(type: Type, annotations: Array<kotlin.Annotation>, retrofit: Retrofit): Converter<ResponseBody, *> {
-        val delegate: Converter<ResponseBody, *> = retrofit.nextResponseBodyConverter<Any>(this, type, annotations)
-        return Converter<ResponseBody, Any?> { body -> if (body.contentLength() == 0L) null else delegate.convert(body) }
+
+    override fun responseBodyConverter(
+        type: Type,
+        annotations: Array<Annotation>,
+        retrofit: Retrofit
+    ): Converter<ResponseBody, *> {
+
+        val delegate: Converter<ResponseBody, *> =
+            retrofit.nextResponseBodyConverter<Any>(this, type, annotations)
+
+        return Converter<ResponseBody, Any?> { body ->
+            if (body.contentLength() == 0L) null else delegate.convert(
+                body
+            )
+        }
     }
 }

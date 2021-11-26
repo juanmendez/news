@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.flow
  * cache.
  *
  * The data flows as follows:
- * UI -> ViewModel -> Repository -> ApiService -> [ArticleNetwork] -> NetworkMapper -> [Article]
- * -> Repository -> CacheService -> [ArticleEntity] -> DAO -> Room -> DAO -> [ArticleEntity]
- * -> CacheService -> [Article] -> Repository -> ViewModel -> UI
+ * UI -> ViewModel -> Repository -> ApiService -> ArticleNetwork -> NetworkMapper -> Article
+ * -> Repository -> CacheService -> ArticleEntity -> DAO -> Room -> DAO -> ArticleEntity
+ * -> CacheService -> Article -> Repository -> ViewModel -> UI
  *
  * LSP (Liskov Substitution Principle): Objects should be replaceable with subtype instances.
  * DIP (Dependency Inversion Principle): depend on abstractions, not on concretions.

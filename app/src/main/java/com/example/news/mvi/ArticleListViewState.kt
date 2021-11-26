@@ -4,7 +4,7 @@ import com.example.news.model.Article
 
 /**
  * MVI Architecture: the ViewState contains all the data for the View.
- * Here ArticleListViewState contains all the data for ArticleListActivity3.
+ * ArticleListViewState contains all the data for ArticleListActivity3.
  */
 data class ArticleListViewState (
     var articles: List<Article>? = null,

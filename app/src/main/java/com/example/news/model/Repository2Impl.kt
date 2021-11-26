@@ -2,7 +2,7 @@ package com.example.news.model
 
 import com.example.news.model.cache.CacheService
 import com.example.news.model.network.ApiService2
-import com.example.news.model.network.impl.ArticlesResponse
+import com.example.news.model.network.impl.data.ArticlesResponse
 import com.example.news.model.network.impl.NetworkMapper
 import com.example.news.util.TOP_HEADLINES
 import com.example.news.util.ApiResponse

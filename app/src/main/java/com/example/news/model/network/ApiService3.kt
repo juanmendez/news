@@ -1,6 +1,6 @@
 package com.example.news.model.network
 
-import com.example.news.model.network.impl.ArticlesResponse
+import com.example.news.model.network.impl.data.ArticlesResponse
 import retrofit2.Response
 
 /**
@@ -9,7 +9,7 @@ import retrofit2.Response
 interface ApiService3 {
 
     /**
-     * Retrieves the [ArticlesResponse] wrapped in [Response] matching a given [query]
+     * Retrieves the list of articles matching a given query
      * @param query the matching query
      * @param page the matching page
      * @return the matching [ArticlesResponse] wrapped in [Response]
