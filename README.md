@@ -8,7 +8,7 @@
 ## Implementation
 - The news articles are presented in a list view.
 - The app stack is
-   - OkHttp /Retrofit for the network model
+   - OkHttp / Retrofit for the network model
    - Room / DAO for the cache model
    - Repository / ViewModel / LiveData for the MVVM / MVI architecture
    - Coroutines for data processing
