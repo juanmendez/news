@@ -16,7 +16,7 @@
    - RecyclerView / ViewHolder pattern for displaying the articles list
    - SearchManager / SearchRecentSuggestionsProvider for persisting search keywords
 - The architecture will be MVVM and its MVI variant.
-- **Cache is the source of truth**. Data is fetched from the network is only used to update the cache.
+- **Cache is the source of truth**. Data fetched from the network is only used to update the cache.
 
 ## MVVM Architecture
 - Follows the vanilla implementation:
