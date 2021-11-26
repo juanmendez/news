@@ -24,7 +24,9 @@ import com.example.news.viewmodel.ArticleListActivityViewModel2Factory
 import kotlinx.android.synthetic.main.activity_article_list.*
 
 /**
- * Same as ArticleListActivity, implements MVVM architecture
+ * Same as ArticleListActivity, implements MVVM architecture.
+ * Bundles state with data so that the ViewModel and the View do not need to handle the loading
+ * state and the error state, merely displaying it.
  */
 class ArticleListActivity2 : BaseActivity() {
 
@@ -192,7 +194,7 @@ class ArticleListActivity2 : BaseActivity() {
             .setCancelable(false)
             .setPositiveButton("Ok") { _, _ ->
                 run {
-                    // clear the error message data once the user dismissed the error dialog
+                    // user dismissed the error dialog, clear the error message
                     viewModel2.showError(null)
                 }
             }

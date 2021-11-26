@@ -10,7 +10,7 @@ interface ApiService2 {
 
     /**
      * Retrieves the [ArticlesResponse] wrapped in [Response] matching a given [query] and [page]
-     * @param query the matching predicate
+     * @param query the matching query
      * @param page the matching page
      * @return the matching [ArticlesResponse] wrapped in [Response]
      */

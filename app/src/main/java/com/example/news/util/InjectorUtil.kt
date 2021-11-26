@@ -79,6 +79,7 @@ object InjectorUtil {
 
     fun provideRepository3(application: MyApplication): Repository3 {
         val articlesApiService3 = provideApiService3()
-        return Repository3Impl(articlesApiService3)
+        val articlesDaoService = provideCacheService(application)
+        return Repository3Impl(articlesApiService3, articlesDaoService)
     }
 }

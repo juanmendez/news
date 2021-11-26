@@ -10,8 +10,9 @@ interface ApiService3 {
 
     /**
      * Retrieves the [ArticlesResponse] wrapped in [Response] matching a given [query]
-     * @param query the matching predicate
+     * @param query the matching query
+     * @param page the matching page
      * @return the matching [ArticlesResponse] wrapped in [Response]
      */
-    suspend fun getArticles(query: String): Response<ArticlesResponse>
+    suspend fun getArticles(query: String, page: Int): Response<ArticlesResponse>
 }

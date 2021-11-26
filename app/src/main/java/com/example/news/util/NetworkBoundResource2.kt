@@ -79,10 +79,6 @@ abstract class NetworkBoundResource2<CacheObjectType, NetworkObjectType> {
         }
     }
 
-    protected open fun onFetchFailed() {
-        // Optional: implement in sub-classes to handle errors
-    }
-
     @WorkerThread
     protected open fun processResponse(response: ApiSuccessResponse<NetworkObjectType>) =
         response.body
@@ -120,4 +116,9 @@ abstract class NetworkBoundResource2<CacheObjectType, NetworkObjectType> {
      */
     @MainThread
     protected abstract fun loadFromCache(): Flow<CacheObjectType>
+
+    /**
+     * Optional: implement in sub-classes to handle errors
+     */
+    protected open fun onFetchFailed() {}
 }

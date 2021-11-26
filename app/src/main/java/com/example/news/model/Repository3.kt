@@ -20,7 +20,14 @@ interface Repository3 {
     /**
      * Retrieves a list of [Article] matching a given [query]
      * @param query the matching query
+     * @param page the matching page
      * @return the [Flow] of [DataState] of [ArticleListViewState]
      */
-    suspend fun getArticles(query: String): Flow<DataState<ArticleListViewState>>
+    suspend fun getArticles(query: String, page: Int): Flow<DataState<ArticleListViewState>>
+
+    /**
+     * Deletes all articles matching a given [query]
+     * @param query the matching query
+     */
+    suspend fun deleteArticles(query: String)
 }

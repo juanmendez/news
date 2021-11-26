@@ -181,6 +181,7 @@ class ArticleListActivity : BaseActivity() {
             .setCancelable(false)
             .setPositiveButton("Ok") { _, _ ->
                 run {
+                    // user dismissed the error dialog, clear the error message
                     viewModel.showError(null)
                 }
             }

@@ -37,12 +37,13 @@ data class DataState<T>(
         }
 
         fun <T> loading(
-            isLoading: Boolean
+            isLoading: Boolean,
+            data: T? = null
         ): DataState<T> {
             return DataState(
                 message = null,
                 loading = isLoading,
-                data = null
+                data = Event.dataEvent(data)
             )
         }
     }

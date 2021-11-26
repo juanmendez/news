@@ -6,7 +6,8 @@ import retrofit2.Response
 class ApiService3Impl(
     private val api: Api
 ) : ApiService3 {
-    override suspend fun getArticles(query: String): Response<ArticlesResponse> {
-        return api.getArticles(query, 1)
+
+    override suspend fun getArticles(query: String, page: Int): Response<ArticlesResponse> {
+        return api.getArticles(query, page)
     }
 }

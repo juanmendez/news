@@ -8,5 +8,6 @@ import com.example.news.model.Article
  */
 data class ArticleListViewState (
     var articles: List<Article>? = null,
-    var query: String? = null
+    var query: String? = null,
+    var page: Int? = null
 )

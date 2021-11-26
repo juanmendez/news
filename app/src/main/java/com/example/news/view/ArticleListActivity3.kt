@@ -12,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.model.Article
@@ -64,8 +65,41 @@ class ArticleListActivity3 : BaseActivity() {
             else -> LinearLayoutManager(this)
         }
         articles_recyclerview.layoutManager = linearLayoutManager
+        // triggering loading new pages as we scroll to the end of the list
+        val scrollListener: RecyclerView.OnScrollListener =
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    when (resources.configuration.orientation) {
+                        Configuration.ORIENTATION_LANDSCAPE ->
+                            if (!articles_recyclerview.canScrollHorizontally(1)) {
+                                /**
+                                 * MVI Architecture: user actions trigger events being sent from View to ViewModel.
+                                 * Here we send IncrementPage to the ViewModel when the user performs a search.
+                                 */
+                                viewModel3.setStateEvent(ArticleListStateEvent.IncrementPageEvent)
+                            }
+                        else ->
+                            if (!articles_recyclerview.canScrollVertically(1)) {
+                                /**
+                                 * MVI Architecture: user actions trigger events being sent from View to ViewModel.
+                                 * Here we send IncrementPage to the ViewModel when the user performs a search.
+                                 */
+                                viewModel3.setStateEvent(ArticleListStateEvent.IncrementPageEvent)
+                            }
+                    }
+                }
+            }
+        articles_recyclerview.addOnScrollListener(scrollListener)
         adapter = ArticlesAdapter(articles, listener)
         articles_recyclerview.adapter = adapter
+        swipe_refresh.setOnRefreshListener {
+            /**
+             * MVI Architecture: user actions trigger events being sent from View to ViewModel.
+             * Here we send Refresh to the ViewModel when the user performs a search.
+             */
+            viewModel3.setStateEvent(ArticleListStateEvent.RefreshEvent)
+        }
     }
 
     private fun initObservers() {
@@ -74,38 +108,37 @@ class ArticleListActivity3 : BaseActivity() {
         // the Activity's lifecycle events via annotations
         lifecycle.addObserver(viewModel3)
 
-        /*
+        /**
          * MVI Architecture: the View observes the DataState which contains the state of the
          * whole View: its data, which will be set to the ViewState (observed for UI updates)
          * and its state (loading state, error state).
          */
         viewModel3.dataState.observe(this, { dataState ->
 
-            /*
-             * Update ViewState
-             */
+            // update ViewState
             dataState.data?.let { event ->
                 event.getContentIfNotHandled()?.let { articleListViewState ->
                     viewModel3.updateViewState(articleListViewState)
                 }
             }
 
-            /*
-             * Update loading state
-             */
+            // update loading state
             showProgressBar(dataState.loading)
 
-            /*
-             * Update error state
-             */
+            // update error state
             dataState.message?.let { event ->
                 event.getContentIfNotHandled()?.let { message ->
                     showAlertDialog(message)
                 }
             }
+
+            // update refresh state
+            if (viewModel3.viewState.value?.page == 1) {
+                swipe_refresh.isRefreshing = false
+            }
         })
 
-        /*
+        /**
          * MVI Architecture: the View observes the ViewState for UI updates.
          */
         viewModel3.viewState.observe(this, { viewState ->
@@ -169,7 +202,7 @@ class ArticleListActivity3 : BaseActivity() {
              * MVI Architecture: user actions trigger events being sent from View to ViewModel.
              * Here we send GetArticlesEvent to the ViewModel when the user performs a search.
              */
-            viewModel3.setStateEvent(ArticleListStateEvent.GetArticlesEvent(query))
+            viewModel3.setStateEvent(ArticleListStateEvent.GetArticlesEvent(query, 1))
         }
     }
 
@@ -187,7 +220,11 @@ class ArticleListActivity3 : BaseActivity() {
         dialogBuilder
             .setMessage(message ?: "Something went wrong...")
             .setCancelable(false)
-            .setPositiveButton("Ok", null)
+            .setPositiveButton("Ok") { _, _ ->
+                run {
+                    // TODO clear error message
+                }
+            }
         val alert = dialogBuilder.create()
         alert.setTitle("Error")
         alert.show()
