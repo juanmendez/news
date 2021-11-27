@@ -1,5 +1,7 @@
 # Android sample illustrating MVVM and MVI application behavior patterns
 
+![portrait dark](./docs/portrait-dark.png)   ![landscape light](./docs/landscape-light.png)
+
 ## App requirements
 - Allows searching news articles using the paginated API from https://newsapi.org
 - Pull to refresh
@@ -18,6 +20,8 @@
 - The architecture will be MVVM and its MVI variant.
 - **Cache is the source of truth**. Data fetched from the network is only used to update the cache.
 - The API key is stored in local.properties as apiKey="your API key"
+- The app supports both portrait and landscape without boiler plate code by virtue of LiveData
+- The app supports dark mode based on the phone's settings
 
 ## MVVM Architecture
 - Follows the vanilla implementation:
