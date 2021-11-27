@@ -1,6 +1,8 @@
 # Android sample illustrating MVVM and MVI application behavior patterns
 
-![portrait dark](./docs/portrait-dark.png)   ![landscape light](./docs/landscape-light.png)
+![portrait dark](./docs/portrait-dark.png)
+
+![landscape light](./docs/landscape-light.png)
 
 ## App requirements
 - Allows searching news articles using the paginated API from https://newsapi.org
