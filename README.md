@@ -1,4 +1,4 @@
-# Sample Android application illustrating MVVM and MVI behavior patterns
+# Android sample illustrating MVVM and MVI application behavior patterns
 
 ## App requirements
 - Allows searching news articles using the paginated API from https://newsapi.org
