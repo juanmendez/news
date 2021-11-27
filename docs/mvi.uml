@@ -1,5 +1,5 @@
 @startuml
-actor         Actor                  as Foo1
+actor         User                   as Foo1
 participant   View                   as Foo2
 participant   ViewModel              as Foo3
 participant   Repository             as Foo4
