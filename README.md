@@ -47,11 +47,15 @@
 ## MVI Architecture
 The MVI architecture improves the implementation as follows:
 - all user interactions are abstracted via a **StateEvent** sealed class. These events are sent from the View to the View Model when the user interacts with the app:
-	- when the user performs a search the View sends the **GetArticlesEvent**
-	- when the user pulls to refresh the View sends the **RefreshEvent**
-	- when the user scrolls to the bottom of the articles list the View sends the **IncrementPageEvent**
-	- all these events are received by the View Models and Repository APIs are called to fetch the data
-- all fetched data is wrapped in a **DataState** which contains all the View data: the loading state, the error message and the actual articles data.
+   - when the user performs a search the View sends the **GetArticlesEvent**
+   - when the user pulls to refresh the View sends the **RefreshEvent**
+   - when the user scrolls to the bottom of the articles list the View sends the **IncrementPageEvent**
+   - all these events are received by the View Models and Repository APIs are called to fetch the data
+ - all the View data is wrapped into a **ViewState**. Specifically the articles list View requires the following: the articles data, the search query string and the page index.
+- all fetched data is wrapped in a **DataState** which wraps the View data alongside the loading state and the error message. This is similar to the Resource class from the MVVM architecture.
 - within the **DataState** the error message and the articles data are each wrapped into a consumable **Event** as they are exposed to the View via LiveData and they should be consumed upon access. For example if the Airplane mode is set to ON, the View will receive and display an error message. If the phone changes orientations that error message will be displayed again (LiveData) unless wrapped into a consumable **Event**.
 
-To summarize **StateEvents** are used to send user interactions events from the View to the View Model and **DataStates** used to completely encapsulate the View data and state received from the data layer.
+To summarize
+- **StateEvents** are used to send user interactions events from the View to the View Model.
+- the View Model handles the StateEvents by making appropriate calls to the data layer via the Repository.
+- the Repository responds with a flow of **DataStates** that encapsulate the View state ( success / error / loading ) and the all-encompassing View data (wrapped in **ViewState**).
