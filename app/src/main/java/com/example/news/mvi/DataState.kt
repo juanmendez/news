@@ -1,7 +1,16 @@
 package com.example.news.mvi
 
+import com.example.news.util.Status
+
 /**
- * DataState is a data wrapper that adds a loading state and an error message to the data.
+ * Data wrapper that adds state and error message to data.
+ *
+ * This is done in order to bundle the loading state and an error message with the data. This
+ * relieves the upper layers (ViewModel) from the responsibility of managing the data state such
+ * as the loading state (and its associated progress indicator), the error state (and its error
+ * dialog), and finally the nominal success state. The Repository will first emit a Resource to
+ * indicate the loading state, later it will emit another Resource once the data is retrieved,
+ * and eventually a different Resource in case of an error.
  *
  * The data and message are wrapped in a consumable [Event] as they will be consumed by the UI and
  * should not be showed again. For example if the Airplane mode is set to ON, the UI will receive
@@ -11,39 +20,38 @@ package com.example.news.mvi
  * The wrapped data is usually the ViewState ([ArticleListViewState] for example)
  *
  * @param T the data type
- * @param message the message [String] wrapped into a consumable [Event]
- * @param loading a [Boolean] indicating the loading state
+ * @param status the [Status] of the [DataState]
  * @param data the data wrapped into a consumable [Event]
+ * @param message the message [String] wrapped into a consumable [Event]
  */
 data class DataState<T>(
-    var message: Event<String>? = null,
-    var loading: Boolean = false,
-    val data: Event<T>?
+    val status: Status,
+    val data: Event<T>?,
+    val message: Event<String>?
 ) {
     companion object {
 
         /**
-         * Generates a [DataState] containing valid data. Wraps the data and message into
-         * consumable [Event]
+         * Generates a [Status.SUCCESS] [DataState]. Wraps both the data and message into
+         * respective consumable [Event].
          * @param T the data type
-         * @param message the message [String]
          * @param data the data
+         * @param message the message [String]
          * @return the [DataState]
          */
-        fun <T> data(
-            message: String? = null,
-            data: T? = null
+        fun <T> success(
+            data: T? = null,
+            message: String? = null
         ): DataState<T> {
             return DataState(
-                message = Event.messageEvent(message),
-                loading = false,
-                data = Event.dataEvent(data)
+                status = Status.SUCCESS,
+                data = Event.dataEvent(data),
+                message = Event.messageEvent(message)
             )
         }
 
         /**
-         * Generates a [DataState] containing an error. Wraps the error message into a
-         * consumable [Event]
+         * Generates a [Status.ERROR] [DataState]. Wraps the message into a consumable [Event].
          * @param T the data type
          * @param message the error message [String]
          * @return the [DataState]
@@ -52,28 +60,25 @@ data class DataState<T>(
             message: String
         ): DataState<T> {
             return DataState(
-                message = Event(message),
-                loading = false,
-                data = null
+                status = Status.ERROR,
+                data = null,
+                message = Event(message)
             )
         }
 
         /**
-         * Generates a [DataState] containing valid data and a loading state. Wraps the data into
-         * a consumable [Event]
+         * Generates a [Status.LOADING] [DataState]. Wraps the data into a consumable [Event].
          * @param T the data type
-         * @param isLoading a [Boolean] indicating the loading state
          * @param data the data
          * @return the [DataState]
          */
         fun <T> loading(
-            isLoading: Boolean,
             data: T? = null
         ): DataState<T> {
             return DataState(
-                message = null,
-                loading = isLoading,
-                data = Event.dataEvent(data)
+                status = Status.LOADING,
+                data = Event.dataEvent(data),
+                message = null
             )
         }
     }
@@ -81,7 +86,7 @@ data class DataState<T>(
     // for logging purposes
     override fun toString(): String {
         val sb = StringBuilder("${javaClass.simpleName}(")
-        sb.append("loading=$loading, ")
+        sb.append("status=${status.name}, ")
         sb.append("message=${message?.peekContent() ?: null}, ")
         sb.append("data=${data?.peekContent() ?: null}")
         sb.append(")")

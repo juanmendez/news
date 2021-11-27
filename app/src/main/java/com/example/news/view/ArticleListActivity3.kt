@@ -18,6 +18,7 @@ import com.example.news.R
 import com.example.news.model.Article
 import com.example.news.mvi.ArticleListStateEvent
 import com.example.news.util.InjectorUtil
+import com.example.news.util.Status
 import com.example.news.util.TOP_HEADLINES
 import com.example.news.util.log
 import com.example.news.viewmodel.ArticleListActivityViewModel3
@@ -126,7 +127,7 @@ class ArticleListActivity3 : BaseActivity() {
             }
 
             // update loading state
-            showProgressBar(dataState.loading)
+            showProgressBar(dataState.status == Status.LOADING)
 
             // update error state
             dataState.message?.let { event ->

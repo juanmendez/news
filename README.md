@@ -1,9 +1,9 @@
-# Sample app for illustrating MVVM and MVI application behavior patterns
+# Sample Android application illustrating MVVM and MVI behavior patterns
 
 ## App requirements
-- Allows the user to search news based on a keyword using a paginated API.
-- Allows the user to "pull to refresh".
-- Data shall be cached.
+- Allows searching news articles using the paginated API from https://newsapi.org
+- Pull to refresh
+- Data shall be cached for fast access
 
 ## Implementation
 - The news articles are presented in a list view.
@@ -52,10 +52,30 @@ The MVI architecture improves the implementation as follows:
    - when the user scrolls to the bottom of the articles list the View sends the **IncrementPageEvent**
    - all these events are received by the View Models and Repository APIs are called to fetch the data
  - all the View data is wrapped into a **ViewState**. Specifically the articles list View requires the following: the articles data, the search query string and the page index.
-- all fetched data is wrapped in a **DataState** which wraps the View data alongside the loading state and the error message. This is similar to the Resource class from the MVVM architecture.
+- all fetched data is wrapped in a **DataState** which wraps the View data alongside the loading state and the error message. This is similar to the **Resource** class from the MVVM architecture.
 - within the **DataState** the error message and the articles data are each wrapped into a consumable **Event** as they are exposed to the View via LiveData and they should be consumed upon access. For example if the Airplane mode is set to ON, the View will receive and display an error message. If the phone changes orientations that error message will be displayed again (LiveData) unless wrapped into a consumable **Event**.
 
 To summarize
 - **StateEvents** are used to send user interactions events from the View to the View Model.
 - the View Model handles the StateEvents by making appropriate calls to the data layer via the Repository.
 - the Repository responds with a flow of **DataStates** that encapsulate the View state ( success / error / loading ) and the all-encompassing View data (wrapped in **ViewState**).
+
+Execution example:
+- app starts OR user searches for "Top Headlines"
+	- GetArticlesEvent(query=Top Headlines, page=1) **user interaction event**
+	- DataState(status=LOADING, message=null, data=null) **loading**
+	- DataState(status=LOADING, message=null, data=ArticleListViewState(articles=[], query=Top Headlines, page=1)) **empty cache hit, still loading state**
+	- API call: http://newsapi.org/v2/everything?q=Top%20Headlines&page=1&pageSize=10&sortBy=publishedAt&language=en&apiKey= **loads page 1 from network, updates cache**
+	- DataState(status=SUCCESS, message=null, data=ArticleListViewState(articles=[Article(1), Article(1726243711), Article(1528412622), Article(-995679586), Article(-1375563641), Article(270800907), Article(-2056362363), Article(538178404), Article(219357909), Article(1189165479), Article(1151014404)], query=Top Headlines, page=1)) **updated cache hit, 10 articles, success state**
+- user scrolls to the bottom of the list
+	- IncrementPageEvent **user interaction event**
+	- DataState(status=LOADING, message=null, data=null) **loading**
+	- DataState(status=LOADING, message=null, data=ArticleListViewState(articles=[Article(1726243711), Article(1528412622), Article(-995679586), Article(-1375563641), Article(270800907), Article(-2056362363), Article(538178404), Article(219357909), Article(1189165479), Article(1151014404)], query=Top Headlines, page=2)) **cache hit, 10 articles, still loading state**
+	- API call: http://newsapi.org/v2/everything?q=Top%20Headlines&page=2&pageSize=10&sortBy=publishedAt&language=en&apiKey= **loads page 2 from network, updates cache**
+	- DataState(status=SUCCESS, message=null, data=ArticleListViewState(articles=[Article(1726243711), Article(1528412622), Article(-995679586), Article(-1375563641), Article(270800907), Article(-2056362363), Article(538178404), Article(219357909), Article(1189165479), Article(1151014404), Article(-2120201611), Article(-904808611), Article(742014054), Article(1254831480), Article(-1881845964), Article(9912236), Article(-520627924), Article(-1962542157), Article(1107571009), Article(-1246901041)], query=Top Headlines, page=2)) **updated cache hit, 20 articles, success state**
+- user pulls to refresh (empties the cache)
+	- RefreshEvent **user interaction event**
+	- DataState(status=LOADING, message=null, data=null) **loading**
+	- DataState(status=LOADING, message=null, data=ArticleListViewState(articles=[], query=Top Headlines, page=1)) **empty cache hit, still loading state**
+	- API call: http://newsapi.org/v2/everything?q=Top%20Headlines&page=1&pageSize=10&sortBy=publishedAt&language=en&apiKey= **loads page 1 from network, updates cache**
+	- DataState(status=SUCCESS, message=null, data=ArticleListViewState(articles=[Article(1726243711), Article(1528412622), Article(-995679586), Article(-1375563641), Article(270800907), Article(-2056362363), Article(538178404), Article(219357909), Article(1189165479), Article(1151014404)], query=Top Headlines, page=1)) **updated cache hit, 10 articles, success state**

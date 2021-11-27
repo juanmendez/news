@@ -20,14 +20,14 @@ abstract class NetworkBoundResource3<CacheObjectType, NetworkObjectType, ViewSta
     fun asFlow() = flow<DataState<ViewStateType>> {
 
         // emit loading
-        emit(DataState.loading(isLoading = true, data = null))
+        emit(DataState.loading(data = null))
 
         val cacheValue = loadFromCache().first()
 
         if (shouldFetchFromNetwork(cacheValue)) {
 
             // emit cache data
-            emit(DataState.loading(isLoading = true, data = processCache(cacheValue)))
+            emit(DataState.loading(data = processCache(cacheValue)))
 
             // fetch network data
             when (val apiResponse = fetchFromNetwork()) {
@@ -38,12 +38,12 @@ abstract class NetworkBoundResource3<CacheObjectType, NetworkObjectType, ViewSta
 
                     // emit updated cache value
                     val updatedCacheValue = loadFromCache().first()
-                    emit(DataState.data(message = null, data = processCache(updatedCacheValue)))
+                    emit(DataState.success(data = processCache(updatedCacheValue), message = null))
                 }
                 is ApiEmptyResponse -> {
 
                     // network didn't return anything, return cache data
-                    emit(DataState.data(message = null, data = processCache(cacheValue)))
+                    emit(DataState.success(data = processCache(cacheValue), message = null))
                 }
                 is ApiErrorResponse -> {
 
@@ -58,7 +58,7 @@ abstract class NetworkBoundResource3<CacheObjectType, NetworkObjectType, ViewSta
         } else {
 
             // emit cache data
-            emit(DataState.data(message = null, data = processCache(cacheValue)))
+            emit(DataState.success(data = processCache(cacheValue), message = null))
         }
     }
 
