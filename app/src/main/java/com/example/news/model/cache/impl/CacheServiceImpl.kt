@@ -18,15 +18,15 @@ constructor(
 ) : CacheService {
 
     override suspend fun insertArticle(article: Article): Long {
-        return articlesDao.insertArticle(mapper.mapToEntity(article))
+        return articlesDao.insertArticle(mapper.toEntity(article))
     }
 
     override suspend fun insertArticles(articles: List<Article>): LongArray {
-        return articlesDao.insertArticles(mapper.articleListToArticleEntityList(articles))
+        return articlesDao.insertArticles(mapper.toEntity(articles))
     }
 
     override suspend fun getArticles(query: String): List<Article> {
-        return mapper.articleEntityListToArticleList(articlesDao.getArticles(query))
+        return mapper.toDomain(articlesDao.getArticles(query))
     }
 
     override suspend fun getArticlesCount(query: String): Int {

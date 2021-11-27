@@ -36,7 +36,7 @@ class ApiServiceImpl(
         val successResponse = checkResponseThrowError(retrofit, networkResponse)
         val networkArticles = successResponse.body()?.articles
         networkArticles?.let {
-            return NetworkMapper.networkArticleListToArticleList(query, networkArticles)
+            return NetworkMapper.toDomain(query, networkArticles)
         } ?: run {
             throw Exception()
         }

@@ -43,9 +43,7 @@ class Repository3Impl(
             override suspend fun saveNetworkResponseToCache(data: ArticlesResponse) {
                 // save the page to cache
                 data.articles?.let { networkArticles ->
-                    val articles =
-                        NetworkMapper.networkArticleListToArticleList(query, networkArticles)
-                    cacheService.insertArticles(articles)
+                    cacheService.insertArticles(NetworkMapper.toDomain(query, networkArticles))
                 }
             }
 

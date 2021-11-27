@@ -22,15 +22,15 @@ object NetworkMapper {
      * @param remoteArticles the list of [ArticleNetwork]
      * @return the list of [Article]
      */
-    fun networkArticleListToArticleList(query: String, remoteArticles: List<ArticleNetwork>): List<Article> {
+    fun toDomain(query: String, remoteArticles: List<ArticleNetwork>): List<Article> {
         val list: ArrayList<Article> = ArrayList()
         for (remoteArticle in remoteArticles) {
-            list.add(mapFromNetwork(query, remoteArticle))
+            list.add(toDomain(query, remoteArticle))
         }
         return list
     }
 
-    private fun mapFromNetwork(query: String, articleNetwork: ArticleNetwork): Article {
+    private fun toDomain(query: String, articleNetwork: ArticleNetwork): Article {
         return Article(
             // this makes primary key unique, so we will not have
             // any duplicate articles inserted into the database

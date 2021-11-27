@@ -18,10 +18,10 @@ constructor(
      * Maps a list of cache entity model [ArticleEntity] into a list of domain model [Article].
      * Used when reading from the cache.
      */
-    fun articleEntityListToArticleList(articleEntityList: List<ArticleEntity>): List<Article> {
+    fun toDomain(articleEntityList: List<ArticleEntity>): List<Article> {
         val articleList: ArrayList<Article> = ArrayList()
         for (articleEntity in articleEntityList) {
-            articleList.add(mapFromEntity(articleEntity))
+            articleList.add(toDomain(articleEntity))
         }
         return articleList
     }
@@ -30,31 +30,31 @@ constructor(
      * Maps a list of domain model [Article] into a list of cache entity model [ArticleEntity].
      * Used when writting to the cache.
      */
-    fun articleListToArticleEntityList(articleList: List<Article>): List<ArticleEntity> {
+    fun toEntity(articleList: List<Article>): List<ArticleEntity> {
         val articleEntityList: ArrayList<ArticleEntity> = ArrayList()
         for (article in articleList) {
-            articleEntityList.add(mapToEntity(article))
+            articleEntityList.add(toEntity(article))
         }
         return articleEntityList
     }
 
-    override fun mapFromEntity(entity: ArticleEntity): Article {
+    override fun toDomain(entityModel: ArticleEntity): Article {
         return Article(
-            id = entity.id,
-            query = entity.query,
-            sourceId = entity.sourceId,
-            sourceName = entity.sourceName,
-            author = entity.author,
-            title = entity.title,
-            description = entity.description,
-            url = entity.url,
-            imageUrl = entity.imageUrl,
-            publishedDate = dateUtil.timeToDate(entity.publishedDate),
-            content = entity.content
+            id = entityModel.id,
+            query = entityModel.query,
+            sourceId = entityModel.sourceId,
+            sourceName = entityModel.sourceName,
+            author = entityModel.author,
+            title = entityModel.title,
+            description = entityModel.description,
+            url = entityModel.url,
+            imageUrl = entityModel.imageUrl,
+            publishedDate = dateUtil.timeToDate(entityModel.publishedDate),
+            content = entityModel.content
         )
     }
 
-    override fun mapToEntity(domainModel: Article): ArticleEntity {
+    override fun toEntity(domainModel: Article): ArticleEntity {
         return ArticleEntity(
             id = domainModel.id,
             query = domainModel.query,
