@@ -43,6 +43,7 @@
          - queries again the cache and emits a **success Resource with the updated cache data** so that app can display the updated cached data
       - in case of network failure emits an **error Resource** so that the app can display the error
    - The **NetworkBoundResource** allows the Repository to be very lean and only implements API specifics by implementing abstract methods defined by the NetworkBoundResource.
+   - The API key is stored in local.properties as apiKey="your API key"
 
 ## MVI Architecture
 The MVI architecture improves the implementation as follows:
