@@ -60,6 +60,10 @@ To summarize
 - the View Model handles the StateEvents by making appropriate calls to the data layer via the Repository.
 - the Repository responds with a flow of **DataStates** that encapsulate the View state ( success / error / loading ) and the all-encompassing View data (wrapped in **ViewState**).
 
+Uml sequence diagram for the user making a query search
+
+![MVI sequence diagram](./docs/mvi.png)
+
 Execution example:
 - app starts OR user searches for "Top Headlines"
 	- GetArticlesEvent(query=Top Headlines, page=1) **user interaction event**

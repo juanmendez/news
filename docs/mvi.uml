@@ -1,0 +1,66 @@
+@startuml
+actor         Actor                  as Foo1
+participant   View                   as Foo2
+participant   ViewModel              as Foo3
+participant   Repository             as Foo4
+participant   NetworkBoundResource   as Foo5
+participant   NetworkMapper          as Foo6
+participant   CacheService           as Foo7
+participant   CacheMapper            as Foo8
+database      DAO                    as Foo9
+participant   ApiService             as Foo10
+Foo1 -> Foo2 : query
+Foo2 -> Foo3 : GetArticlesEvent(query, 1)
+Foo3 -> Foo4 : getArticles(query, 1)
+Foo4 -> Foo5 : NetworkBoundResource()
+Foo5 -> Foo4 : DataState.loading(data = null)
+Foo4 -> Foo3 : dataState
+Foo3 -> Foo2 : dataState
+group update UI
+Foo2 -> Foo2 : showProgress(dataState.status == LOADING)
+end
+group loadFromCache
+Foo5 -> Foo7 : getArticles(query)
+Foo7 -> Foo9 : getArticles(query)
+Foo9 -> Foo7 : data = List<ArticleEntity>
+Foo7 -> Foo8 : toDomain(data)
+Foo8 -> Foo7 : articles = List<Articles>
+Foo7 -> Foo5 : articles = List<Articles>
+end
+Foo5 -> Foo4 : DataState.loading(data = ViewState(articles, query, 1)
+Foo4 -> Foo3 : dataState
+Foo3 -> Foo2 : dataState
+group update UI
+Foo2 -> Foo2 : showProgress(dataState.status == LOADING)
+Foo2 -> Foo3 : updateViewState(dataState.data)
+Foo2 -> Foo2 : update list with viewState.articles
+end
+group fetchFromNetwork
+Foo5 -> Foo10 : getArticles(query, 1)
+Foo10 -> Foo5 : response = ApiResponse<ArticlesResponse>
+Foo5 -> Foo6 : toDomain(query, response.body.articles)
+Foo6 -> Foo5 : articles = List<Article>
+end
+group saveNetworkResponseToCache
+Foo5 -> Foo7 : insertArticles(articles)
+Foo7 -> Foo8 : toEntity(articles)
+Foo8 -> Foo7 : data = List<ArticleEntity>
+Foo7 -> Foo9 : insertArticles(data)
+end
+group loadFromCache
+Foo5 -> Foo7 : getArticles(query)
+Foo7 -> Foo9 : getArticles(query)
+Foo9 -> Foo7 : data = List<ArticleEntity>
+Foo7 -> Foo8 : toDomain(data)
+Foo8 -> Foo7 : articles = List<Articles>
+Foo7 -> Foo5 : articles = List<Articles>
+end
+Foo5 -> Foo4 : DataState.success(data = ViewState(articles, query, 1)
+Foo4 -> Foo3 : dataState
+Foo3 -> Foo2 : dataState
+group update UI
+Foo2 -> Foo2 : showProgress(dataState.status == LOADING)
+Foo2 -> Foo3 : updateViewState(dataState.data)
+Foo2 -> Foo2 : update list with viewState.articles
+end
+@enduml
