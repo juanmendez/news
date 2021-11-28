@@ -8,6 +8,8 @@ import com.example.news.mvi.ArticleListViewState
 import com.example.news.mvi.DataState
 import com.example.news.util.NetworkBoundResource3
 import com.example.news.util.ApiResponse
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -20,6 +22,8 @@ class Repository3Impl(
     private val apiService3: ApiService3,
     private val cacheService: CacheService
 ) : Repository3 {
+    @ExperimentalCoroutinesApi
+    @FlowPreview
     override suspend fun getArticles(query: String, page: Int): Flow<DataState<ArticleListViewState>> {
         return object : NetworkBoundResource3<List<Article>, ArticlesResponse, ArticleListViewState>() {
 

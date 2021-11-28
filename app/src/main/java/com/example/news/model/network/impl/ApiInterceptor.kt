@@ -31,7 +31,7 @@ class ApiInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest: Request = chain.request()
-        val originalHttpUrl: HttpUrl = originalRequest.url()
+        val originalHttpUrl: HttpUrl = originalRequest.url
         val url = originalHttpUrl.newBuilder()
             .addQueryParameter(PARAM_NAME_PAGE_SIZE, PARAM_VALUE_PAGE_SIZE)
             .addQueryParameter(PARAM_NAME_SORT_BY, PARAM_VALUE_SORT_BY)
@@ -39,7 +39,7 @@ class ApiInterceptor : Interceptor {
             .addQueryParameter(PARAM_NAME_API_KEY, PARAM_VALUE_API_KEY)
             .build()
         val request: Request = originalRequest.newBuilder().url(url).build()
-        log("toto", request.url().toString())
+        log("toto", request.url.toString())
         return chain.proceed(request)
     }
 }

@@ -43,7 +43,7 @@ class RepositoryImpl(
             emit(cacheService.getArticles(query))
         }
         // fetch new articles from network
-        apiService.getArticles(query)?.let {
+        apiService.getArticles(query).let {
             // save them to cache
             cacheService.insertArticles(it)
             // emit them

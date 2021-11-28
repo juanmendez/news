@@ -87,8 +87,8 @@ data class DataState<T>(
     override fun toString(): String {
         val sb = StringBuilder("${javaClass.simpleName}(")
         sb.append("status=${status.name}, ")
-        sb.append("message=${message?.peekContent() ?: null}, ")
-        sb.append("data=${data?.peekContent() ?: null}")
+        sb.append("message=${message?.peekContent()}, ")
+        sb.append("data=${data?.peekContent()}")
         sb.append(")")
         return sb.toString()
     }

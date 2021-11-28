@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_webview.*
 
 class WebViewActivity : BaseActivity() {
 
-    private lateinit var url: String
+    private var url: String? = null
 
     companion object {
         const val URL_EXTRA = "com.example.news.view.ArticleActivity.URL_EXTRA"
@@ -48,7 +48,7 @@ class WebViewActivity : BaseActivity() {
                         showProgressBar(false)
                     }
                 }
-                web_view.loadUrl(url)
+                web_view.loadUrl(it)
             }
         }
     }

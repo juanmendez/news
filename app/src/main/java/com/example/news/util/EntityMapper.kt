@@ -12,7 +12,7 @@ interface EntityMapper <EntityModel, DomainModel>{
      * @param entity the entity model
      * @return the domain model
      */
-    fun toDomain(entity: EntityModel): DomainModel
+    fun toDomain(entityModel: EntityModel): DomainModel
 
     /**
      * Maps from domain model to entity model

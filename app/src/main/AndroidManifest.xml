@@ -64,7 +64,8 @@
         <!-- uncomment this for MVI -->
         <activity
             android:name=".view.ArticleListActivity3"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

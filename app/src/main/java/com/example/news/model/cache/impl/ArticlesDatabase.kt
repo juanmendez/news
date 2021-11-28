@@ -9,7 +9,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.news.workers.SeedDatabaseWorker
 
-@Database(entities = [ArticleEntity::class], version = 1)
+@Database(entities = [ArticleEntity::class], version = 1, exportSchema = false)
 abstract class ArticlesDatabase : RoomDatabase() {
 
     /**

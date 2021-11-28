@@ -57,16 +57,16 @@ private fun parseError(
             arrayOfNulls<Annotation>(0)
         )
 
-    val apiError: ApiError?
-
-    // try converting the API response into an ApiError network entity model
-    apiError = try {
-        converter.convert(response.errorBody())
-    } catch (e: IOException) {
-        // failed parsing the API error response
+    response.errorBody()?.let {
+        return try {
+            // try converting the API response into an ApiError network entity model and return it
+            converter.convert(it)
+        } catch (e: IOException) {
+            // failed parsing the API error response, return null
+            return null
+        }
+    } ?: run {
+        // empty response, return null
         return null
     }
-
-    // return the ApiError
-    return apiError
 }

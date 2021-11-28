@@ -8,8 +8,12 @@ import com.example.news.model.Repository
  * Factory for the [ArticleListActivityViewModel].
  * Constructor-injects the [Repository] instance.
  */
-class ArticleListActivityViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+@Suppress("UNCHECKED_CAST")
+class ArticleListActivityViewModelFactory(
+    private val repository: Repository
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return ArticleListActivityViewModel(repository) as T
     }
 }

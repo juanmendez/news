@@ -41,7 +41,7 @@ fun log(className: String?, message: String) {
  */
 fun logArticles(msg: String, articles: List<Article>) {
     log("toto", "$msg ${articles.size} articles:")
-    for ((index, article) in articles.withIndex()) {
+    for ((index, _) in articles.withIndex()) {
         log("toto", "${index + 1}. ${articles[index].title} | ${articles[index].publishedDate}")
     }
 }
@@ -53,7 +53,7 @@ fun logArticles(msg: String, articles: List<Article>) {
  */
 fun log3Articles(msg: String, articles: List<Article>) {
     log("toto", "$msg ${articles.size} articles:")
-    for ((index, article) in articles.withIndex()) {
+    for ((index, _) in articles.withIndex()) {
         log("toto", "${index + 1}. ${articles[index].title} | ${articles[index].publishedDate}")
         if (index == 2) break
     }
