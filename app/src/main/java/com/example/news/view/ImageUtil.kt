@@ -23,21 +23,9 @@ fun loadPicture(
         mutableStateOf(value = null, policy = structuralEqualityPolicy())
     }
 
-    // load placeholder
     Glide.with(context)
         .asBitmap()
-        .load(defaultImage)
-        .into(object : CustomTarget<Bitmap>() {
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                bitmapState.value = resource
-            }
-
-            override fun onLoadCleared(placeholder: Drawable?) {}
-        })
-
-    // load image from network
-    Glide.with(context)
-        .asBitmap()
+        .placeholder(defaultImage)
         .load(url)
         .into(object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
