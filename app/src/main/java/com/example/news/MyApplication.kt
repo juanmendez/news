@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.example.news.model.cache.impl.ArticlesDatabase
 import com.facebook.stetho.Stetho
 
+/**
+ * Extend the Application to hold the cache database instance, setup Stetho and manage Dark mode
+ */
 class MyApplication : Application() {
 
     // singleton database instance

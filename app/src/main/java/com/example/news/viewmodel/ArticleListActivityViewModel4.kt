@@ -1,5 +1,7 @@
 package com.example.news.viewmodel
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
@@ -9,6 +11,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.Lifecycle
+import com.example.news.model.Article
 import com.example.news.model.Repository3
 import com.example.news.mvi.ArticleListStateEvent
 import com.example.news.mvi.ArticleListViewState
@@ -22,14 +25,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 
 /**
- * ViewModel for the ArticleListActivity3. Maintains its data and business logic.
+ * ViewModel for the ArticleListActivity4. Maintains its data and business logic.
  *
  * Implements LifecycleObserver so that it can act upon the Activity's lifecycle events if needed.
  * It requires that the Activity holding this ViewModel's instance adding the ViewModel as an
  * observer to the Activity's lifecycle in the Activity's code:
  * lifecycle.addObserver(viewModel)
  */
-class ArticleListActivityViewModel3(
+class ArticleListActivityViewModel4(
     private val repository3: Repository3
 ) : ViewModel(), LifecycleObserver {
 
@@ -52,18 +55,18 @@ class ArticleListActivityViewModel3(
 
     private val _stateEvent: MutableLiveData<ArticleListStateEvent> = MutableLiveData(
         /**
-         * initial ViewState value that triggers fetching the top headlines
+         * initial state event value that triggers fetching the top headlines
          */
         ArticleListStateEvent.GetArticlesEvent(TOP_HEADLINES, 1)
     )
 
     /**
-     * MVI Architecture: called by the UI to send events from View to ViewModel.
+     * MVI Architecture: called by the UI to send state events from View to ViewModel.
      * This function receives the event from the View and triggers handleStateEvent
      * to process the event.
      */
-    fun setStateEvent(event: ArticleListStateEvent) {
-        _stateEvent.value = event
+    fun setStateEvent(stateEvent: ArticleListStateEvent) {
+        _stateEvent.value = stateEvent
     }
 
     /**
@@ -81,9 +84,17 @@ class ArticleListActivityViewModel3(
     /**
      * MVI Architecture: all the View data is maintained into a single ViewState LiveData
      * object exposed to the View for observation.
+     * MutableState class is a single value holder whose reads and writes are observed by Compose.
      */
     private val _viewState: MutableLiveData<ArticleListViewState> = MutableLiveData()
     val viewState: LiveData<ArticleListViewState> = _viewState
+
+    /**
+     * The articles need to be wrapped into a SnapshotStateList in order to trigger the Composable
+     * list to update
+     */
+    private val _articles = MutableLiveData<SnapshotStateList<Article>>()
+    val articles: LiveData<SnapshotStateList<Article>> = _articles
 
     /**
      * Updates the ViewState value
@@ -101,6 +112,11 @@ class ArticleListActivityViewModel3(
             update.page = page
         }
         _viewState.value = update
+        update.articles?.let {
+            val list: SnapshotStateList<Article> = mutableStateListOf()
+            list.addAll(it)
+            _articles.value = list
+        }
     }
 
     /**
@@ -122,7 +138,6 @@ class ArticleListActivityViewModel3(
             is ArticleListStateEvent.GetArticlesEvent -> {
                 return liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
                     try {
-                        //log("toto", "GetArticlesEvent: query=${stateEvent.query} page=${stateEvent.page}")
                         repository3.getArticles(stateEvent.query, stateEvent.page).collect { dataState ->
                             emit(dataState)
                         }
@@ -141,7 +156,6 @@ class ArticleListActivityViewModel3(
                         if (!query.isNullOrBlank() && page != null) {
                             try {
                                 page++
-                                //log("toto", "IncrementPageEvent: query=$query page=$page")
                                 repository3.getArticles(query, page).collect { dataState ->
                                     emit(dataState)
                                 }
@@ -161,7 +175,6 @@ class ArticleListActivityViewModel3(
                         if (!query.isNullOrBlank()) {
                             try {
                                 repository3.deleteArticles(query)
-                                //log("toto", "RefreshEvent: query=$query page=1")
                                 repository3.getArticles(query, 1).collect { dataState ->
                                     emit(dataState)
                                 }
