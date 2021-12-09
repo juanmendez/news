@@ -1,6 +1,5 @@
 package com.example.news.view
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,18 +13,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.news.R
 import com.example.news.model.Article
 
 @Composable
 fun ArticleCard(
-    context: Context,
     article: Article,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     Card(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
@@ -125,4 +126,24 @@ fun ArticleCard(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun ArticleCardPreview() {
+    ArticleCard(
+        article = Article(
+            id = "2474abea-7584-486b-9f88-87a21870b0ec",
+            query = "technology",
+            sourceId = "",
+            sourceName = "IGN",
+            author = "John Smith",
+            title = "XBOX Series X Launch Date",
+            description = "description",
+            url = "url",
+            imageUrl = "imageUrl",
+            publishedDate = "August 08, 2020",
+            content = "content"
+        )
+    ) {}
 }
