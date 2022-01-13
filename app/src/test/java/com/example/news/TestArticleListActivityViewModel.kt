@@ -34,9 +34,10 @@ class TestArticleListActivityViewModel {
     // this is the system in test
     private val viewModel: ArticleListActivityViewModel
 
+    // fakes
     private val fakeDependencyContainer: FakeDependencyContainer = FakeDependencyContainer()
     private val fakeArticlesDataFactory: FakeArticlesDataFactory
-    private val repository: Repository
+    private val fakeRepository: Repository
 
     // mocking the LiveData observers
     @Mock
@@ -51,10 +52,10 @@ class TestArticleListActivityViewModel {
 
         // fake data sources
         fakeArticlesDataFactory = fakeDependencyContainer.fakeArticlesDataFactory
-        repository = fakeDependencyContainer.fakeRepository
+        fakeRepository = fakeDependencyContainer.fakeRepository
 
         // init system in test
-        viewModel = ArticleListActivityViewModel(repository)
+        viewModel = ArticleListActivityViewModel(fakeRepository)
     }
 
     @Test
