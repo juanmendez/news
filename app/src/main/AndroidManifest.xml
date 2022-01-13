@@ -24,7 +24,8 @@
              of onNewIntent and make the activity singleInstance -->
 <!--        <activity-->
 <!--            android:name=".view.ArticleListActivity"-->
-<!--            android:launchMode="singleInstance">-->
+<!--            android:launchMode="singleInstance"-->
+<!--            android:exported="true">-->
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 <!--                <category android:name="android.intent.category.LAUNCHER" />-->
@@ -44,7 +45,8 @@
         <!-- uses repo with NetworkBoundResource -->
 <!--        <activity-->
 <!--            android:name=".view.ArticleListActivity2"-->
-<!--            android:launchMode="singleInstance">-->
+<!--            android:launchMode="singleInstance"-->
+<!--            android:exported="true">-->
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 <!--                <category android:name="android.intent.category.LAUNCHER" />-->

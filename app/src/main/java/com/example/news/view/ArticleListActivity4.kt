@@ -11,11 +11,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import com.example.news.R
 import com.example.news.MyApplication
@@ -23,13 +18,9 @@ import com.example.news.mvi.ArticleListStateEvent
 import com.example.news.util.InjectorUtil
 import com.example.news.viewmodel.ArticleListActivityViewModel4
 import com.example.news.viewmodel.ArticleListActivityViewModel4Factory
-import kotlinx.android.synthetic.main.activity_article_list.*
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import com.example.news.model.Article
+import com.example.news.view.composable.ArticleList
+import com.example.news.view.composable.CustomTheme
 
 /**
  * Same as ArticleListActivity, but implements MVI Architecture and uses Composable framework for
@@ -177,34 +168,5 @@ class ArticleListActivity4 : BaseActivity() {
         val alert = dialogBuilder.create()
         alert.setTitle("Error")
         alert.show()
-    }
-}
-
-@Composable
-fun ArticleList(
-    articles: SnapshotStateList<Article>?
-) {
-    val context = LocalContext.current
-    articles?.let { articles ->
-        LazyColumn(
-            modifier = Modifier.background(
-                color = Color(context.resources.getColor(R.color.card_background, null))
-            )
-        ) {
-            itemsIndexed(
-                items = articles
-            ) { index, article ->
-                ArticleCard(
-                    article = article,
-                    onClick = {
-                        val intent = Intent(
-                            context,
-                            WebViewActivity::class.java
-                        )
-                        intent.putExtra(WebViewActivity.URL_EXTRA, article.url)
-                        context.startActivity(intent)
-                    })
-            }
-        }
     }
 }

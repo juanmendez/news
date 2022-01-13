@@ -1,4 +1,4 @@
-package com.example.news.view
+package com.example.news.view.composable
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
