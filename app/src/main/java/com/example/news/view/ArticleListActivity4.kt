@@ -11,16 +11,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import com.example.news.R
 import com.example.news.MyApplication
+import com.example.news.R
 import com.example.news.mvi.ArticleListStateEvent
 import com.example.news.util.InjectorUtil
-import com.example.news.viewmodel.ArticleListActivityViewModel4
-import com.example.news.viewmodel.ArticleListActivityViewModel4Factory
-import androidx.compose.runtime.getValue
 import com.example.news.view.composable.ArticleList
 import com.example.news.view.composable.CustomTheme
+import com.example.news.viewmodel.ArticleListActivityViewModel4
+import com.example.news.viewmodel.ArticleListActivityViewModel4Factory
 
 /**
  * Same as ArticleListActivity, but implements MVI Architecture and uses Composable framework for

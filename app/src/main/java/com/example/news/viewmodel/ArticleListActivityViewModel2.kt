@@ -1,24 +1,12 @@
 package com.example.news.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.*
 import com.example.news.model.Article
 import com.example.news.model.Repository2
+import com.example.news.util.Status
 import com.example.news.util.TOP_HEADLINES
 import com.example.news.util.log
-import com.example.news.util.Status
-import kotlinx.coroutines.CompletableJob
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
 /**

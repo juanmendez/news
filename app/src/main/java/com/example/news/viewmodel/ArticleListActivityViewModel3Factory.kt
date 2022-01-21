@@ -2,7 +2,6 @@ package com.example.news.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.news.model.Repository
 import com.example.news.model.Repository3
 
 /**

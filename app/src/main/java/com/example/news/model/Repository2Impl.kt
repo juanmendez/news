@@ -2,12 +2,12 @@ package com.example.news.model
 
 import com.example.news.model.cache.CacheService
 import com.example.news.model.network.ApiService2
-import com.example.news.model.network.impl.data.ArticlesResponse
 import com.example.news.model.network.impl.NetworkMapper
-import com.example.news.util.TOP_HEADLINES
+import com.example.news.model.network.impl.data.ArticlesResponse
 import com.example.news.util.ApiResponse
 import com.example.news.util.NetworkBoundResource2
 import com.example.news.util.Resource
+import com.example.news.util.TOP_HEADLINES
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow

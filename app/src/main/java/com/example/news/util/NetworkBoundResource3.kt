@@ -5,7 +5,9 @@ import androidx.annotation.WorkerThread
 import com.example.news.mvi.DataState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 
 /**
  * Generic class for handling network requests
