@@ -138,9 +138,10 @@ class ArticleListActivityViewModel4(
             is ArticleListStateEvent.GetArticlesEvent -> {
                 return liveData(viewModelScope.coroutineContext + Dispatchers.IO + job) {
                     try {
-                        repository3.getArticles(stateEvent.query, stateEvent.page).collect { dataState ->
-                            emit(dataState)
-                        }
+                        repository3.getArticles(stateEvent.query, stateEvent.page)
+                            .collect { dataState ->
+                                emit(dataState)
+                            }
                     } catch (e: Exception) {
                         emit(DataState.error<ArticleListViewState>("Error. Check network status."))
                     }

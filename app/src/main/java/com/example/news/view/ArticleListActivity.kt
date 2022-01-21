@@ -139,7 +139,7 @@ class ArticleListActivity : BaseActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return  when (item.itemId) {
+        return when (item.itemId) {
             R.id.activity_article_list_menu_clear_history -> {
                 SearchRecentSuggestions(
                     this,

@@ -7,7 +7,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 
 /**
- Extension function to hide the keyboard
+Extension function to hide the keyboard
  */
 fun Fragment.hideKeyboard() {
     view?.let { activity?.hideKeyboard(it) }

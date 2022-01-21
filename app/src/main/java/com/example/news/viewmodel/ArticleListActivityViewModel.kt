@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.collect
  * observer to the Activity's lifecycle in the Activity's code:
  * lifecycle.addObserver(viewModel)
  */
-class ArticleListActivityViewModel (
+class ArticleListActivityViewModel(
     private val repository: Repository
 ) : ViewModel(), LifecycleObserver {
 
@@ -60,16 +60,16 @@ class ArticleListActivityViewModel (
      * Holds the [Boolean] indicating whether the UI shall show the progress bar.
      * Exposed to the UI so that the UI can observe it and display/hide the progress bar.
      */
-    val showProgress : LiveData<Boolean> = _showProgress
+    val showProgress: LiveData<Boolean> = _showProgress
 
     // holds tha error message data
-    private val _errorMessage : MutableLiveData<String?> = MutableLiveData()
+    private val _errorMessage: MutableLiveData<String?> = MutableLiveData()
 
     /**
      * Holds the error message [String].
      * Exposed to the UI so that the UI can observe it and display the error message dialog.
      */
-    val errorMessage : LiveData<String?> = _errorMessage
+    val errorMessage: LiveData<String?> = _errorMessage
 
     /**
      * Updates the error message value.
@@ -94,7 +94,7 @@ class ArticleListActivityViewModel (
      * Exposed to the UI so that the UI can observe it and update the Action Bar text if the query
      * value has changed.
      */
-    val query : LiveData<String?> = _query
+    val query: LiveData<String?> = _query
 
     /**
      * Updates the [query] value.
@@ -113,9 +113,9 @@ class ArticleListActivityViewModel (
      * Holds the list of articles to be displayed by the UI.
      */
     val articles: LiveData<List<Article>> =
-        // Fetching the articles depends on the query value, using switchMap utility (uses
-        // MediatorLiveData), to transform one LiveData (first switchMap parameter, the query)
-        // into another LiveData (switchMap output, the articles) by applying the lambda function
+    // Fetching the articles depends on the query value, using switchMap utility (uses
+    // MediatorLiveData), to transform one LiveData (first switchMap parameter, the query)
+    // into another LiveData (switchMap output, the articles) by applying the lambda function
         // (second switchMap parameter) to each value set on the input LiveData (the query).
         Transformations.switchMap(_query) { query ->
             // Another utility that creates a new LiveData ONLY IF the source LiveData (the query)
@@ -124,7 +124,7 @@ class ArticleListActivityViewModel (
             Transformations.distinctUntilChanged(
                 getArticles(query)
             )
-    }
+        }
 
     private fun getArticles(query: String): LiveData<List<Article>> {
         val job = Job()

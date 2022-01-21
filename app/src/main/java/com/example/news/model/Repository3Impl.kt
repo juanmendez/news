@@ -24,8 +24,12 @@ class Repository3Impl(
 ) : Repository3 {
     @ExperimentalCoroutinesApi
     @FlowPreview
-    override suspend fun getArticles(query: String, page: Int): Flow<DataState<ArticleListViewState>> {
-        return object : NetworkBoundResource3<List<Article>, ArticlesResponse, ArticleListViewState>() {
+    override suspend fun getArticles(
+        query: String,
+        page: Int
+    ): Flow<DataState<ArticleListViewState>> {
+        return object :
+            NetworkBoundResource3<List<Article>, ArticlesResponse, ArticleListViewState>() {
 
             override fun shouldFetchFromNetwork(data: List<Article>?): Boolean {
                 // we always want the latest articles

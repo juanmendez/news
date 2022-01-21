@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
  * cache entity model for the cache service.
  */
 @Parcelize
-data class Article (
+data class Article(
     val id: String,
     val query: String,
     val sourceId: String,

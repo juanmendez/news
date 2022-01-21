@@ -3,7 +3,7 @@ package com.example.news.model.network.impl.data
 /**
  * Network entity model for storing article data
  */
-data class ArticleNetwork (
+data class ArticleNetwork(
     val source: Source?,
     val author: String?,
     val title: String?,

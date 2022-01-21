@@ -5,7 +5,7 @@ package com.example.news.util
  * @param EntityModel the entity model type
  * @param DomainModel the domain model type
  */
-interface EntityMapper <EntityModel, DomainModel>{
+interface EntityMapper<EntityModel, DomainModel> {
 
     /**
      * Maps from entity model to domain model

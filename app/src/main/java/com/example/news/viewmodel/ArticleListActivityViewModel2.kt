@@ -170,9 +170,9 @@ class ArticleListActivityViewModel2(
      * Holds the list of articles to be displayed by the UI.
      */
     val articles: LiveData<List<Article>> =
-        // Fetching the articles depends on the trigger value, using switchMap utility (which uses
-        // MediatorLiveData), to transform one LiveData (first switchMap parameter, the trigger)
-        // into another LiveData (switchMap output, the articles) by applying the lambda function
+    // Fetching the articles depends on the trigger value, using switchMap utility (which uses
+    // MediatorLiveData), to transform one LiveData (first switchMap parameter, the trigger)
+    // into another LiveData (switchMap output, the articles) by applying the lambda function
         // (second switchMap parameter) to each value set on the input LiveData (the trigger).
         Transformations.switchMap(_trigger) { trigger ->
 
