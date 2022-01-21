@@ -32,9 +32,9 @@ sealed class ApiResponse<T> {
          * @param error
          * @return [ApiResponse]
          */
-        fun <T> create(error: Throwable): ApiErrorResponse<T> {
-            return ApiErrorResponse(error.message ?: "Unknown error.\nCheck network connection.")
-        }
+        fun <T> create(error: Throwable): ApiErrorResponse<T> = ApiErrorResponse(
+            error.message ?: "Unknown error.\nCheck network connection."
+        )
 
         /**
          * Create api response from [Response]

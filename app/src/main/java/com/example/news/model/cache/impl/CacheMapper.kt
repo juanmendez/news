@@ -9,8 +9,7 @@ import com.example.news.util.EntityMapper
  * Maps both ways from cache entity model to domain model and also from domain model to the cache
  * entity model. This is because we read from the cache and we also write into the cache.
  */
-class CacheMapper
-constructor(
+class CacheMapper(
     private val dateUtil: DateUtil
 ) : EntityMapper<ArticleEntity, Article> {
 
@@ -66,6 +65,7 @@ constructor(
             url = domainModel.url,
             imageUrl = domainModel.imageUrl,
             publishedDate = dateUtil.dateToTime(domainModel.publishedDate),
-            content = domainModel.content)
+            content = domainModel.content
+        )
     }
 }

@@ -45,9 +45,7 @@ data class Resource<out T>(
          */
         fun <T> success(
             data: T?
-        ): Resource<T> {
-            return Resource(Status.SUCCESS, data, null)
-        }
+        ): Resource<T> = Resource(Status.SUCCESS, data, null)
 
         /**
          * Generates a [Status.ERROR] [Resource]
@@ -58,9 +56,7 @@ data class Resource<out T>(
         fun <T> error(
             msg: String,
             data: T?
-        ): Resource<T> {
-            return Resource(Status.ERROR, data, msg)
-        }
+        ): Resource<T> = Resource(Status.ERROR, data, msg)
 
         /**
          * Generates a [Status.LOADING] [Resource]
@@ -69,8 +65,6 @@ data class Resource<out T>(
          */
         fun <T> loading(
             data: T?
-        ): Resource<T> {
-            return Resource(Status.LOADING, data, null)
-        }
+        ): Resource<T> = Resource(Status.LOADING, data, null)
     }
 }

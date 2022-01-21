@@ -19,9 +19,7 @@ import java.text.SimpleDateFormat
  */
 object InjectorUtil {
 
-    fun provideDatabase(application: MyApplication): ArticlesDatabase {
-        return application.database
-    }
+    fun provideDatabase(application: MyApplication): ArticlesDatabase = application.database
 
     fun provideCacheMapper(): CacheMapper {
         // https://developer.android.com/reference/java/text/SimpleDateFormat
@@ -41,13 +39,9 @@ object InjectorUtil {
         return CacheServiceImpl(database.articlesDao(), mapper)
     }
 
-    fun provideRetrofit(): Retrofit {
-        return Network.retrofit
-    }
+    fun provideRetrofit(): Retrofit = Network.retrofit
 
-    fun provideApi(): Api {
-        return Network.API
-    }
+    fun provideApi(): Api = Network.API
 
     fun provideApiService(): ApiService {
         val retrofit = provideRetrofit()

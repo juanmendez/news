@@ -3,10 +3,9 @@ package com.example.news.util
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DateUtil
-constructor(
+class DateUtil(
     private val dateToTimeFormat: SimpleDateFormat,
-    private val timeToDateFormat: SimpleDateFormat
+    private val timeToDateFormat: SimpleDateFormat,
 ) {
     fun dateToTime(date: String): Long {
         return dateToTimeFormat.parse(date)?.time ?: 0
