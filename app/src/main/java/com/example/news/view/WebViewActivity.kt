@@ -9,11 +9,14 @@ import android.view.MenuItem
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.example.news.R
-import kotlinx.android.synthetic.main.activity_webview.*
+import com.example.news.databinding.ActivityWebviewBinding
 
 class WebViewActivity : BaseActivity() {
 
+    lateinit var viewBinding: ActivityWebviewBinding
     private var url: String? = null
+    private val webView: WebView
+        get() = viewBinding.webView
 
     companion object {
         const val URL_EXTRA = "com.example.news.view.ArticleActivity.URL_EXTRA"
@@ -21,7 +24,8 @@ class WebViewActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_webview)
+        viewBinding = ActivityWebviewBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
         supportActionBar?.apply {
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
@@ -31,8 +35,8 @@ class WebViewActivity : BaseActivity() {
         if (intent.hasExtra(URL_EXTRA)) {
             url = intent.getStringExtra(URL_EXTRA)
             url?.let {
-                web_view.settings.javaScriptEnabled = true
-                web_view.webViewClient = object : WebViewClient() {
+                webView.settings.javaScriptEnabled = true
+                webView.webViewClient = object : WebViewClient() {
                     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                         view.loadUrl(url)
                         return false
@@ -48,7 +52,7 @@ class WebViewActivity : BaseActivity() {
                         showProgressBar(false)
                     }
                 }
-                web_view.loadUrl(it)
+                webView.loadUrl(it)
             }
         }
     }
@@ -83,8 +87,8 @@ class WebViewActivity : BaseActivity() {
         if (event?.action == KeyEvent.ACTION_DOWN) {
             when (keyCode) {
                 KeyEvent.KEYCODE_BACK -> {
-                    when (web_view.canGoBack()) {
-                        true -> web_view.goBack()
+                    when (webView.canGoBack()) {
+                        true -> webView.goBack()
                         else -> finish()
                     }
                     return true

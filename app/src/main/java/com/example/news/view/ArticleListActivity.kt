@@ -14,19 +14,20 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.news.MyApplication
 import com.example.news.R
+import com.example.news.databinding.ActivityArticleListBinding
 import com.example.news.model.Article
 import com.example.news.util.InjectorUtil
 import com.example.news.util.TOP_HEADLINES
 import com.example.news.view.WebViewActivity.Companion.URL_EXTRA
 import com.example.news.viewmodel.ArticleListActivityViewModel
 import com.example.news.viewmodel.ArticleListActivityViewModelFactory
-import kotlinx.android.synthetic.main.activity_article_list.*
 
 /**
  * Implements MVVM architecture
  */
 class ArticleListActivity : BaseActivity() {
 
+    private lateinit var viewBinding: ActivityArticleListBinding
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var searchMenu: MenuItem
     private lateinit var adapter: ArticlesAdapter
@@ -50,7 +51,8 @@ class ArticleListActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_article_list)
+        viewBinding = ActivityArticleListBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
         initUI()
         initObservers()
         saveQueryToRecentSuggestions(TOP_HEADLINES)
@@ -62,9 +64,9 @@ class ArticleListActivity : BaseActivity() {
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
             else -> LinearLayoutManager(this)
         }
-        articles_recyclerview.layoutManager = linearLayoutManager
+        viewBinding.articlesRecyclerview.layoutManager = linearLayoutManager
         adapter = ArticlesAdapter(articles, listener)
-        articles_recyclerview.adapter = adapter
+        viewBinding.articlesRecyclerview.adapter = adapter
     }
 
     private fun initObservers() {
@@ -74,22 +76,22 @@ class ArticleListActivity : BaseActivity() {
         lifecycle.addObserver(viewModel)
 
         // init data observers and update the UI
-        viewModel.articles.observe(this, { data ->
+        viewModel.articles.observe(this) { data ->
             articles.clear()
             articles.addAll(data)
             adapter.notifyDataSetChanged()
-        })
-        viewModel.errorMessage.observe(this, { msg ->
+        }
+        viewModel.errorMessage.observe(this) { msg ->
             msg?.let {
                 showAlertDialog(msg)
             }
-        })
-        viewModel.query.observe(this, { query ->
+        }
+        viewModel.query.observe(this) { query ->
             supportActionBar?.title = query
-        })
-        viewModel.showProgress.observe(this, { show ->
+        }
+        viewModel.showProgress.observe(this) { show ->
             showProgressBar(show)
-        })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

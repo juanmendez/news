@@ -1,28 +1,24 @@
 package com.example.news.view
 
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
-import com.example.news.R
+import com.example.news.databinding.ActivityBaseBinding
 
 /**
  * Base Activity class managing the progress bar.
  * Any subclass will inherit the progress bar functionality.
  */
 abstract class BaseActivity : AppCompatActivity() {
+    private lateinit var baseViewBinding: ActivityBaseBinding
+    private val progressBar: ProgressBar
+        get() = baseViewBinding.progressBar
 
-    lateinit var progressBar: ProgressBar
-
-    override fun setContentView(layoutResID: Int) {
-        val rootView = layoutInflater.inflate(R.layout.activity_base, null)
-        val activityContentView = rootView.findViewById<FrameLayout>(R.id.activity_content)
-        progressBar = rootView.findViewById(R.id.progress_bar)
-
-        // makes the FrameLayout the container of all the Activities that extend this class
-        layoutInflater.inflate(layoutResID, activityContentView, true)
-
-        super.setContentView(rootView)
+    override fun setContentView(view: View?) {
+        baseViewBinding = ActivityBaseBinding.inflate(layoutInflater)
+        baseViewBinding.activityContent.addView(view)
+        
+        super.setContentView(baseViewBinding.root)
     }
 
     fun showProgressBar(show: Boolean) {

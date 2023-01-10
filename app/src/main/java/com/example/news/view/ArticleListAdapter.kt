@@ -6,9 +6,8 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.news.R
+import com.example.news.databinding.ArticleRowBinding
 import com.example.news.model.Article
-import kotlinx.android.synthetic.main.article_row.view.*
 
 fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
@@ -23,8 +22,11 @@ class ArticlesAdapter(
 ) : RecyclerView.Adapter<ArticlesAdapter.ArticleHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleHolder {
-        val v = parent.inflate(R.layout.article_row, false)
-        return ArticleHolder(v)
+        val viewBinding = ArticleRowBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
+
+        return ArticleHolder(viewBinding)
     }
 
     override fun onBindViewHolder(holder: ArticleHolder, position: Int) {
@@ -37,29 +39,30 @@ class ArticlesAdapter(
 
     // SRP (Single Responsibility Principle): A class should have only one reason to change.
     // Here we only do one thing: bind data to views.
-    class ArticleHolder(v: View) : RecyclerView.ViewHolder(v) {
-        private var view: View = v
+    class ArticleHolder(
+        private val viewBinding: ArticleRowBinding
+    ) : RecyclerView.ViewHolder(viewBinding.root) {
         private var article: Article? = null
 
         fun bind(article: Article) {
             this.article = article
             if (article.imageUrl.isNotEmpty()) {
-                view.article_row_image.visibility = View.VISIBLE
-                Glide.with(view.article_row_image)
+                viewBinding.articleRowImage.visibility = View.VISIBLE
+                Glide.with(viewBinding.articleRowImage)
                     .load(article.imageUrl)
-                    .into(view.article_row_image)
+                    .into(viewBinding.articleRowImage)
             } else {
-                view.article_row_image.visibility = View.GONE
-                view.article_row_image.setImageDrawable(null)
+                viewBinding.articleRowImage.visibility = View.GONE
+                viewBinding.articleRowImage.setImageDrawable(null)
             }
-            view.article_row_source.text = article.sourceName
-            view.article_row_date.text = article.publishedDate
-            view.article_row_title.text = article.title
+            viewBinding.articleRowSource.text = article.sourceName
+            viewBinding.articleRowDate.text = article.publishedDate
+            viewBinding.articleRowTitle.text = article.title
             if (article.content.isNullOrEmpty()) {
-                view.article_row_content.visibility = View.GONE
+                viewBinding.articleRowContent.visibility = View.GONE
             } else {
-                view.article_row_content.visibility = View.VISIBLE
-                view.article_row_content.text = article.content
+                viewBinding.articleRowContent.visibility = View.VISIBLE
+                viewBinding.articleRowContent.text = article.content
             }
         }
     }

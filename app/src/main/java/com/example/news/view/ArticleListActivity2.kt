@@ -15,13 +15,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.news.MyApplication
 import com.example.news.R
+import com.example.news.databinding.ActivityArticleListBinding
 import com.example.news.model.Article
 import com.example.news.util.InjectorUtil
 import com.example.news.util.TOP_HEADLINES
 import com.example.news.view.WebViewActivity.Companion.URL_EXTRA
 import com.example.news.viewmodel.ArticleListActivityViewModel2
 import com.example.news.viewmodel.ArticleListActivityViewModel2Factory
-import kotlinx.android.synthetic.main.activity_article_list.*
 
 /**
  * Same as ArticleListActivity, implements MVVM architecture.
@@ -30,6 +30,7 @@ import kotlinx.android.synthetic.main.activity_article_list.*
  */
 class ArticleListActivity2 : BaseActivity() {
 
+    private lateinit var viewBinding: ActivityArticleListBinding
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var searchMenu: MenuItem
     private lateinit var adapter: ArticlesAdapter
@@ -53,7 +54,8 @@ class ArticleListActivity2 : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_article_list)
+        viewBinding = ActivityArticleListBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
         initUI()
         initObservers()
         saveQueryToRecentSuggestions(TOP_HEADLINES)
@@ -65,7 +67,7 @@ class ArticleListActivity2 : BaseActivity() {
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
             else -> LinearLayoutManager(this)
         }
-        articles_recyclerview.layoutManager = linearLayoutManager
+        viewBinding.articlesRecyclerview.layoutManager = linearLayoutManager
         // triggering loading new pages as we scroll to the end of the list
         val scrollListener: RecyclerView.OnScrollListener =
             object : RecyclerView.OnScrollListener() {
@@ -73,20 +75,20 @@ class ArticleListActivity2 : BaseActivity() {
                     super.onScrollStateChanged(recyclerView, newState)
                     when (resources.configuration.orientation) {
                         Configuration.ORIENTATION_LANDSCAPE ->
-                            if (!articles_recyclerview.canScrollHorizontally(1)) {
+                            if (!viewBinding.articlesRecyclerview.canScrollHorizontally(1)) {
                                 viewModel2.incrementPage()
                             }
                         else ->
-                            if (!articles_recyclerview.canScrollVertically(1)) {
+                            if (!viewBinding.articlesRecyclerview.canScrollVertically(1)) {
                                 viewModel2.incrementPage()
                             }
                     }
                 }
             }
-        articles_recyclerview.addOnScrollListener(scrollListener)
+        viewBinding.articlesRecyclerview.addOnScrollListener(scrollListener)
         adapter = ArticlesAdapter(articles, listener)
-        articles_recyclerview.adapter = adapter
-        swipe_refresh.setOnRefreshListener {
+        viewBinding.articlesRecyclerview.adapter = adapter
+        viewBinding.swipeRefresh.setOnRefreshListener {
             viewModel2.refresh()
         }
     }
@@ -111,7 +113,7 @@ class ArticleListActivity2 : BaseActivity() {
         viewModel2.trigger.observe(this, { trigger ->
             if (supportActionBar?.title != trigger.first) {
                 // scroll to top if the query has changed
-                articles_recyclerview.scrollToPosition(0)
+                viewBinding.articlesRecyclerview.scrollToPosition(0)
                 supportActionBar?.title = trigger.first
             }
         })
@@ -120,7 +122,7 @@ class ArticleListActivity2 : BaseActivity() {
         })
         viewModel2.refreshing.observe(this, { refreshing ->
             if (refreshing == false) {
-                swipe_refresh.isRefreshing = false
+                viewBinding.swipeRefresh.isRefreshing = false
             }
         })
     }

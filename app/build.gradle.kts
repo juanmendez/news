@@ -1,6 +1,5 @@
-import Config.applicationId
 import java.io.FileInputStream
-import java.util.Properties
+import java.util.*
 
 plugins {
     id("com.android.application")
@@ -38,6 +37,7 @@ android {
     buildFeatures {
         // Enables Jetpack Compose for this module
         compose = true
+        viewBinding = true
     }
 
     buildTypes {
@@ -76,6 +76,7 @@ android {
             add("META-INF/LGPL2.1")
         }
     }
+    namespace = "com.example.news"
 }
 
 dependencies {
