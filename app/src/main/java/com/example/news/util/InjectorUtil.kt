@@ -1,7 +1,6 @@
 package com.example.news.util
 
 import com.example.news.MyApplication
-import com.example.news.model.*
 import com.example.news.model.cache.CacheService
 import com.example.news.model.cache.impl.ArticlesDatabase
 import com.example.news.model.cache.impl.CacheMapper
@@ -59,21 +58,21 @@ object InjectorUtil {
         return ApiService3Impl(articlesApi)
     }
 
-    fun provideRepository(application: MyApplication): Repository {
+    fun provideRepository(application: MyApplication): com.example.news.model.Repository {
         val articlesApiService = provideApiService()
         val articlesDaoService = provideCacheService(application)
-        return RepositoryImpl(articlesApiService, articlesDaoService)
+        return com.example.news.model.RepositoryImpl(articlesApiService, articlesDaoService)
     }
 
-    fun provideRepository2(application: MyApplication): Repository2 {
+    fun provideRepository2(application: MyApplication): com.example.news.model.Repository2 {
         val articlesApiService2 = provideApiService2()
         val articlesDaoService = provideCacheService(application)
-        return Repository2Impl(articlesApiService2, articlesDaoService)
+        return com.example.news.model.Repository2Impl(articlesApiService2, articlesDaoService)
     }
 
-    fun provideRepository3(application: MyApplication): Repository3 {
+    fun provideRepository3(application: MyApplication): com.example.news.model.Repository3 {
         val articlesApiService3 = provideApiService3()
         val articlesDaoService = provideCacheService(application)
-        return Repository3Impl(articlesApiService3, articlesDaoService)
+        return com.example.news.model.Repository3Impl(articlesApiService3, articlesDaoService)
     }
 }

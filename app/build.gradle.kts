@@ -1,6 +1,3 @@
-import java.io.FileInputStream
-import java.util.*
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -20,18 +17,6 @@ android {
         versionName = Config.Version.name
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        // API key is saved in local.properties, not pushed to github
-        val localProperties = Properties().apply {
-            load(FileInputStream(rootProject.file("local.properties")))
-        }
-
-        // API key is saved in local.properties, not pushed to github
-        buildConfigField(
-            "String",
-            "API_KEY",
-            localProperties.getProperty("apiKey")
-        )
     }
 
     buildFeatures {
@@ -81,6 +66,7 @@ android {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation(project(":data"))
 
     // AndroidX
     implementation("org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}")
@@ -103,27 +89,6 @@ dependencies {
     implementation(Lifecycle.compiler)
     implementation(Lifecycle.java8)
 
-    // Room
-    implementation(Room.runtime)
-    annotationProcessor(Room.compiler)
-    // To use Kotlin annotation processing tool (kapt)
-    kapt(Room.compiler)
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation(Room.ktx)
-    // optional - Test helpers
-    testImplementation(Room.testing)
-
-    // Work
-    implementation(Work.ktx)
-    androidTestImplementation(Work.testing)
-
-    // Retrofit
-    implementation(Retrofit.core)
-    implementation(Retrofit.gson)
-
-    // Okhttp
-    implementation(OkHttp.core)
-
     // Stetho
     implementation(Stetho.core)
     implementation(Stetho.okHttp)
@@ -131,6 +96,12 @@ dependencies {
     // Glide
     implementation(Glide.core)
     annotationProcessor(Glide.compiler)
+
+    // Room
+    implementation(Room.runtime)
+
+    // Retrofit
+    implementation(Retrofit.core)
 
     // Jetpack
     // Integration with activities

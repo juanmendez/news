@@ -10,39 +10,39 @@ import com.google.gson.reflect.TypeToken
 class FakeArticlesDataFactory(
     private val testClassLoader: ClassLoader
 ) {
-    fun produceFakeCacheListOfArticles(): List<Article> {
+    fun produceFakeCacheListOfArticles(): List<com.example.news.model.Article> {
         return Gson()
             .fromJson(
                 getArticlesFromFile("cache.json"),
-                object : TypeToken<List<Article>>() {}.type
+                object : TypeToken<List<com.example.news.model.Article>>() {}.type
             )
     }
 
-    fun produceFakeNetworkListOfArticles(): List<Article> {
+    fun produceFakeNetworkListOfArticles(): List<com.example.news.model.Article> {
         return Gson()
             .fromJson(
                 getArticlesFromFile("network.json"),
-                object : TypeToken<List<Article>>() {}.type
+                object : TypeToken<List<com.example.news.model.Article>>() {}.type
             )
     }
 
-    fun produceFakeUpdatedCacheListOfArticles(): List<Article> {
+    fun produceFakeUpdatedCacheListOfArticles(): List<com.example.news.model.Article> {
         return Gson()
             .fromJson(
                 getArticlesFromFile("updated_cache.json"),
-                object : TypeToken<List<Article>>() {}.type
+                object : TypeToken<List<com.example.news.model.Article>>() {}.type
             )
     }
 
-    fun produceFakeHashMapOfArticles(noteList: List<Article>): HashMap<String, Article> {
-        val map = HashMap<String, Article>()
+    fun produceFakeHashMapOfArticles(noteList: List<com.example.news.model.Article>): HashMap<String, com.example.news.model.Article> {
+        val map = HashMap<String, com.example.news.model.Article>()
         for (note in noteList) {
             map[note.id] = note
         }
         return map
     }
 
-    fun produceEmptyListOfArticles(): List<Article> {
+    fun produceEmptyListOfArticles(): List<com.example.news.model.Article> {
         return ArrayList()
     }
 

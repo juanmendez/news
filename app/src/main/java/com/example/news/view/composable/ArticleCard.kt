@@ -19,11 +19,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.news.R
-import com.example.news.model.Article
 
 @Composable
 fun ArticleCard(
-    article: Article,
+    article: com.example.news.model.Article,
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -132,7 +131,7 @@ fun ArticleCard(
 @Composable
 fun ArticleCardPreview() {
     ArticleCard(
-        article = Article(
+        article = com.example.news.model.Article(
             id = "2474abea-7584-486b-9f88-87a21870b0ec",
             query = "technology",
             sourceId = "",

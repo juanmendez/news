@@ -20,9 +20,9 @@ const val FORCE_GET_CACHE_ARTICLES_EXCEPTION = "FORCE_GET_CACHE_ARTICLES_EXCEPTI
  */
 class FakeCacheServiceImpl
 constructor(
-    private val fakeCacheArticlesData: HashMap<String, Article>,
+    private val fakeCacheArticlesData: HashMap<String, com.example.news.model.Article>,
 ) : CacheService {
-    override suspend fun insertArticle(article: Article): Long {
+    override suspend fun insertArticle(article: com.example.news.model.Article): Long {
 
         // we need to test if the DAO throws an exception
         // we fake DAO throwing an exception by inserting
@@ -46,7 +46,7 @@ constructor(
         return 1
     }
 
-    override suspend fun insertArticles(articles: List<Article>): LongArray {
+    override suspend fun insertArticles(articles: List<com.example.news.model.Article>): LongArray {
         val results = LongArray(articles.size)
         for ((index, article) in articles.withIndex()) {
             results[index] = 1
@@ -55,7 +55,7 @@ constructor(
         return results
     }
 
-    override suspend fun getArticles(query: String): List<Article> {
+    override suspend fun getArticles(query: String): List<com.example.news.model.Article> {
 
         // we need to test the case where an exception is thrown,
         // to that effect we will fake it by sending a query with
@@ -64,7 +64,7 @@ constructor(
             throw Exception("Something went getting the cached articles.")
         }
 
-        val results: ArrayList<Article> = ArrayList()
+        val results: ArrayList<com.example.news.model.Article> = ArrayList()
 
         // search in the fake database (HashMap)
         // to match what a database search would do

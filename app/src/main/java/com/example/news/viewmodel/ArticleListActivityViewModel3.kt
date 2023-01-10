@@ -1,7 +1,6 @@
 package com.example.news.viewmodel
 
 import androidx.lifecycle.*
-import com.example.news.model.Repository3
 import com.example.news.mvi.ArticleListStateEvent
 import com.example.news.mvi.ArticleListViewState
 import com.example.news.mvi.DataState
@@ -22,7 +21,7 @@ import kotlinx.coroutines.flow.collect
  * lifecycle.addObserver(viewModel)
  */
 class ArticleListActivityViewModel3(
-    private val repository3: Repository3
+    private val repository3: com.example.news.model.Repository3
 ) : ViewModel(), LifecycleObserver {
 
     // holds a reference to the Job getting the articles so that it can be cancelled when the

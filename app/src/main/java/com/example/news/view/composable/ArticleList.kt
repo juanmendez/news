@@ -10,12 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.example.news.R
-import com.example.news.model.Article
 import com.example.news.view.WebViewActivity
 
 @Composable
 fun ArticleList(
-    articles: SnapshotStateList<Article>?
+    articles: SnapshotStateList<com.example.news.model.Article>?
 ) {
     val context = LocalContext.current
     articles?.let { articles ->

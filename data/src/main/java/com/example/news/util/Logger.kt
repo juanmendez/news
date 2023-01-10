@@ -39,7 +39,7 @@ fun log(className: String?, message: String) {
  * @param msg message logged
  * @param articles list of [Article] logged
  */
-fun logArticles(msg: String, articles: List<Article>) {
+fun logArticles(msg: String, articles: List<com.example.news.model.Article>) {
     log("toto", "$msg ${articles.size} articles:")
     for ((index, _) in articles.withIndex()) {
         log("toto", "${index + 1}. ${articles[index].title} | ${articles[index].publishedDate}")
@@ -51,7 +51,7 @@ fun logArticles(msg: String, articles: List<Article>) {
  * @param msg message logged
  * @param articles list of [Article] logged
  */
-fun log3Articles(msg: String, articles: List<Article>) {
+fun log3Articles(msg: String, articles: List<com.example.news.model.Article>) {
     log("toto", "$msg ${articles.size} articles:")
     for ((index, _) in articles.withIndex()) {
         log("toto", "${index + 1}. ${articles[index].title} | ${articles[index].publishedDate}")

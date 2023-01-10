@@ -3,8 +3,6 @@ package com.example.news.viewmodel
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.*
-import com.example.news.model.Article
-import com.example.news.model.Repository3
 import com.example.news.mvi.ArticleListStateEvent
 import com.example.news.mvi.ArticleListViewState
 import com.example.news.mvi.DataState
@@ -25,7 +23,7 @@ import kotlinx.coroutines.flow.collect
  * lifecycle.addObserver(viewModel)
  */
 class ArticleListActivityViewModel4(
-    private val repository3: Repository3
+    private val repository3: com.example.news.model.Repository3
 ) : ViewModel(), LifecycleObserver {
 
     // holds a reference to the Job getting the articles so that it can be cancelled when the
@@ -85,8 +83,8 @@ class ArticleListActivityViewModel4(
      * The articles need to be wrapped into a SnapshotStateList in order to trigger the Composable
      * list to update
      */
-    private val _articles = MutableLiveData<SnapshotStateList<Article>>()
-    val articles: LiveData<SnapshotStateList<Article>> = _articles
+    private val _articles = MutableLiveData<SnapshotStateList<com.example.news.model.Article>>()
+    val articles: LiveData<SnapshotStateList<com.example.news.model.Article>> = _articles
 
     /**
      * Updates the ViewState value
@@ -105,7 +103,7 @@ class ArticleListActivityViewModel4(
         }
         _viewState.value = update
         update.articles?.let {
-            val list: SnapshotStateList<Article> = mutableStateListOf()
+            val list: SnapshotStateList<com.example.news.model.Article> = mutableStateListOf()
             list.addAll(it)
             _articles.value = list
         }

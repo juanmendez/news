@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.databinding.ActivityArticleListBinding
-import com.example.news.model.Article
 import com.example.news.mvi.ArticleListStateEvent
 import com.example.news.util.InjectorUtil
 import com.example.news.util.Status
@@ -35,10 +34,10 @@ class ArticleListActivity3 : BaseActivity() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var searchMenu: MenuItem
     private lateinit var adapter: ArticlesAdapter
-    private var articles: ArrayList<Article> = arrayListOf()
+    private var articles: ArrayList<com.example.news.model.Article> = arrayListOf()
 
     private val listener = object : OnArticleClickListener {
-        override fun onArticleClick(article: Article) {
+        override fun onArticleClick(article: com.example.news.model.Article) {
             val intent = Intent(this@ArticleListActivity3, WebViewActivity::class.java)
             intent.putExtra(WebViewActivity.URL_EXTRA, article.url)
             this@ArticleListActivity3.startActivity(intent)

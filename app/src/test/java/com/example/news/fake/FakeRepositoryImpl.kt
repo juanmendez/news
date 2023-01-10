@@ -20,11 +20,11 @@ const val REPO_ARTICLES_EXCEPTION_MESSAGE = "Failed getting articles from Reposi
  * We also constructor inject hash maps with the fake cached and network (remote cached) articles.
  */
 class FakeRepositoryImpl constructor(
-    private val fakeCacheArticlesData: HashMap<String, Article>,
-    private val fakeNetworkArticlesData: HashMap<String, Article>
-) : Repository {
+    private val fakeCacheArticlesData: HashMap<String, com.example.news.model.Article>,
+    private val fakeNetworkArticlesData: HashMap<String, com.example.news.model.Article>
+) : com.example.news.model.Repository {
 
-    override suspend fun getArticles(query: String): Flow<List<Article>> {
+    override suspend fun getArticles(query: String): Flow<List<com.example.news.model.Article>> {
 
         // we need to test the case where an exception is thrown,
         // to that effect we will fake it by sending a query with
@@ -34,7 +34,7 @@ class FakeRepositoryImpl constructor(
         }
 
         return flow {
-            val articles: ArrayList<Article> = ArrayList()
+            val articles: ArrayList<com.example.news.model.Article> = ArrayList()
             for (article in fakeCacheArticlesData) {
                 articles.add(article.value)
             }

@@ -1,4 +1,4 @@
-package com.example.news
+package com.example.news.model
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
