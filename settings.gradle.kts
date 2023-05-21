@@ -1,2 +1,2 @@
-include(":app", ":data")
+include(":app", ":model")
 rootProject.name = "News"

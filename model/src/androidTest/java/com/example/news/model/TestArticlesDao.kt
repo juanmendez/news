@@ -1,8 +1,8 @@
-package com.example.news
+package com.example.news.model
 
 import androidx.room.Room
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.example.news.model.cache.impl.ArticleEntity
 import com.example.news.model.cache.impl.ArticlesDao
 import com.example.news.model.cache.impl.ArticlesDatabase

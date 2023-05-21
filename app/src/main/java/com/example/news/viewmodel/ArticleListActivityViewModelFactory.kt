@@ -10,7 +10,7 @@ import com.example.news.model.Repository
  */
 @Suppress("UNCHECKED_CAST")
 class ArticleListActivityViewModelFactory(
-    private val repository: Repository
+    private val repository: com.example.news.model.Repository
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

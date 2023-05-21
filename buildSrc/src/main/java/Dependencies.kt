@@ -12,9 +12,9 @@ object Config {
     }
 
     object Sdk {
-        const val compiled = 32
+        const val compiled = 33
         const val min = 28
-        const val target = 32
+        const val target = 33
     }
 }
 
@@ -38,11 +38,11 @@ object Version {
 
     const val glide = "4.12.0"
     const val lifecycle = "2.4.0"
-    const val kotlin = "1.5.31"
+    const val kotlin = "1.8.20"
     const val okHttp = "4.9.0"
     const val recyclerView = "1.2.1"
     const val retrofit = "2.9.0"
-    const val room = "2.4.1"
+    const val room = "2.5.1"
     const val stetho = "1.5.1"
     const val work = "2.7.1"
 

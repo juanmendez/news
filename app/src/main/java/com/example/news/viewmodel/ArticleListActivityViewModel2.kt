@@ -1,13 +1,11 @@
 package com.example.news.viewmodel
 
 import androidx.lifecycle.*
-import com.example.news.model.Article
-import com.example.news.model.Repository2
 import com.example.news.util.Status
 import com.example.news.util.TOP_HEADLINES
 import com.example.news.util.log
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 
 /**
  * ViewModel for the ArticleListActivity2. Maintains its data and business logic.
@@ -17,8 +15,9 @@ import kotlinx.coroutines.flow.collect
  * observer to the Activity's lifecycle in the Activity's code:
  * lifecycle.addObserver(viewModel)
  */
+@OptIn(InternalCoroutinesApi::class)
 class ArticleListActivityViewModel2(
-    private val repository2: Repository2
+    private val repository2: com.example.news.model.Repository2
 ) : ViewModel(), LifecycleObserver {
 
     // holds a reference to the Job getting the articles so that it can be cancelled when the
@@ -157,7 +156,7 @@ class ArticleListActivityViewModel2(
     /**
      * Holds the list of articles to be displayed by the UI.
      */
-    val articles: LiveData<List<Article>> =
+    val articles: LiveData<List<com.example.news.model.Article>> =
     // Fetching the articles depends on the trigger value, using switchMap utility (which uses
     // MediatorLiveData), to transform one LiveData (first switchMap parameter, the trigger)
     // into another LiveData (switchMap output, the articles) by applying the lambda function

@@ -1,7 +1,8 @@
 package com.example.news.model
 
+
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * The domain model for storing the article data.

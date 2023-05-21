@@ -7,7 +7,6 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.news.databinding.ArticleRowBinding
-import com.example.news.model.Article
 
 fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
@@ -17,7 +16,7 @@ fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false):
  * Adapter binding the articles data to the RecyclerView UI component.
  */
 class ArticlesAdapter(
-    private val articles: List<Article>,
+    private val articles: List<com.example.news.model.Article>,
     private val listener: OnArticleClickListener
 ) : RecyclerView.Adapter<ArticlesAdapter.ArticleHolder>() {
 
@@ -42,9 +41,9 @@ class ArticlesAdapter(
     class ArticleHolder(
         private val viewBinding: ArticleRowBinding
     ) : RecyclerView.ViewHolder(viewBinding.root) {
-        private var article: Article? = null
+        private var article: com.example.news.model.Article? = null
 
-        fun bind(article: Article) {
+        fun bind(article: com.example.news.model.Article) {
             this.article = article
             if (article.imageUrl.isNotEmpty()) {
                 viewBinding.articleRowImage.visibility = View.VISIBLE

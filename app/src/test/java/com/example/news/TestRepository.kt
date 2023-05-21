@@ -3,7 +3,6 @@ package com.example.news
 import com.example.news.di.FakeDependencyContainer
 import com.example.news.fake.FORCE_GET_CACHE_ARTICLES_EXCEPTION
 import com.example.news.fake.FORCE_GET_NETWORK_ARTICLES_EXCEPTION
-import com.example.news.model.RepositoryImpl
 import com.example.news.model.cache.CacheService
 import com.example.news.model.network.ApiService
 import com.example.news.util.TAG
@@ -18,7 +17,7 @@ import org.junit.Test
 class TestRepository {
 
     // this is the system in test
-    private val repository: RepositoryImpl
+    private val repository: com.example.news.model.RepositoryImpl
 
     // fakes
     private val fakeDependencyContainer: FakeDependencyContainer = FakeDependencyContainer()
@@ -34,7 +33,7 @@ class TestRepository {
         fakeApiService = fakeDependencyContainer.fakeApiService
 
         // init system in test
-        repository = RepositoryImpl(fakeApiService, fakeCacheService)
+        repository = com.example.news.model.RepositoryImpl(fakeApiService, fakeCacheService)
     }
 
     @Test

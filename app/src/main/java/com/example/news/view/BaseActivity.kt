@@ -17,7 +17,7 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun setContentView(view: View?) {
         baseViewBinding = ActivityBaseBinding.inflate(layoutInflater)
         baseViewBinding.activityContent.addView(view)
-        
+
         super.setContentView(baseViewBinding.root)
     }
 

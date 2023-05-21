@@ -1,11 +1,8 @@
-import java.io.FileInputStream
-import java.util.*
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-android-extensions")
-    id("kotlin-kapt")
+    id("kotlin-parcelize")
+    kotlin("kapt")
 }
 
 android {
@@ -20,18 +17,6 @@ android {
         versionName = Config.Version.name
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        // API key is saved in local.properties, not pushed to github
-        val localProperties = Properties().apply {
-            load(FileInputStream(rootProject.file("local.properties")))
-        }
-
-        // API key is saved in local.properties, not pushed to github
-        buildConfigField(
-            "String",
-            "API_KEY",
-            localProperties.getProperty("apiKey")
-        )
     }
 
     buildFeatures {
@@ -51,16 +36,16 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.5"
+        kotlinCompilerExtensionVersion = "1.4.6"
     }
 
     sourceSets {
@@ -69,7 +54,12 @@ android {
         }
     }
 
-    packagingOptions {
+    kapt {
+        correctErrorTypes = true
+        useBuildCache = false
+    }
+
+    packaging {
         // Prevents errors when running Room tests
         resources.excludes.apply {
             add("META-INF/AL2.0")
@@ -81,6 +71,7 @@ android {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation(project(":model"))
 
     // AndroidX
     implementation("org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}")
@@ -103,34 +94,16 @@ dependencies {
     implementation(Lifecycle.compiler)
     implementation(Lifecycle.java8)
 
-    // Room
-    implementation(Room.runtime)
-    annotationProcessor(Room.compiler)
-    // To use Kotlin annotation processing tool (kapt)
-    kapt(Room.compiler)
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation(Room.ktx)
-    // optional - Test helpers
-    testImplementation(Room.testing)
-
-    // Work
-    implementation(Work.ktx)
-    androidTestImplementation(Work.testing)
-
-    // Retrofit
-    implementation(Retrofit.core)
-    implementation(Retrofit.gson)
-
-    // Okhttp
-    implementation(OkHttp.core)
-
     // Stetho
     implementation(Stetho.core)
     implementation(Stetho.okHttp)
 
     // Glide
     implementation(Glide.core)
-    annotationProcessor(Glide.compiler)
+    kapt(Glide.compiler)
+
+    // Retrofit
+    implementation(Retrofit.core)
 
     // Jetpack
     // Integration with activities
