@@ -2,7 +2,7 @@ package com.example.news.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.news.model.Repository
+import com.example.news.network.Repository
 
 /**
  * Factory for the [ArticleListActivityViewModel].
@@ -10,7 +10,7 @@ import com.example.news.model.Repository
  */
 @Suppress("UNCHECKED_CAST")
 class ArticleListActivityViewModelFactory(
-    private val repository: com.example.news.model.Repository
+    private val repository: Repository
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

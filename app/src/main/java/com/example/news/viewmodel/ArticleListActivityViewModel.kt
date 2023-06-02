@@ -1,11 +1,11 @@
 package com.example.news.viewmodel
 
 import androidx.lifecycle.*
-import com.example.news.util.TOP_HEADLINES
+import com.example.news.network.Repository
+import com.example.news.data.util.TOP_HEADLINES
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 
 /**
@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
  * lifecycle.addObserver(viewModel)
  */
 class ArticleListActivityViewModel(
-    private val repository: com.example.news.model.Repository
+    private val repository: Repository
 ) : ViewModel(), LifecycleObserver {
 
     // holds a reference to the Job getting the articles so that it can be cancelled when the
@@ -102,7 +102,7 @@ class ArticleListActivityViewModel(
     /**
      * Holds the list of articles to be displayed by the UI.
      */
-    val articles: LiveData<List<com.example.news.model.Article>> =
+    val articles: LiveData<List<com.example.news.data.Article>> =
     // Fetching the articles depends on the query value, using switchMap utility (uses
     // MediatorLiveData), to transform one LiveData (first switchMap parameter, the query)
     // into another LiveData (switchMap output, the articles) by applying the lambda function
@@ -116,7 +116,7 @@ class ArticleListActivityViewModel(
             )
         }
 
-    private fun getArticles(query: String): LiveData<List<com.example.news.model.Article>> {
+    private fun getArticles(query: String): LiveData<List<com.example.news.data.Article>> {
         val job = Job()
 
         // making a copy of the Job instance reference value (pointer to the job Object instance)

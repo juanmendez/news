@@ -1,14 +1,25 @@
 package com.example.news.util
 
 import com.example.news.MyApplication
-import com.example.news.model.cache.CacheService
-import com.example.news.model.cache.impl.ArticlesDatabase
-import com.example.news.model.cache.impl.CacheMapper
-import com.example.news.model.cache.impl.CacheServiceImpl
-import com.example.news.model.network.ApiService
-import com.example.news.model.network.ApiService2
-import com.example.news.model.network.ApiService3
-import com.example.news.model.network.impl.*
+import com.example.news.data.cache.CacheService
+import com.example.news.data.cache.impl.ArticlesDatabase
+import com.example.news.data.cache.impl.CacheMapper
+import com.example.news.data.cache.impl.CacheServiceImpl
+import com.example.news.data.util.DateUtil
+import com.example.news.network.Repository
+import com.example.news.network.Repository2
+import com.example.news.network.Repository2Impl
+import com.example.news.network.Repository3
+import com.example.news.network.Repository3Impl
+import com.example.news.network.RepositoryImpl
+import com.example.news.network.api.ApiService
+import com.example.news.network.api.ApiService2
+import com.example.news.network.api.ApiService3
+import com.example.news.network.api.impl.Api
+import com.example.news.network.api.impl.ApiService2Impl
+import com.example.news.network.api.impl.ApiService3Impl
+import com.example.news.network.api.impl.ApiServiceImpl
+import com.example.news.network.api.impl.Network
 import retrofit2.Retrofit
 import java.text.SimpleDateFormat
 
@@ -58,21 +69,21 @@ object InjectorUtil {
         return ApiService3Impl(articlesApi)
     }
 
-    fun provideRepository(application: MyApplication): com.example.news.model.Repository {
+    fun provideRepository(application: MyApplication): Repository {
         val articlesApiService = provideApiService()
         val articlesDaoService = provideCacheService(application)
-        return com.example.news.model.RepositoryImpl(articlesApiService, articlesDaoService)
+        return RepositoryImpl(articlesApiService, articlesDaoService)
     }
 
-    fun provideRepository2(application: MyApplication): com.example.news.model.Repository2 {
+    fun provideRepository2(application: MyApplication): Repository2 {
         val articlesApiService2 = provideApiService2()
         val articlesDaoService = provideCacheService(application)
-        return com.example.news.model.Repository2Impl(articlesApiService2, articlesDaoService)
+        return Repository2Impl(articlesApiService2, articlesDaoService)
     }
 
-    fun provideRepository3(application: MyApplication): com.example.news.model.Repository3 {
+    fun provideRepository3(application: MyApplication): Repository3 {
         val articlesApiService3 = provideApiService3()
         val articlesDaoService = provideCacheService(application)
-        return com.example.news.model.Repository3Impl(articlesApiService3, articlesDaoService)
+        return Repository3Impl(articlesApiService3, articlesDaoService)
     }
 }

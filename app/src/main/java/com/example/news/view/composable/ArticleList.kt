@@ -14,17 +14,17 @@ import com.example.news.view.WebViewActivity
 
 @Composable
 fun ArticleList(
-    articles: SnapshotStateList<com.example.news.model.Article>?
+    articles: SnapshotStateList<com.example.news.data.Article>?
 ) {
     val context = LocalContext.current
-    articles?.let { articles ->
+    articles?.let { listOfArticles ->
         LazyColumn(
             modifier = Modifier.background(
                 color = Color(context.resources.getColor(R.color.card_background, null))
             )
         ) {
             itemsIndexed(
-                items = articles
+                items = listOfArticles
             ) { index, article ->
                 ArticleCard(
                     article = article,

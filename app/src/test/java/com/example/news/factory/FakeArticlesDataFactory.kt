@@ -1,6 +1,6 @@
 package com.example.news.factory
 
-import com.example.news.model.Article
+import com.example.news.data.Article
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -10,39 +10,39 @@ import com.google.gson.reflect.TypeToken
 class FakeArticlesDataFactory(
     private val testClassLoader: ClassLoader
 ) {
-    fun produceFakeCacheListOfArticles(): List<com.example.news.model.Article> {
+    fun produceFakeCacheListOfArticles(): List<com.example.news.data.Article> {
         return Gson()
             .fromJson(
                 getArticlesFromFile("cache.json"),
-                object : TypeToken<List<com.example.news.model.Article>>() {}.type
+                object : TypeToken<List<com.example.news.data.Article>>() {}.type
             )
     }
 
-    fun produceFakeNetworkListOfArticles(): List<com.example.news.model.Article> {
+    fun produceFakeNetworkListOfArticles(): List<com.example.news.data.Article> {
         return Gson()
             .fromJson(
                 getArticlesFromFile("network.json"),
-                object : TypeToken<List<com.example.news.model.Article>>() {}.type
+                object : TypeToken<List<com.example.news.data.Article>>() {}.type
             )
     }
 
-    fun produceFakeUpdatedCacheListOfArticles(): List<com.example.news.model.Article> {
+    fun produceFakeUpdatedCacheListOfArticles(): List<com.example.news.data.Article> {
         return Gson()
             .fromJson(
                 getArticlesFromFile("updated_cache.json"),
-                object : TypeToken<List<com.example.news.model.Article>>() {}.type
+                object : TypeToken<List<com.example.news.data.Article>>() {}.type
             )
     }
 
-    fun produceFakeHashMapOfArticles(noteList: List<com.example.news.model.Article>): HashMap<String, com.example.news.model.Article> {
-        val map = HashMap<String, com.example.news.model.Article>()
+    fun produceFakeHashMapOfArticles(noteList: List<com.example.news.data.Article>): HashMap<String, com.example.news.data.Article> {
+        val map = HashMap<String, com.example.news.data.Article>()
         for (note in noteList) {
             map[note.id] = note
         }
         return map
     }
 
-    fun produceEmptyListOfArticles(): List<com.example.news.model.Article> {
+    fun produceEmptyListOfArticles(): List<com.example.news.data.Article> {
         return ArrayList()
     }
 

@@ -16,7 +16,7 @@ fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false):
  * Adapter binding the articles data to the RecyclerView UI component.
  */
 class ArticlesAdapter(
-    private val articles: List<com.example.news.model.Article>,
+    private val articles: List<com.example.news.data.Article>,
     private val listener: OnArticleClickListener
 ) : RecyclerView.Adapter<ArticlesAdapter.ArticleHolder>() {
 
@@ -41,9 +41,9 @@ class ArticlesAdapter(
     class ArticleHolder(
         private val viewBinding: ArticleRowBinding
     ) : RecyclerView.ViewHolder(viewBinding.root) {
-        private var article: com.example.news.model.Article? = null
+        private var article: com.example.news.data.Article? = null
 
-        fun bind(article: com.example.news.model.Article) {
+        fun bind(article: com.example.news.data.Article) {
             this.article = article
             if (article.imageUrl.isNotEmpty()) {
                 viewBinding.articleRowImage.visibility = View.VISIBLE

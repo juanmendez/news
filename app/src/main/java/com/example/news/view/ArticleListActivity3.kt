@@ -16,11 +16,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.news.MyApplication
 import com.example.news.R
 import com.example.news.databinding.ActivityArticleListBinding
-import com.example.news.mvi.ArticleListStateEvent
+import com.example.news.network.mvi.ArticleListStateEvent
 import com.example.news.util.InjectorUtil
-import com.example.news.util.Status
-import com.example.news.util.TOP_HEADLINES
-import com.example.news.util.log
+import com.example.news.network.util.Status
+import com.example.news.data.util.TOP_HEADLINES
+import com.example.news.data.util.log
 import com.example.news.viewmodel.ArticleListActivityViewModel3
 import com.example.news.viewmodel.ArticleListActivityViewModel3Factory
 
@@ -34,10 +34,10 @@ class ArticleListActivity3 : BaseActivity() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var searchMenu: MenuItem
     private lateinit var adapter: ArticlesAdapter
-    private var articles: ArrayList<com.example.news.model.Article> = arrayListOf()
+    private var articles: ArrayList<com.example.news.data.Article> = arrayListOf()
 
     private val listener = object : OnArticleClickListener {
-        override fun onArticleClick(article: com.example.news.model.Article) {
+        override fun onArticleClick(article: com.example.news.data.Article) {
             val intent = Intent(this@ArticleListActivity3, WebViewActivity::class.java)
             intent.putExtra(WebViewActivity.URL_EXTRA, article.url)
             this@ArticleListActivity3.startActivity(intent)

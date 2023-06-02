@@ -2,11 +2,11 @@ package com.example.news
 
 import com.example.news.di.FakeDependencyContainer
 import com.example.news.factory.FakeArticlesDataFactory
-import com.example.news.model.network.impl.ApiServiceImpl
-import com.example.news.model.network.impl.Api
-import com.example.news.util.TAG
+import com.example.news.data.util.TAG
 import com.example.news.util.assertThrows
-import com.example.news.util.log
+import com.example.news.data.util.log
+import com.example.news.network.api.impl.Api
+import com.example.news.network.api.impl.ApiServiceImpl
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
@@ -69,7 +69,7 @@ class TestApiService {
     fun getArticles_success() = runBlocking {
 
         // expected
-        val expectedNetworkArticles: List<com.example.news.model.Article> =
+        val expectedNetworkArticles: List<com.example.news.data.Article> =
             fakeArticlesDataFactory.produceFakeNetworkListOfArticles()
         val expectedNetworkArticlesSize = 1
 
@@ -81,7 +81,7 @@ class TestApiService {
 
         // make the api call
         log(this@TestApiService.TAG, "call getArticles")
-        val actualNetworkArticles: List<com.example.news.model.Article> = articlesApiService.getArticles("technology")
+        val actualNetworkArticles: List<com.example.news.data.Article> = articlesApiService.getArticles("technology")
 
         // assert number of received articles matches the expected value
         log(this@TestApiService.TAG, "returned articles count: ${actualNetworkArticles.size}")

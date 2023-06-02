@@ -1,7 +1,6 @@
 package com.example.news.fake
 
-import com.example.news.model.Article
-import com.example.news.model.network.ApiService
+import com.example.news.network.api.ApiService
 
 const val FORCE_GET_NETWORK_ARTICLES_EXCEPTION = "FORCE_GET_NETWORK_ARTICLES_EXCEPTION"
 
@@ -17,9 +16,9 @@ const val FORCE_GET_NETWORK_ARTICLES_EXCEPTION = "FORCE_GET_NETWORK_ARTICLES_EXC
  */
 class FakeApiServiceImpl
 constructor(
-    private val fakeNetworkArticlesData: HashMap<String, com.example.news.model.Article>,
+    private val fakeNetworkArticlesData: HashMap<String, com.example.news.data.Article>,
 ) : ApiService {
-    override suspend fun getArticles(query: String): List<com.example.news.model.Article> {
+    override suspend fun getArticles(query: String): List<com.example.news.data.Article> {
 
         // we need to test the case where an exception is thrown,
         // to that effect we will fake it by sending a query with
@@ -28,7 +27,7 @@ constructor(
             throw Exception("Something went getting the network articles.")
         }
 
-        val results: ArrayList<com.example.news.model.Article> = ArrayList()
+        val results: ArrayList<com.example.news.data.Article> = ArrayList()
 
         // search in the fake HashMap data
         // to match what an API call would do

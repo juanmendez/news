@@ -3,7 +3,7 @@ package com.example.news
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.news.model.cache.impl.ArticlesDatabase
+import com.example.news.data.cache.impl.ArticlesDatabase
 import com.facebook.stetho.Stetho
 
 /**

@@ -22,7 +22,7 @@ import com.example.news.R
 
 @Composable
 fun ArticleCard(
-    article: com.example.news.model.Article,
+    article: com.example.news.data.Article,
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -131,7 +131,7 @@ fun ArticleCard(
 @Composable
 fun ArticleCardPreview() {
     ArticleCard(
-        article = com.example.news.model.Article(
+        article = com.example.news.data.Article(
             id = "2474abea-7584-486b-9f88-87a21870b0ec",
             query = "technology",
             sourceId = "",

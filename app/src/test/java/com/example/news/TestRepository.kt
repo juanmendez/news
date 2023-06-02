@@ -3,13 +3,13 @@ package com.example.news
 import com.example.news.di.FakeDependencyContainer
 import com.example.news.fake.FORCE_GET_CACHE_ARTICLES_EXCEPTION
 import com.example.news.fake.FORCE_GET_NETWORK_ARTICLES_EXCEPTION
-import com.example.news.model.cache.CacheService
-import com.example.news.model.network.ApiService
-import com.example.news.util.TAG
+import com.example.news.network.RepositoryImpl
+import com.example.news.data.cache.CacheService
+import com.example.news.data.util.TAG
 import com.example.news.util.assertThrows
-import com.example.news.util.log
+import com.example.news.data.util.log
+import com.example.news.network.api.ApiService
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -17,7 +17,7 @@ import org.junit.Test
 class TestRepository {
 
     // this is the system in test
-    private val repository: com.example.news.model.RepositoryImpl
+    private val repository: RepositoryImpl
 
     // fakes
     private val fakeDependencyContainer: FakeDependencyContainer = FakeDependencyContainer()
@@ -33,7 +33,7 @@ class TestRepository {
         fakeApiService = fakeDependencyContainer.fakeApiService
 
         // init system in test
-        repository = com.example.news.model.RepositoryImpl(fakeApiService, fakeCacheService)
+        repository = RepositoryImpl(fakeApiService, fakeCacheService)
     }
 
     @Test

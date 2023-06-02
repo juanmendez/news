@@ -4,9 +4,10 @@ import com.example.news.fake.FakeApiServiceImpl
 import com.example.news.fake.FakeCacheServiceImpl
 import com.example.news.factory.FakeArticlesDataFactory
 import com.example.news.fake.FakeRepositoryImpl
-import com.example.news.model.cache.CacheService
-import com.example.news.model.network.ApiService
-import com.example.news.util.isUnitTest
+import com.example.news.network.Repository
+import com.example.news.data.cache.CacheService
+import com.example.news.data.util.isUnitTest
+import com.example.news.network.api.ApiService
 
 /**
  * Contains all the fake dependencies needed for Unit Tests
@@ -31,7 +32,7 @@ class FakeDependencyContainer {
     /**
      * Fake repository used by Unit Tests
      */
-    lateinit var fakeRepository: com.example.news.model.Repository
+    lateinit var fakeRepository: Repository
 
     init {
         // for Logger.kt so that we log using println

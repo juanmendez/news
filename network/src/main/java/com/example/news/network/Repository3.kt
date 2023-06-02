@@ -1,0 +1,33 @@
+package com.example.news.network
+
+import com.example.news.network.mvi.ArticleListViewState
+import com.example.news.network.mvi.DataState
+import kotlinx.coroutines.flow.Flow
+
+/**
+ * Interface abstracting the repository functionality.
+ *
+ * The Repository should expose suspend functions, or return Channel/Flow objects, depending on
+ * the nature of the API. The actual coroutines are then set up in the ViewModel. LiveData gets
+ * introduced by the ViewModel, not the Repository.
+ *
+ * MVI Architecture: the Repository returns a flow of ViewState wrapped in DataState (to add
+ * a loading state and an error state) in response to a StateEvent sent from the View to the
+ * ViewModel.
+ */
+interface Repository3 {
+
+    /**
+     * Retrieves a list of [Article] matching a given [query]
+     * @param query the matching query
+     * @param page the matching page
+     * @return the [Flow] of [DataState] of [ArticleListViewState]
+     */
+    suspend fun getArticles(query: String, page: Int): Flow<DataState<ArticleListViewState>>
+
+    /**
+     * Deletes all articles matching a given [query]
+     * @param query the matching query
+     */
+    suspend fun deleteArticles(query: String)
+}

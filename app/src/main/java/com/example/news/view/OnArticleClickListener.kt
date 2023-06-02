@@ -5,5 +5,5 @@ package com.example.news.view
  * interface, for handling user clicks on an article row in the UI.
  */
 interface OnArticleClickListener {
-    fun onArticleClick(article: com.example.news.model.Article)
+    fun onArticleClick(article: com.example.news.data.Article)
 }

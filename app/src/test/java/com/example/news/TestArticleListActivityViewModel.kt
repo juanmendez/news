@@ -6,8 +6,9 @@ import com.example.news.di.FakeDependencyContainer
 import com.example.news.factory.FakeArticlesDataFactory
 import com.example.news.fake.FORCE_GET_REPO_ARTICLES_EXCEPTION
 import com.example.news.fake.REPO_ARTICLES_EXCEPTION_MESSAGE
-import com.example.news.util.TAG
-import com.example.news.util.log
+import com.example.news.network.Repository
+import com.example.news.data.util.TAG
+import com.example.news.data.util.log
 import com.example.news.util.*
 import com.example.news.viewmodel.ArticleListActivityViewModel
 import junit.framework.Assert
@@ -37,11 +38,11 @@ class TestArticleListActivityViewModel {
     // fakes
     private val fakeDependencyContainer: FakeDependencyContainer = FakeDependencyContainer()
     private val fakeArticlesDataFactory: FakeArticlesDataFactory
-    private val fakeRepository: com.example.news.model.Repository
+    private val fakeRepository: Repository
 
     // mocking the LiveData observers
     @Mock
-    private lateinit var articlesObserver: Observer<List<com.example.news.model.Article>>
+    private lateinit var articlesObserver: Observer<List<com.example.news.data.Article>>
 
     @Mock
     private lateinit var errorMessageObserver: Observer<String?>
@@ -63,9 +64,9 @@ class TestArticleListActivityViewModel {
         testCoroutineRule.runBlockingTest {
 
             // expected
-            val expectedCacheArticles: List<com.example.news.model.Article> =
+            val expectedCacheArticles: List<com.example.news.data.Article> =
                 fakeArticlesDataFactory.produceFakeCacheListOfArticles()
-            val expectedUpdatedCacheArticles: List<com.example.news.model.Article> =
+            val expectedUpdatedCacheArticles: List<com.example.news.data.Article> =
                 fakeArticlesDataFactory.produceFakeUpdatedCacheListOfArticles()
 
             // no LifeCycle here, hence observe forever
@@ -102,9 +103,9 @@ class TestArticleListActivityViewModel {
         testCoroutineRule.runBlockingTest {
 
             // expected
-            val expectedCacheArticles: List<com.example.news.model.Article> =
+            val expectedCacheArticles: List<com.example.news.data.Article> =
                 fakeArticlesDataFactory.produceFakeCacheListOfArticles()
-            val expectedUpdatedCacheArticles: List<com.example.news.model.Article> =
+            val expectedUpdatedCacheArticles: List<com.example.news.data.Article> =
                 fakeArticlesDataFactory.produceFakeUpdatedCacheListOfArticles()
 
             log(this@TestArticleListActivityViewModel.TAG, "call ViewModel's setQuery")

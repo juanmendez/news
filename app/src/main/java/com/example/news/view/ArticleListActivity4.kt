@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import com.example.news.MyApplication
 import com.example.news.R
-import com.example.news.mvi.ArticleListStateEvent
+import com.example.news.network.mvi.ArticleListStateEvent
 import com.example.news.util.InjectorUtil
 import com.example.news.view.composable.ArticleList
 import com.example.news.view.composable.CustomTheme

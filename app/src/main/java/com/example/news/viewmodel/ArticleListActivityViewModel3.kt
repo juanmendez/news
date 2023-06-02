@@ -1,16 +1,16 @@
 package com.example.news.viewmodel
 
 import androidx.lifecycle.*
-import com.example.news.mvi.ArticleListStateEvent
-import com.example.news.mvi.ArticleListViewState
-import com.example.news.mvi.DataState
+import com.example.news.network.Repository3
+import com.example.news.network.mvi.ArticleListStateEvent
+import com.example.news.network.mvi.ArticleListViewState
+import com.example.news.network.mvi.DataState
 import com.example.news.util.AbsentLiveData
-import com.example.news.util.TOP_HEADLINES
-import com.example.news.util.log
+import com.example.news.data.util.TOP_HEADLINES
+import com.example.news.data.util.log
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 
 /**
  * ViewModel for the ArticleListActivity3. Maintains its data and business logic.
@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.collect
  * lifecycle.addObserver(viewModel)
  */
 class ArticleListActivityViewModel3(
-    private val repository3: com.example.news.model.Repository3
+    private val repository3: Repository3
 ) : ViewModel(), LifecycleObserver {
 
     // holds a reference to the Job getting the articles so that it can be cancelled when the

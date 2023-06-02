@@ -71,7 +71,8 @@ android {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation(project(":model"))
+    implementation(project(":data"))
+    implementation(project(":network"))
 
     // AndroidX
     implementation("org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}")
@@ -125,6 +126,8 @@ dependencies {
     // For testing coroutines
     testImplementation(AndroidArchTest.coroutinesTest)
     testImplementation(OkHttp.testing)
+    testImplementation(Retrofit.core)
+    testImplementation(Retrofit.gson)
 
     // UI Tests
     androidTestImplementation(Junit.uiTest)
