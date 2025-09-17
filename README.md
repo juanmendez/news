@@ -1,4 +1,4 @@
-# Android sample illustrating MVVM and MVI application behavior patterns
+iOS sample illustrating MVVM application behavior pattern
 
 ## Requirements
 - Allows searching news articles using the paginated API from https://newsapi.org
@@ -14,14 +14,8 @@
 ## Implementation
 - The news articles are presented in a list view.
 - The app stack is
-   - OkHttp / Retrofit for the network model
-   - Room / DAO for the cache model
-   - Repository / ViewModel / LiveData for the MVVM / MVI architecture
-   - Coroutines for data processing
-   - Glide for image loading
-   - RecyclerView / ViewHolder pattern for displaying the articles list
-   - SearchManager / SearchRecentSuggestionsProvider for persisting search keywords
-- The architecture will be MVVM and its MVI variant.
+ 
+- The architecture will be MVVM.
 - **Cache is the source of truth**. Data fetched from the network is only used to update the cache.
 - The API key is stored in local.properties as apiKey="your API key"
 - The app supports both portrait and landscape without boiler plate code by virtue of LiveData
@@ -53,25 +47,8 @@
       - in case of network failure emits an **error Resource** so that the app can display the error
    - The **NetworkBoundResource** allows the Repository to be very lean and only implements API specifics by implementing abstract methods defined by the NetworkBoundResource.
 
-## MVI Architecture
-The MVI architecture improves the implementation as follows:
-- all user interactions are abstracted via a **StateEvent** sealed class. These events are sent from the View to the View Model when the user interacts with the app:
-   - when the user performs a search the View sends the **GetArticlesEvent**
-   - when the user pulls to refresh the View sends the **RefreshEvent**
-   - when the user scrolls to the bottom of the articles list the View sends the **IncrementPageEvent**
-   - all these events are received by the View Models and Repository APIs are called to fetch the data
- - all the View data is wrapped into a **ViewState**. Specifically the articles list View requires the following: the articles data, the search query string and the page index.
-- all fetched data is wrapped in a **DataState** which wraps the View data alongside the loading state and the error message. This is similar to the **Resource** class from the MVVM architecture.
-- within the **DataState** the error message and the articles data are each wrapped into a consumable **Event** as they are exposed to the View via LiveData and they should be consumed upon access. For example if the Airplane mode is set to ON, the View will receive and display an error message. If the phone changes orientations that error message will be displayed again (LiveData) unless wrapped into a consumable **Event**.
-
-To summarize
-- **StateEvents** are used to send user interactions events from the View to the View Model.
-- the View Model handles the StateEvents by making appropriate calls to the data layer via the Repository.
-- the Repository responds with a flow of **DataStates** that encapsulate the View state ( success / error / loading ) and the all-encompassing View data (wrapped in **ViewState**).
-
 Uml sequence diagram for the user making a query search
 
-![MVI sequence diagram](./docs/mvi.png)
 
 Execution example:
 - app starts OR user searches for "Top Headlines"

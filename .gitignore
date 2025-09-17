@@ -1,18 +1,62 @@
-*.iml
-.gradle
+
+# Xcode
+build/
+DerivedData/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xcscmblueprint
+*.xcuserstate
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Swift Package Manager (if used)
+.build/
+Package.resolved
+
+# Carthage (if used)
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
+# Archives
+*.xcarchive
+
+# Playground
+timeline.xctimeline
+playground.xcworkspace
+
+# SwiftPM binary artifacts
+.artifacts/
+
+# User-specific files
+*.swp
+*.swo
+*.DS_Store
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# IDE config
+.idea/
+
+# Environment files
+.env
+
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/inspectionProfiles
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-/.idea/misc.xml
-/.idea/runConfigurations.xml
-/.idea/compiler.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
