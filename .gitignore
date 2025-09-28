@@ -59,4 +59,7 @@ playground.xcworkspace
 # Environment files
 .env
 
+# Secrets
 /local.properties
+/*.xcconfig
+news/data/ApiKey.swift

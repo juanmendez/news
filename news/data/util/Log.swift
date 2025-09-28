@@ -28,22 +28,25 @@ public final class Log {
     ///
     /// - Parameters:
     ///   - message: The message to log.
+    ///   - error: The error content to log.
     ///   - level: The severity level of the log message.
-    ///   - file: The file name where the log is called (auto-filled).
+
     private func log(
         _ message: String,
-        level: LogLevel = .info,
-        file: String = #file,
+        error: Error? = nil,
+        level: LogLevel,
     ) {
         guard Log.isEnabled else { return }
 
-        let fileName = (file as NSString).lastPathComponent
         let timestamp = Log.timestamp()
 
-        print("[\(timestamp)] [\(level.rawValue)] [\(fileName) - \(message)")
+        print("[\(timestamp)] [\(level.rawValue)] - \(message)")
+
+        if let error {
+            print("[\(timestamp)] [\(level.rawValue)] - \(error.localizedDescription)")
+        }
     }
 
-    /// Returns the current timestamp as a formatted string.
     private static func timestamp() -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
@@ -51,23 +54,23 @@ public final class Log {
     }
 
     public static func i(
-        _ file: String = #file,
         _ message: String,
+        error: Error? = nil,
     ) {
-        shared.log(message, level: .info, file: file)
+        shared.log(message, error: error, level: .info)
     }
 
     public static func w(
-        _ file: String = #file,
         _ message: String,
+        error: Error? = nil,
     ) {
-        shared.log(message, level: .warning, file: file)
+        shared.log(message, error: error, level: .warning)
     }
 
     public static func e(
-        _ file: String = #file,
         _ message: String,
+        error: Error? = nil,
     ) {
-        shared.log(message, level: .error, file: file)
+        shared.log(message, error: error, level: .error)
     }
 }
