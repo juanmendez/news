@@ -10,6 +10,7 @@ target 'news' do
   target 'newsTests' do
     inherit! :search_paths
     # Pods for testing
+    pod 'MockingbirdFramework', '~> 0.20'
   end
 
   target 'newsUITests' do

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Inject var repository: Repository
+
     var body: some View {
         VStack {
             Image(systemName: "globe")
@@ -16,6 +18,13 @@ struct ContentView: View {
             Text("Hello, world!")
         }
         .padding()
+        .onAppear {
+            Task {
+                for await value in repository.getArticles(query: "", page: 1) {
+                    print("Received value: \(value)")
+                }
+            }
+        }
     }
 }
 

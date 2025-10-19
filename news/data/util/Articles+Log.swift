@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Array where Element == Article {
+extension Array where Element == ArticleEntity {
     /**
      * Logs all articles
      * @param message message logged
@@ -17,7 +17,7 @@ extension Array where Element == Article {
         Log.i("\(message) \(self.count) articles:")
 
         self.enumerated().forEach { index, article in
-            Log.i("\(index + 1). \(article.title) | \(article.publishedDate.formatted())")
+            Log.i("\(index + 1). \(article.title) | \(article.publishedAt)")
         }
     }
 

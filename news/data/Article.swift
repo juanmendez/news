@@ -12,42 +12,53 @@ import Foundation
 /// Below the repository we have entity models: a network entity model for the api service, and a
 /// cache entity model for the cache service.
 public struct Article: Codable, Equatable {
-    let id: String
-    let query: String
-    let sourceId: String
-    let sourceName: String
+    let id: UUID
+    let source: Source
     let author: String
     let title: String
     let description: String
     let url: String
-    let imageUrl: String
-    let publishedDate: Date
+    let urlToImage: String
+    let publishedAt: Date
     let content: String
 
-    public init(
-        id: String,
-        query: String,
-        sourceId: String,
-        sourceName: String,
+    init(
+        id: UUID = UUID(),
+        source: Source,
         author: String,
         title: String,
         description: String,
         url: String,
-        imageUrl: String,
-        publishedDate: Date,
+        urlToImage: String,
+        publishedAt: Date,
         content: String
     ) {
         self.id = id
-        self.query = query
-        self.sourceId = sourceId
-        self.sourceName = sourceName
+        self.source = source
         self.author = author
         self.title = title
         self.description = description
         self.url = url
-        self.imageUrl = imageUrl
-        self.publishedDate = publishedDate
+        self.urlToImage = urlToImage
+        self.publishedAt = publishedAt
         self.content = content
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = UUID()
+        self.source = try container.decodeIfPresent(Source.self, forKey: .source) ?? Source(id: nil, name: "")
+        self.author = try container.decodeIfPresent(String.self, forKey: .author) ?? ""
+        self.title = try container.decodeIfPresent(String.self, forKey: .title) ?? ""
+        self.description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
+        self.url = try container.decodeIfPresent(String.self, forKey: .url) ?? ""
+        self.urlToImage = try container.decodeIfPresent(String.self, forKey: .urlToImage) ?? ""
+        self.publishedAt = try container.decodeIfPresent(Date.self, forKey: .publishedAt) ?? Date()
+        self.content = try container.decodeIfPresent(String.self, forKey: .content) ?? ""
     }
 }
 
+struct Source: Codable, Equatable {
+    let id: String?
+    let name: String
+}

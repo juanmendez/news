@@ -8,7 +8,14 @@
 import SwiftUI
 
 @main
-struct newsApp: App {
+struct NewsApp: App {
+
+    init() {
+        InjectionsProvider.register(
+            DefaultInjections()
+        )
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
