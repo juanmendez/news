@@ -62,4 +62,14 @@ playground.xcworkspace
 # Secrets
 /local.properties
 /*.xcconfig
-news/data/ApiKey.swift
+
+# Generated
+*.generated.swift
+
+
+# Binaries
+Pods/MockingbirdFramework/mockingbird/bin/
+
+
+# Caches
+**/*.xcodeproj/MockingbirdCache/

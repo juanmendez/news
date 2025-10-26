@@ -15,19 +15,19 @@ import Foundation
 struct ResourceProvider {
     /**
      Creates an asynchronous stream that emits resource states from cache and network sources.
-    
+
      This method first loads data from the cache, then determines if a network fetch is needed.
      If so, it fetches from the network, saves the result to the cache, and emits updated data.
      Errors are propagated as Resource.ERROR.
-    
+
      - Parameters:
      - loadFromCache: Closure to asynchronously load data from the local cache.
      - shouldFetchFromNetwork: Closure to determine if a network fetch is needed, given the cached data.
      - fetchFromNetwork: Closure to asynchronously fetch data from the network.
      - saveToCache: Closure to asynchronously save network data to the cache.
-    
+
      - Returns: An AsyncStream emitting Resource states for the cached data type.
-    
+
      - Note: Both generic types must conform to Codable and Equatable.
      */
     static func networkBoundResource<CachedType: Codable & Equatable, NetworkType: Codable & Equatable>(
@@ -39,19 +39,23 @@ struct ResourceProvider {
         return AsyncStream { continuation in
             Task {
                 let cachedValue = await loadFromCache()
-                continuation.yield(Resource.LOADING(item: cachedValue))
+                continuation.yield(Resource.loading(item: cachedValue))
 
                 if shouldFetchFromNetwork(cachedValue) {
                     do {
                         let networkResult = try await fetchFromNetwork()
                         await saveToCache(networkResult)
 
-                        continuation.yield(Resource.SUCCESS(item: await loadFromCache()))
+                        continuation.yield(Resource.success(item: await loadFromCache()))
                     } catch let error {
-                        continuation.yield(Resource.ERROR(error: error))
+                        if let httpError = error as? HttpError {
+                            continuation.yield(Resource.error(error: httpError))
+                        } else {
+                            continuation.yield(Resource.error(error: error))
+                        }
                     }
                 } else {
-                    continuation.yield(Resource.SUCCESS(item: cachedValue))
+                    continuation.yield(Resource.success(item: cachedValue))
                 }
 
                 continuation.finish()

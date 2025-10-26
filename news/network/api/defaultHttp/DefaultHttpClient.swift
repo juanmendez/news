@@ -40,7 +40,7 @@ struct DefaultHttpClient: HttpClient {
         case 401...404:
             throw HttpError.notFound
         case 409:
-                let errorModels = try DecoderFactory.iso8601Decoder.decode(
+            let errorModels = try DecoderFactory.iso8601Decoder.decode(
                 [ErrorModel].self,
                 from: data
             )

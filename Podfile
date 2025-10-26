@@ -8,8 +8,9 @@ target 'news' do
   # Pods for news
 
   target 'newsTests' do
-    inherit! :search_paths
+    # inherit! :search_paths
     # Pods for testing
+    use_frameworks!
     pod 'MockingbirdFramework', '~> 0.20'
   end
 

@@ -29,8 +29,21 @@ import Foundation
  * @param data the data wrapped into a consumable [Event]
  * @param message the message [String] wrapped into a consumable [Event]
  */
-enum Resource<Item: Equatable & Codable> {
-    case LOADING(item:Item? = nil)
-    case SUCCESS(item:Item)
-    case ERROR(error:Error)
+enum Resource<Item: Equatable & Codable> : Equatable {
+    case loading(item:Item? = nil)
+    case success(item:Item)
+    case error(error:Error)
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        switch (lhs, rhs) {
+            case (.loading(let lhsItem), .loading(let rhsItem)):
+                return lhsItem == rhsItem
+            case (.success(let lhsItem), .success(let rhsItem)):
+                return lhsItem == rhsItem
+            case (.error(let lhsError), .error(let rhsError)):
+                return "\(lhsError)" == "\(rhsError)"
+            default:
+                return false
+        }
+    }
 }
