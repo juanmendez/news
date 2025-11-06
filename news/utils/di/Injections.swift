@@ -19,6 +19,8 @@ extension Injections {
                 .httpClient
             } else if type.self == Repository.self {
                 .repository
+            } else if type.self == NewsDatabase.self {
+                .database
             } else {
                 fatalError("No injection type defined for expected type \(type)")
             }

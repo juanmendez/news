@@ -6,15 +6,25 @@
 //
 
 import Foundation
+import GRDB
 
 struct DefaultInjections: Injections {
     var dependencies: [InjectionType: Any] = [:]
 
     init() {
         let httpClient = DefaultHttpClient(urlBase: "https://newsapi.org")
-        let repository = DefaultRepository(httpClient: httpClient, apiKey: NewsApi.key)
-
         dependencies[.httpClient] = httpClient
+
+        let database: NewsDatabase
+        do {
+            database = try DefaultNewsDatabase.create()
+        } catch {
+            Log.e("error \(error)")
+            database = SessionNewsDatabase()
+        }
+
+        dependencies[.database] = database
+        let repository = DefaultRepository(httpClient: httpClient, apiKey: NewsApi.key, database: database)
         dependencies[.repository] = repository
     }
 }

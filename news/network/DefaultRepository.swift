@@ -10,12 +10,13 @@ import Foundation
 struct DefaultRepository: Repository {
     let httpClient: HttpClient
     let apiKey: String
+    var database: NewsDatabase
 
     func getArticles(query: String, page: Int) -> AsyncStream<Resource<[ArticleEntity]>> {
         return ResourceProvider.networkBoundResource(
             loadFromCache: {
                 // Load from cache implementation
-                ArticlesResponseCacheEnum.articleEntities
+                database.readArticles()
             },
             shouldFetchFromNetwork: { data in
                 // Determine if we should fetch from network
@@ -38,9 +39,12 @@ struct DefaultRepository: Repository {
 
                 return response.model.articles
             },
-            saveToCache: { data in
+            saveToCache: { articles in
                 let mapper = ArticleEntityMapper()
-                ArticlesResponseCacheEnum.articleEntities += data.map(mapper.toEntity)
+                let articlesEntity = articles.map(mapper.toEntity)
+                articlesEntity.forEach { articleEntity in
+                    database.saveArticle(articleEntity)
+                }
             }
 
         )
