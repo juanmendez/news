@@ -40,6 +40,8 @@ struct DefaultNewsDatabase: NewsDatabase {
     func saveArticle(_ articleEntity: ArticleEntity) {
         do {
             try dbWriter.write { database in
+                try QueryEntity(queryName: "Top Headlines").insert(database)
+                try QueryArticleEntity(queryName: "Top Headlines", articleId: articleEntity.id).insert(database)
                 try articleEntity.insert(database)
             }
         } catch {
@@ -51,7 +53,19 @@ struct DefaultNewsDatabase: NewsDatabase {
         var articles = [ArticleEntity]()
         do {
             try dbWriter.read { database in
-                articles.append(contentsOf: try ArticleEntity.fetchAll(database))
+                if let query = try? QueryEntity.find(database, key: "Top Headlines"),
+                    let articleIds = try? QueryArticleEntity.filter({ $0.queryname == query.queryName }).fetchAll(
+                        database
+                    ).map(\.articleId) {
+                    
+                    articles.append(
+                        contentsOf: try ArticleEntity.filter { columns in
+                            articleIds.contains(columns.id)
+                        }
+                        .fetchAll(database)
+                    )
+                }
+
             }
         } catch {
             Log.e("Failed to fetch articles: \(error)")
@@ -78,7 +92,7 @@ struct DefaultNewsDatabase: NewsDatabase {
             try database.create(
                 table: "articleEntity",
                 body: { definition in
-                    definition.column("id", .text).primaryKey()  // UUID stored as text
+                    definition.column("id", .text).primaryKey(onConflict: .replace)
                     definition.column("sourceId", .text)
                     definition.column("sourceName", .text).notNull()
                     definition.column("author", .text).notNull()
@@ -88,6 +102,22 @@ struct DefaultNewsDatabase: NewsDatabase {
                     definition.column("imageUrl", .text).notNull()
                     definition.column("publishedAt", .integer).notNull()  // Int64
                     definition.column("content", .text).notNull()
+                }
+            )
+
+            try database.create(
+                table: "queryEntity",
+                body: { definition in
+                    definition.column("queryName", .text).primaryKey(onConflict: .replace).notNull()
+                }
+            )
+
+            try database.create(
+                table: "queryArticleEntity",
+                body: { definition in
+                    definition.autoIncrementedPrimaryKey("id")
+                    definition.column("queryName", .text).notNull()
+                    definition.column("articleId", .text).notNull()
                 }
             )
         }

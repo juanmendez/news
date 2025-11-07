@@ -12,7 +12,7 @@ import Foundation
 /// Below the repository we have entity models: a network entity model for the api service, and a
 /// cache entity model for the cache service.
 public struct Article: Codable, Equatable {
-    let id: UUID
+    let id: String
     let source: Source
     let author: String
     let title: String
@@ -23,7 +23,7 @@ public struct Article: Codable, Equatable {
     let content: String
 
     init(
-        id: UUID = UUID(),
+        id: String = UUID().uuidString,
         source: Source,
         author: String,
         title: String,
@@ -46,7 +46,6 @@ public struct Article: Codable, Equatable {
 
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = UUID()
         self.source = try container.decodeIfPresent(Source.self, forKey: .source) ?? Source(id: nil, name: "")
         self.author = try container.decodeIfPresent(String.self, forKey: .author) ?? ""
         self.title = try container.decodeIfPresent(String.self, forKey: .title) ?? ""
@@ -55,6 +54,14 @@ public struct Article: Codable, Equatable {
         self.urlToImage = try container.decodeIfPresent(String.self, forKey: .urlToImage) ?? ""
         self.publishedAt = try container.decodeIfPresent(Date.self, forKey: .publishedAt) ?? Date()
         self.content = try container.decodeIfPresent(String.self, forKey: .content) ?? ""
+
+        self.id =  if !self.title.isEmpty {
+            self.title
+        } else if !self.url.isEmpty {
+            self.url
+        } else {
+            UUID().uuidString
+        }
     }
 }
 
