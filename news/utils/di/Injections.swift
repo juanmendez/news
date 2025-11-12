@@ -12,7 +12,7 @@ protocol Injections {
 }
 
 extension Injections {
-    func getInjectionByType<T>(type: T.Type) -> T {
+    func byType<T>(_ type: T.Type) -> T {
 
         let injectionType: InjectionType =
             if type.self == HttpClient.self {

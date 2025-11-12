@@ -9,7 +9,7 @@ import Foundation
 import GRDB
 
 protocol NewsDatabase: Sendable {
-    func saveArticle(_ articleEntity: ArticleEntity)
-    func readArticles() -> [ArticleEntity]
+    func saveArticle(_ query: String, articleEntity: ArticleEntity)
+    func readArticles(_ query: String) -> [ArticleEntity]
     static func setupConfiguration(_ configuration: inout Configuration)
 }

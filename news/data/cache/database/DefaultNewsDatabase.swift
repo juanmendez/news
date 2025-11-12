@@ -37,23 +37,23 @@ struct DefaultNewsDatabase: NewsDatabase {
         try migrator.migrate(dbWriter)
     }
 
-    func saveArticle(_ articleEntity: ArticleEntity) {
+    func saveArticle(_ query: String,  articleEntity: ArticleEntity) {
         do {
             try dbWriter.write { database in
-                try QueryEntity(queryName: "Top Headlines").insert(database)
-                try QueryArticleEntity(queryName: "Top Headlines", articleId: articleEntity.id).insert(database)
+                try QueryEntity(queryName: query).insert(database)
+                try QueryArticleEntity(queryName: query, articleId: articleEntity.id).insert(database)
                 try articleEntity.insert(database)
             }
         } catch {
-            Log.e("Failed to save article: \(error)")
+            Log.e("Failed to save article: \(error) for \(query)")
         }
     }
-
-    func readArticles() -> [ArticleEntity] {
+
+    func readArticles(_ query: String) -> [ArticleEntity] {
         var articles = [ArticleEntity]()
         do {
             try dbWriter.read { database in
-                if let query = try? QueryEntity.find(database, key: "Top Headlines"),
+                if let query = try? QueryEntity.find(database, key: query),
                     let articleIds = try? QueryArticleEntity.filter({ $0.queryname == query.queryName }).fetchAll(
                         database
                     ).map(\.articleId) {

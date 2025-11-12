@@ -16,7 +16,7 @@ struct DefaultRepository: Repository {
         return ResourceProvider.networkBoundResource(
             loadFromCache: {
                 // Load from cache implementation
-                database.readArticles()
+                database.readArticles(query)
             },
             shouldFetchFromNetwork: { data in
                 // Determine if we should fetch from network
@@ -43,7 +43,7 @@ struct DefaultRepository: Repository {
                 let mapper = ArticleEntityMapper()
                 let articlesEntity = articles.map(mapper.toEntity)
                 articlesEntity.forEach { articleEntity in
-                    database.saveArticle(articleEntity)
+                    database.saveArticle(query, articleEntity: articleEntity)
                 }
             }
 

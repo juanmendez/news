@@ -6,10 +6,14 @@
 //
 
 struct InjectionsProvider {
-    static private(set) var injections: Injections = EmptyInjections()
+    static private var injections: Injections = EmptyInjections()
 
     static func register(_ injections: any Injections) {
         InjectionsProvider.self.injections = injections
+    }
+
+    static func byType<T>(_ type: T.Type) -> T {
+        injections.byType(type)
     }
 }
 
