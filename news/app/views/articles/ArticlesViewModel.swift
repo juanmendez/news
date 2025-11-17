@@ -9,28 +9,43 @@ import Foundation
 
 class ArticlesViewModel: ObservableObject {
 
-    @Published private(set) var isLoading: Bool = false
+    @Published private(set) var showProgress: Bool = false
     @Published private(set) var articles: [ArticleEntity] = []
-    @Published private(set) var error: Error?
+    @Published private(set) var errorMessage: String?
+    @Published private(set) var isScrollingFinished: Bool = false
+
+    // TODO: start with this initial query, but allow user to search by query as well.
+    private var query: String = "Top Headlines"
+    private var page: Int = 0
     private var repository: Repository
 
     init(repository: Repository = InjectionsProvider.byType(Repository.self)) {
         self.repository = repository
     }
 
-    @MainActor func getArticles(query: String) async {
-        for await value in repository.getArticles(query: query, page: 1) {
+    @MainActor private func getArticles() async {
+        for await value in repository.getArticles(query: query, page: page) {
             switch value {
-                case .loading(item: let item):
-                    isLoading = true
-                    articles = item ?? []
-                case .error(error: let error):
-                    isLoading = false
-                    self.error = error
-                case .success(item: let item):
-                    isLoading = false
-                    articles = item
+            case .loading(let item):
+                articles = item ?? []
+            case .error(_):
+                showProgress = false
+                isScrollingFinished = true
+                self.errorMessage = String(localized: "Something went wrong")
+            case .success(let item):
+                showProgress = false
+                isScrollingFinished = articles == item
+                articles = item
             }
+        }
+    }
+
+    @MainActor func fetchArticles() async {
+        if !showProgress {
+            showProgress = true
+            page += 1
+
+            await self.getArticles()
         }
     }
 }

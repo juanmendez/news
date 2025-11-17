@@ -15,13 +15,19 @@ struct ArticlesView: View {
             ForEach(viewModel.articles, id: \.id) { article in
                 Text(article.title)
             }
-        }
-        .padding()
-        .onAppear {
-            Task {
-                await viewModel.getArticles(query: "Top Headlines")
+
+            // Create an Infinitely Scrolling List in SwiftUI
+            // https://tinyurl.com/2bzznj8s
+            if !viewModel.isScrollingFinished {
+                Text("Loading")
+                    .onAppear {
+                        Task {
+                            await viewModel.fetchArticles()
+                        }
+                    }
             }
         }
+        .padding()
     }
 }
 
