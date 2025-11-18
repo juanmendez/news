@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DefaultHttpClient: HttpClient {
+struct DefaultHttpClient: Sendable, HttpClient {
     // MARK: - Public Properties
 
     var urlBase: String = ""

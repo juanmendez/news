@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol HttpClient: Sendable {
+protocol HttpClient {
     @discardableResult
     func rawRequest(
         router: HttpRouter,

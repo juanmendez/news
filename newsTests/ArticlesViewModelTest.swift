@@ -11,7 +11,9 @@ import Mockingbird
 
 struct ArticlesViewModelTest {
     @Test func figureOutHowToMockFetchingData() async throws {
-        let httpClient = mock(Repository.self)
+        let httpClient = mock(HttpClient.self)
+
+
     }
 
 }

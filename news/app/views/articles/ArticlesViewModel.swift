@@ -7,12 +7,13 @@
 
 import Foundation
 
-class ArticlesViewModel: ObservableObject {
+@Observable
+class ArticlesViewModel {
 
-    @Published private(set) var showProgress: Bool = false
-    @Published private(set) var articles: [ArticleEntity] = []
-    @Published private(set) var errorMessage: String?
-    @Published private(set) var isScrollingFinished: Bool = false
+    private(set) var showProgress: Bool = false
+    private(set) var articles: [ArticleEntity] = []
+    private(set) var errorMessage: String?
+    private(set) var isScrollingFinished: Bool = false
 
     // TODO: start with this initial query, but allow user to search by query as well.
     private var query: String = "Top Headlines"
