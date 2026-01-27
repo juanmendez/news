@@ -28,6 +28,9 @@ struct ArticlesView: View {
             }
         }
         .padding()
+        .refreshable {
+            await viewModel.fetchArticles(refresh: true)
+        }
     }
 }
 

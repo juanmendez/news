@@ -24,29 +24,32 @@ class ArticlesViewModel {
         self.repository = repository
     }
 
-    @MainActor private func getArticles() async {
-        for await value in repository.getArticles(query: query, page: page) {
+    @MainActor private func getArticles(refresh: Bool = false) async {
+        for await value in repository.getArticles(query: query, page: page, refresh: refresh) {
+            showProgress = value.isLoading
+            
             switch value {
             case .loading(let item):
                 articles = item ?? []
             case .error(_):
-                showProgress = false
                 isScrollingFinished = true
                 self.errorMessage = String(localized: "Something went wrong")
             case .success(let item):
-                showProgress = false
                 isScrollingFinished = articles == item
                 articles = item
             }
         }
     }
 
-    @MainActor func fetchArticles() async {
+    @MainActor func fetchArticles(refresh: Bool = false) async {
         if !showProgress {
-            showProgress = true
+            if refresh {
+                page = 0
+            }
+
             page += 1
 
-            await self.getArticles()
+            await self.getArticles(refresh: refresh)
         }
     }
 }

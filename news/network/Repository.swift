@@ -14,7 +14,22 @@ protocol Repository {
      * @param page the matching page
      * @return the [Flow] of [Resource] of the list of matching [Article]
      */
-    func getArticles(query: String, page: Int) -> AsyncStream<Resource<[ArticleEntity]>>
+    func getArticles(
+        query: String,
+        page: Int,
+    ) -> AsyncStream<Resource<[ArticleEntity]>>
+
+    /**
+     * Retrieves a list of [Article] matching a given [query] and [page]
+     * @param query the matching query
+     * @param page the matching page
+     * @return the [Flow] of [Resource] of the list of matching [Article]
+     */
+    func getArticles(
+        query: String,
+        page: Int,
+        refresh: Bool,
+    ) -> AsyncStream<Resource<[ArticleEntity]>>
 
     /**
      * Retrieves a list of [Article] matching "Top Headlines" and [page]
