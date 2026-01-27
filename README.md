@@ -1,5 +1,25 @@
 iOS sample illustrating MVVM application behavior pattern
 
+## iOS notes
+- [Mocking Bird library](https://mockingbirdswift.com/) is used to mock types for unit testing.
+  - Ensure to make some changes to run it.
+    - Right-click on `news.xcodeproj`, and select show packages contents
+    - Edit `project.pbxproj` and update by adding `compatibilityVersion`
+        ```
+      /* Begin PBXProject section */
+		2A86B0C62D2586A1001BEA6D /* Project object */ = {
+                        ...
+                        compatibilityVersion = "Xcode 16.0";
+                        ...
+                }
+      /* End PBXProject section */
+      ```
+  - Run `pod install`  
+  - Run this code to auto generate mocks
+    ``` 
+      Pods/MockingbirdFramework/mockingbird configure newsTests -- --targets news
+    ```
+
 ## Requirements
 - Allows searching news articles using the paginated API from https://newsapi.org
 - Pull to refresh
