@@ -5,8 +5,9 @@
 //  Created by Mendez, Juan on 9/16/25.
 //
 
-import Testing
 import Mockingbird
+import Testing
+
 @testable import news
 
 struct NewsTests {
@@ -23,7 +24,7 @@ struct NewsTests {
         description: String = "Test description",
         url: String,
         imageUrl: String = "https://test.com/image.jpg",
-        publishedAt: Int64 = 1700000000000,
+        publishedAt: Int64 = 1_700_000_000_000,
         content: String = "Test content"
     ) -> ArticleEntity {
         ArticleEntity(
@@ -78,8 +79,22 @@ struct NewsTests {
             makeArticle(id: "1", title: "Loading Article", url: "http://test.com")
         ]
         let fullArticles = [
-            makeArticle(id: "1", sourceName: "CNN", title: "Article 1", description: "Desc 1", url: "http://test.com/1", publishedAt: 1700000000000),
-            makeArticle(id: "2", sourceName: "BBC", title: "Article 2", description: "Desc 2", url: "http://test.com/2", publishedAt: 1700086400000)
+            makeArticle(
+                id: "1",
+                sourceName: "CNN",
+                title: "Article 1",
+                description: "Desc 1",
+                url: "http://test.com/1",
+                publishedAt: 1_700_000_000_000
+            ),
+            makeArticle(
+                id: "2",
+                sourceName: "BBC",
+                title: "Article 2",
+                description: "Desc 2",
+                url: "http://test.com/2",
+                publishedAt: 1_700_086_400_000
+            ),
         ]
 
         let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
@@ -156,10 +171,10 @@ struct NewsTests {
     @Test func multipleSuccessivePages() async throws {
         let repository = mock(Repository.self)
         let page1Articles = [
-            makeArticle(id: "1", title: "Article 1", url: "http://test.com/1", publishedAt: 1700000000000)
+            makeArticle(id: "1", title: "Article 1", url: "http://test.com/1", publishedAt: 1_700_000_000_000)
         ]
         let page2Articles = [
-            makeArticle(id: "2", title: "Article 2", url: "http://test.com/2", publishedAt: 1700086400000)
+            makeArticle(id: "2", title: "Article 2", url: "http://test.com/2", publishedAt: 1_700_086_400_000)
         ]
 
         let stream1 = AsyncStream<Resource<[ArticleEntity]>> { continuation in
@@ -216,7 +231,7 @@ struct NewsTests {
                 description: "Description \(id)",
                 url: "http://test.com/\(id)",
                 imageUrl: "http://test.com/image\(id).jpg",
-                publishedAt: Int64(1700000000000 + (id * 86400000)),
+                publishedAt: Int64(1_700_000_000_000 + (id * 86_400_000)),
                 content: "Content \(id)"
             )
         }
@@ -258,8 +273,8 @@ struct NewsTests {
     }
 
     @Test func articlesWithDifferentPublishDatesAreNotEqual() async throws {
-        let article1 = makeArticle(id: "1", title: "News", url: "http://test.com", publishedAt: 1700000000000)
-        let article2 = makeArticle(id: "1", title: "News", url: "http://test.com", publishedAt: 1700086400000)
+        let article1 = makeArticle(id: "1", title: "News", url: "http://test.com", publishedAt: 1_700_000_000_000)
+        let article2 = makeArticle(id: "1", title: "News", url: "http://test.com", publishedAt: 1_700_086_400_000)
 
         #expect(article1 != article2)
     }
@@ -276,7 +291,7 @@ struct NewsTests {
                 description: "Scientists announce major advancement in artificial intelligence",
                 url: "https://techcrunch.com/ai-breakthrough",
                 imageUrl: "https://techcrunch.com/images/ai.jpg",
-                publishedAt: 1700000000000,
+                publishedAt: 1_700_000_000_000,
                 content: "Full article content about AI breakthrough..."
             ),
             makeArticle(
@@ -288,9 +303,9 @@ struct NewsTests {
                 description: "Latest developments in quantum computing field",
                 url: "https://wired.com/quantum-update",
                 imageUrl: "https://wired.com/images/quantum.jpg",
-                publishedAt: 1700086400000,
+                publishedAt: 1_700_086_400_000,
                 content: "Full article content about quantum computing..."
-            )
+            ),
         ]
 
         let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
@@ -307,7 +322,7 @@ struct NewsTests {
             #expect(returnedArticles[0].sourceId == "techcrunch")
             #expect(returnedArticles[0].author == "Sarah Johnson")
             #expect(returnedArticles[1].sourceName == "Wired")
-            #expect(returnedArticles[1].publishedAt == 1700086400000)
+            #expect(returnedArticles[1].publishedAt == 1_700_086_400_000)
         } else {
             Issue.record("Expected success with 2 articles")
         }
@@ -338,9 +353,9 @@ struct NewsTests {
     @Test func sortArticlesByPublishedDate() async throws {
         let repository = mock(Repository.self)
         let articles = [
-            makeArticle(id: "3", title: "Newest", url: "http://test.com/3", publishedAt: 1700172800000),
-            makeArticle(id: "1", title: "Oldest", url: "http://test.com/1", publishedAt: 1700000000000),
-            makeArticle(id: "2", title: "Middle", url: "http://test.com/2", publishedAt: 1700086400000)
+            makeArticle(id: "3", title: "Newest", url: "http://test.com/3", publishedAt: 1_700_172_800_000),
+            makeArticle(id: "1", title: "Oldest", url: "http://test.com/1", publishedAt: 1_700_000_000_000),
+            makeArticle(id: "2", title: "Middle", url: "http://test.com/2", publishedAt: 1_700_086_400_000),
         ]
 
         let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
@@ -361,4 +376,3 @@ struct NewsTests {
         }
     }
 }
-
