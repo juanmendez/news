@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import newsShared
 
 @Observable
-class ArticlesViewModel {
+class ArticlesViewModel: ArticlesViewModelContract {
 
     private(set) var showProgress: Bool = false
     private(set) var articles: [ArticleEntity] = []

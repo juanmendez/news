@@ -10,10 +10,8 @@ import Testing
 
 @testable import news
 
-struct ArticlesViewModelTest {
+struct HttpClientTest {
     @Test func findOutHowToMockAJsonForHttpClientResponse() async throws {
-        let httpClient = mock(HttpClient.self)
-
         let json = """
             {
             "source": {
@@ -30,13 +28,11 @@ struct ArticlesViewModelTest {
             }
             """
 
-        let url = URL(string: "https://newsapi.org")!
-
         let rawResponse = HttpClientResponseRaw(
             (
                 data: json.data(using: .utf8) ?? Data(),
                 response: HTTPURLResponse.init(
-                    url: url,
+                    url: URL(string: "https://newsapi.org")!,
                     statusCode: 200,
                     httpVersion: nil,
                     headerFields: [:]
@@ -44,11 +40,13 @@ struct ArticlesViewModelTest {
             )
         )
 
+        let sut = mock(HttpClient.self)
+
         await given(
-            httpClient.rawRequest(router: any(), headers: any(), queryItems: any(), body: any())
+            sut.rawRequest(router: any(), headers: any(), queryItems: any(), body: any())
         ).willReturn(rawResponse)
 
-        let response: HttpClientResponse<Article> = try await httpClient.request(
+        let response: HttpClientResponse<Article> = try await sut.request(
             router: DefaultHttpRouter.newsByPage,
             headers: nil,
             queryItems: [],

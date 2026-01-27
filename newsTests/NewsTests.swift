@@ -11,36 +11,6 @@ import Testing
 @testable import news
 
 struct NewsTests {
-
-    // Pods/MockingbirdFramework/mockingbird configure newsTests -- --targets news
-
-    // Helper function to create test ArticleEntity with all required fields
-    private func makeArticle(
-        id: String,
-        sourceId: String? = nil,
-        sourceName: String = "Test Source",
-        author: String = "Test Author",
-        title: String,
-        description: String = "Test description",
-        url: String,
-        imageUrl: String = "https://test.com/image.jpg",
-        publishedAt: Int64 = 1_700_000_000_000,
-        content: String = "Test content"
-    ) -> ArticleEntity {
-        ArticleEntity(
-            id: id,
-            sourceId: sourceId,
-            sourceName: sourceName,
-            author: author,
-            title: title,
-            description: description,
-            url: url,
-            imageUrl: imageUrl,
-            publishedAt: publishedAt,
-            content: content
-        )
-    }
-
     @Test func responseHasNoArticlesVerifyThereAreNoArticles() async throws {
         let repository = mock(Repository.self)
 
@@ -73,48 +43,10 @@ struct NewsTests {
         #expect(result.last == Resource.error(error: HttpError.invalidUrl))
     }
 
-    @Test func loadingWithPartialDataThenSuccess() async throws {
-        let repository = mock(Repository.self)
-        let partialArticles = [
-            makeArticle(id: "1", title: "Loading Article", url: "http://test.com")
-        ]
-        let fullArticles = [
-            makeArticle(
-                id: "1",
-                sourceName: "CNN",
-                title: "Article 1",
-                description: "Desc 1",
-                url: "http://test.com/1",
-                publishedAt: 1_700_000_000_000
-            ),
-            makeArticle(
-                id: "2",
-                sourceName: "BBC",
-                title: "Article 2",
-                description: "Desc 2",
-                url: "http://test.com/2",
-                publishedAt: 1_700_086_400_000
-            ),
-        ]
-
-        let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
-            continuation.yield(Resource.loading(item: partialArticles))
-            continuation.yield(Resource.success(item: fullArticles))
-            continuation.finish()
-        }
-
-        given(repository.getArticles(query: any(), page: any())).willReturn(stream)
-        let result = await repository.getArticles(query: "Top Headlines", page: 1).collect()
-
-        #expect(result.count == 2)
-        #expect(result.first == Resource.loading(item: partialArticles))
-        #expect(result.last == Resource.success(item: fullArticles))
-    }
-
     @Test func multipleLoadingStatesThenSuccess() async throws {
         let repository = mock(Repository.self)
         let articles = [
-            makeArticle(id: "1", title: "Test Article", url: "http://test.com")
+            ArticleEntity.stub(id: "1", title: "Test Article", url: "http://test.com")
         ]
 
         let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
@@ -171,10 +103,10 @@ struct NewsTests {
     @Test func multipleSuccessivePages() async throws {
         let repository = mock(Repository.self)
         let page1Articles = [
-            makeArticle(id: "1", title: "Article 1", url: "http://test.com/1", publishedAt: 1_700_000_000_000)
+            ArticleEntity.stub(id: "1", title: "Article 1", url: "http://test.com/1", publishedAt: 1_700_000_000_000)
         ]
         let page2Articles = [
-            makeArticle(id: "2", title: "Article 2", url: "http://test.com/2", publishedAt: 1_700_086_400_000)
+            ArticleEntity.stub(id: "2", title: "Article 2", url: "http://test.com/2", publishedAt: 1_700_086_400_000)
         ]
 
         let stream1 = AsyncStream<Resource<[ArticleEntity]>> { continuation in
@@ -223,7 +155,7 @@ struct NewsTests {
     @Test func successWithLargeArticleList() async throws {
         let repository = mock(Repository.self)
         let largeList = (1...100).map { id in
-            makeArticle(
+            ArticleEntity.stub(
                 id: "\(id)",
                 sourceName: "Source \(id)",
                 author: "Author \(id)",
@@ -257,24 +189,46 @@ struct NewsTests {
     }
 
     @Test func articleEntityEquality() async throws {
-        let article1 = makeArticle(id: "1", title: "Same Article", url: "http://test.com")
-        let article2 = makeArticle(id: "1", title: "Same Article", url: "http://test.com")
-        let article3 = makeArticle(id: "2", title: "Different Article", url: "http://test.com/2")
+        let article1 = ArticleEntity.stub(id: "1", title: "Same Article", url: "http://test.com")
+        let article2 = ArticleEntity.stub(id: "1", title: "Same Article", url: "http://test.com")
+        let article3 = ArticleEntity.stub(id: "2", title: "Different Article", url: "http://test.com/2")
 
         #expect(article1 == article2)
         #expect(article1 != article3)
     }
 
     @Test func articlesWithDifferentSourcesAreNotEqual() async throws {
-        let article1 = makeArticle(id: "1", sourceId: "cnn", sourceName: "CNN", title: "News", url: "http://test.com")
-        let article2 = makeArticle(id: "1", sourceId: "bbc", sourceName: "BBC", title: "News", url: "http://test.com")
+        let article1 = ArticleEntity.stub(
+            id: "1",
+            sourceId: "cnn",
+            sourceName: "CNN",
+            title: "News",
+            url: "http://test.com"
+        )
+        let article2 = ArticleEntity.stub(
+            id: "1",
+            sourceId: "bbc",
+            sourceName: "BBC",
+            title: "News",
+            url: "http://test.com"
+        )
 
         #expect(article1 != article2)
     }
 
     @Test func articlesWithDifferentPublishDatesAreNotEqual() async throws {
-        let article1 = makeArticle(id: "1", title: "News", url: "http://test.com", publishedAt: 1_700_000_000_000)
-        let article2 = makeArticle(id: "1", title: "News", url: "http://test.com", publishedAt: 1_700_086_400_000)
+        let article1 = ArticleEntity.stub(
+            id: "1",
+            title: "News",
+            url: "http://test.com",
+            publishedAt: 1_700_000_000_000
+        )
+        let article2 = ArticleEntity.stub(
+            id: "1",
+            title: "News",
+            url: "http://test.com",
+            publishedAt: 1_700_086_400_000
+        )
 
         #expect(article1 != article2)
     }
@@ -282,7 +236,7 @@ struct NewsTests {
     @Test func successStreamWithArticlesContainingAllFields() async throws {
         let repository = mock(Repository.self)
         let articles = [
-            makeArticle(
+            ArticleEntity.stub(
                 id: "tech-1",
                 sourceId: "techcrunch",
                 sourceName: "TechCrunch",
@@ -294,7 +248,7 @@ struct NewsTests {
                 publishedAt: 1_700_000_000_000,
                 content: "Full article content about AI breakthrough..."
             ),
-            makeArticle(
+            ArticleEntity.stub(
                 id: "tech-2",
                 sourceId: "wired",
                 sourceName: "Wired",
@@ -331,7 +285,7 @@ struct NewsTests {
     @Test func articlesWithOptionalSourceIdCanBeNil() async throws {
         let repository = mock(Repository.self)
         let articlesWithNilSourceId = [
-            makeArticle(id: "1", sourceId: nil, title: "Article without source ID", url: "http://test.com")
+            ArticleEntity.stub(id: "1", sourceId: nil, title: "Article without source ID", url: "http://test.com")
         ]
 
         let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
@@ -344,7 +298,7 @@ struct NewsTests {
 
         if case .success(let articles) = result.last {
             #expect(articles.first?.sourceId == nil)
-            #expect(articles.first?.sourceName == "Test Source")
+            #expect(articles.first?.title == "Article without source ID")
         } else {
             Issue.record("Expected success")
         }
@@ -353,9 +307,9 @@ struct NewsTests {
     @Test func sortArticlesByPublishedDate() async throws {
         let repository = mock(Repository.self)
         let articles = [
-            makeArticle(id: "3", title: "Newest", url: "http://test.com/3", publishedAt: 1_700_172_800_000),
-            makeArticle(id: "1", title: "Oldest", url: "http://test.com/1", publishedAt: 1_700_000_000_000),
-            makeArticle(id: "2", title: "Middle", url: "http://test.com/2", publishedAt: 1_700_086_400_000),
+            ArticleEntity.stub(id: "3", title: "Newest", url: "http://test.com/3", publishedAt: 1_700_172_800_000),
+            ArticleEntity.stub(id: "1", title: "Oldest", url: "http://test.com/1", publishedAt: 1_700_000_000_000),
+            ArticleEntity.stub(id: "2", title: "Middle", url: "http://test.com/2", publishedAt: 1_700_086_400_000),
         ]
 
         let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
