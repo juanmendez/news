@@ -10,41 +10,38 @@ import Testing
 
 @testable import news
 
-struct NewsTests {
-    @Test func responseHasNoArticlesVerifyThereAreNoArticles() async throws {
-        let repository = mock(Repository.self)
+struct RepositoryTests {
+    let sut = mock(Repository.self)
 
+    @Test func responseHasNoArticlesVerifyThereAreNoArticles() async throws {
         let asynStream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
             continuation.yield(Resource.loading())
             continuation.yield(Resource.success(item: []))
             continuation.finish()
         }
 
-        given(repository.getArticles(query: any(), page: any())).willReturn(asynStream)
-        let result = await repository.getArticles(query: "", page: 1).collect()
+        given(sut.getArticles(query: any(), page: any())).willReturn(asynStream)
+        let result = await sut.getArticles(query: "", page: 1).collect()
 
         #expect(result.first == Resource.loading())
         #expect(result.last == Resource.success(item: []))
     }
 
     @Test func responseComesWithError() async throws {
-        let repository = mock(Repository.self)
-
         let asynStream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
             continuation.yield(Resource.loading())
             continuation.yield(Resource.error(error: HttpError.invalidUrl))
             continuation.finish()
         }
 
-        given(repository.getArticles(query: any(), page: any())).willReturn(asynStream)
-        let result = await repository.getArticles(query: "", page: 1).collect()
+        given(sut.getArticles(query: any(), page: any())).willReturn(asynStream)
+        let result = await sut.getArticles(query: "", page: 1).collect()
 
         #expect(result.first == Resource.loading())
         #expect(result.last == Resource.error(error: HttpError.invalidUrl))
     }
 
     @Test func multipleLoadingStatesThenSuccess() async throws {
-        let repository = mock(Repository.self)
         let articles = [
             ArticleEntity.stub(id: "1", title: "Test Article", url: "http://test.com")
         ]
@@ -57,8 +54,8 @@ struct NewsTests {
             continuation.finish()
         }
 
-        given(repository.getArticles(query: any(), page: any())).willReturn(stream)
-        let result = await repository.getArticles(query: "Sports", page: 1).collect()
+        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
+        let result = await sut.getArticles(query: "Sports", page: 1).collect()
 
         #expect(result.count == 4)
         #expect(result[0] == Resource.loading())
@@ -68,7 +65,6 @@ struct NewsTests {
     }
 
     @Test func errorAfterLoadingWithNoSuccessState() async throws {
-        let repository = mock(Repository.self)
         let error = HttpError.badResponse(status: 500, error: nil, result: nil)
 
         let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
@@ -78,8 +74,8 @@ struct NewsTests {
             continuation.finish()
         }
 
-        given(repository.getArticles(query: any(), page: any())).willReturn(stream)
-        let result = await repository.getArticles(query: "Breaking News", page: 1).collect()
+        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
+        let result = await sut.getArticles(query: "Breaking News", page: 1).collect()
 
         #expect(result.count == 3)
         #expect(result[0] == Resource.loading())
@@ -88,20 +84,17 @@ struct NewsTests {
     }
 
     @Test func emptyStreamFinishesImmediately() async throws {
-        let repository = mock(Repository.self)
-
         let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
             continuation.finish()
         }
 
-        given(repository.getArticles(query: any(), page: any())).willReturn(stream)
-        let result = await repository.getArticles(query: "", page: 1).collect()
+        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
+        let result = await sut.getArticles(query: "", page: 1).collect()
 
         #expect(result.isEmpty)
     }
 
     @Test func multipleSuccessivePages() async throws {
-        let repository = mock(Repository.self)
         let page1Articles = [
             ArticleEntity.stub(id: "1", title: "Article 1", url: "http://test.com/1", publishedAt: 1_700_000_000_000)
         ]
@@ -121,18 +114,17 @@ struct NewsTests {
             continuation.finish()
         }
 
-        given(repository.getArticles(query: any(), page: 1)).willReturn(stream1)
-        given(repository.getArticles(query: any(), page: 2)).willReturn(stream2)
+        given(sut.getArticles(query: any(), page: 1)).willReturn(stream1)
+        given(sut.getArticles(query: any(), page: 2)).willReturn(stream2)
 
-        let result1 = await repository.getArticles(query: "Tech", page: 1).collect()
-        let result2 = await repository.getArticles(query: "Tech", page: 2).collect()
+        let result1 = await sut.getArticles(query: "Tech", page: 1).collect()
+        let result2 = await sut.getArticles(query: "Tech", page: 2).collect()
 
         #expect(result1.last == Resource.success(item: page1Articles))
         #expect(result2.last == Resource.success(item: page2Articles))
     }
 
     @Test func differentErrorTypes() async throws {
-        let repository = mock(Repository.self)
         let errors: [Error] = [
             HttpError.invalidUrl,
             HttpError.badResponse(status: 404, error: nil, result: nil),
@@ -145,15 +137,14 @@ struct NewsTests {
                 continuation.finish()
             }
 
-            given(repository.getArticles(query: "test\(index)", page: any())).willReturn(stream)
-            let result = await repository.getArticles(query: "test\(index)", page: 1).collect()
+            given(sut.getArticles(query: "test\(index)", page: any())).willReturn(stream)
+            let result = await sut.getArticles(query: "test\(index)", page: 1).collect()
 
             #expect(result.last == Resource.error(error: error))
         }
     }
 
     @Test func successWithLargeArticleList() async throws {
-        let repository = mock(Repository.self)
         let largeList = (1...100).map { id in
             ArticleEntity.stub(
                 id: "\(id)",
@@ -174,8 +165,8 @@ struct NewsTests {
             continuation.finish()
         }
 
-        given(repository.getArticles(query: any(), page: any())).willReturn(stream)
-        let result = await repository.getArticles(query: "All News", page: 1).collect()
+        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
+        let result = await sut.getArticles(query: "All News", page: 1).collect()
 
         if case .success(let articles) = result.last {
             #expect(articles.count == 100)
@@ -234,7 +225,6 @@ struct NewsTests {
     }
 
     @Test func successStreamWithArticlesContainingAllFields() async throws {
-        let repository = mock(Repository.self)
         let articles = [
             ArticleEntity.stub(
                 id: "tech-1",
@@ -268,8 +258,8 @@ struct NewsTests {
             continuation.finish()
         }
 
-        given(repository.getArticles(query: any(), page: any())).willReturn(stream)
-        let result = await repository.getArticles(query: "Technology", page: 1).collect()
+        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
+        let result = await sut.getArticles(query: "Technology", page: 1).collect()
 
         if case .success(let returnedArticles) = result.last {
             #expect(returnedArticles.count == 2)
@@ -283,7 +273,6 @@ struct NewsTests {
     }
 
     @Test func articlesWithOptionalSourceIdCanBeNil() async throws {
-        let repository = mock(Repository.self)
         let articlesWithNilSourceId = [
             ArticleEntity.stub(id: "1", sourceId: nil, title: "Article without source ID", url: "http://test.com")
         ]
@@ -293,8 +282,8 @@ struct NewsTests {
             continuation.finish()
         }
 
-        given(repository.getArticles(query: any(), page: any())).willReturn(stream)
-        let result = await repository.getArticles(query: "", page: 1).collect()
+        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
+        let result = await sut.getArticles(query: "", page: 1).collect()
 
         if case .success(let articles) = result.last {
             #expect(articles.first?.sourceId == nil)
@@ -305,7 +294,6 @@ struct NewsTests {
     }
 
     @Test func sortArticlesByPublishedDate() async throws {
-        let repository = mock(Repository.self)
         let articles = [
             ArticleEntity.stub(id: "3", title: "Newest", url: "http://test.com/3", publishedAt: 1_700_172_800_000),
             ArticleEntity.stub(id: "1", title: "Oldest", url: "http://test.com/1", publishedAt: 1_700_000_000_000),
@@ -317,8 +305,8 @@ struct NewsTests {
             continuation.finish()
         }
 
-        given(repository.getArticles(query: any(), page: any())).willReturn(stream)
-        let result = await repository.getArticles(query: "", page: 1).collect()
+        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
+        let result = await sut.getArticles(query: "", page: 1).collect()
 
         if case .success(let returnedArticles) = result.last {
             let sorted = returnedArticles.sorted { $0.publishedAt > $1.publishedAt }

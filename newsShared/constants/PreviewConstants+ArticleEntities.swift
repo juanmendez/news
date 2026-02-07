@@ -8,7 +8,6 @@
 import Foundation
 
 extension PreviewConstants {
-
     static let articleEntities: [ArticleEntity] = [
         ArticleEntity(
             id: "Bye-bye bots: Altera's game-playing AI agents get backing from Eric Schmidt | TechCrunch",

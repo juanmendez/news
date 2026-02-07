@@ -12,7 +12,6 @@ import Foundation
 import GRDB
 import Swift
 import SwiftUI
-import newsShared
 
 private let mkbGenericStaticMockContext = Mockingbird.GenericStaticMockContext()
 

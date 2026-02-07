@@ -23,7 +23,7 @@ struct ArticlesView: View {
             // Create an Infinitely Scrolling List in SwiftUI
             // https://tinyurl.com/2bzznj8s
             if !viewModelContract.isScrollingFinished {
-                Text(String(localized: "Loading"))
+                Text("Loading")
                     .onAppear {
                         Task {
                             await viewModelContract.fetchArticles(refresh: false)
@@ -38,7 +38,7 @@ struct ArticlesView: View {
     }
 }
 
-#Preview("first time landing") {
+#Preview("loading") {
     ArticlesView(
         contract: ArticlesViewModelPreview(
             isScrollingFinished: false,
@@ -50,7 +50,7 @@ struct ArticlesView: View {
     ArticlesView(
         contract: ArticlesViewModelPreview(
             articles: Array(PreviewConstants.articleEntities.prefix(1)),
-            isScrollingFinished: true,
+            isScrollingFinished: false,
         )
     )
 }

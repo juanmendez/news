@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import newsShared
 
 @Observable
 class ArticlesViewModel: ArticlesViewModelContract {
