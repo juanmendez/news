@@ -13,6 +13,9 @@
         }
       }
     },
+    "Articles" : {
+
+    },
     "clear_history" : {
       "comment" : "Clear history action",
       "extractionState" : "manual",
@@ -25,7 +28,7 @@
         }
       }
     },
-    "Loading" : {
+    "Loading more articles..." : {
 
     },
     "search" : {

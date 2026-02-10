@@ -15,25 +15,29 @@ struct ArticlesView: View {
     }
 
     var body: some View {
-        List {
-            ForEach(viewModelContract.articles, id: \.id) { article in
-                Text(article.title)
-            }
+        NavigationStack {
+            List {
+                ForEach(viewModelContract.articles, id: \.id) { article in
+                    ArticleCardView(article)
+                }
 
-            // Create an Infinitely Scrolling List in SwiftUI
-            // https://tinyurl.com/2bzznj8s
-            if !viewModelContract.isScrollingFinished {
-                Text("Loading")
-                    .onAppear {
-                        Task {
-                            await viewModelContract.fetchArticles(refresh: false)
+                // Create an Infinitely Scrolling List in SwiftUI
+                // https://tinyurl.com/2bzznj8s
+                if !viewModelContract.isScrollingFinished {
+                    ProgressBar()
+                        .onAppear {
+                            Task {
+                                await viewModelContract.fetchArticles(refresh: false)
+                            }
                         }
-                    }
+                }
             }
-        }
-        .padding()
-        .refreshable {
-            await viewModelContract.fetchArticles(refresh: true)
+            .listStyle(.plain)
+            .navigationTitle("Articles")
+            .navigationBarTitleDisplayMode(.inline)
+            .refreshable {
+                await viewModelContract.fetchArticles(refresh: true)
+            }
         }
     }
 }
@@ -58,8 +62,8 @@ struct ArticlesView: View {
 #Preview("with articles") {
     ArticlesView(
         contract: ArticlesViewModelPreview(
-            articles: PreviewConstants.articleEntities,
-            isScrollingFinished: true,
+            articles: Array(PreviewConstants.articleEntities.prefix(8)),
+            isScrollingFinished: false,
         )
     )
 }

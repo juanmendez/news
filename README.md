@@ -1,6 +1,7 @@
 iOS sample illustrating MVVM application behavior pattern
 
 ## iOS notes
+- Run `pod install` 
 - [Mocking Bird library](https://mockingbirdswift.com/) is used to mock types for unit testing.
   - Ensure to make some changes to run it.
     - Right-click on `news.xcodeproj`, and select show packages contents
@@ -9,16 +10,16 @@ iOS sample illustrating MVVM application behavior pattern
       /* Begin PBXProject section */
 		2A86B0C62D2586A1001BEA6D /* Project object */ = {
                         ...
-                        compatibilityVersion = "Xcode 16.0";
+                        compatibilityVersion = "Xcode 26.2";
                         ...
                 }
       /* End PBXProject section */
-      ```
-  - Run `pod install`  
-  - Run this code to auto generate mocks
+      ``` 
+    - Run this code to auto generate mocks
     ``` 
       Pods/MockingbirdFramework/mockingbird configure newsTests -- --targets news
     ```
+    - Mockingbird has not been updated for a while so this adjustment is needed occasionally.
 
 ## Requirements
 - Allows searching news articles using the paginated API from https://newsapi.org
@@ -35,27 +36,23 @@ iOS sample illustrating MVVM application behavior pattern
 - The news articles are presented in a list view.
 - The app stack is
  
-- The architecture will be MVVM.
-- **Cache is the source of truth**. Data fetched from the network is only used to update the cache.
-- The API key is stored in local.properties as apiKey="your API key"
-- The app supports both portrait and landscape without boiler plate code by virtue of LiveData
-- The app supports dark mode based on the phone's settings
+  - The architecture will be MVVM.
+    - **Cache is the source of truth**. Data fetched from the network is only used to update the cache.
+    - The API key must be set in `NewsApi.key`. Avoid commiting your secret key in this file by ignorning it. There are notes in that file in how to do so.
+  - The app supports both portrait and landscape.
+  - The app supports dark mode based on the phone's settings.
 
 ## MVVM Architecture
 - Follows the vanilla implementation:
    - Repository: abstracts the data sources: cache (source of truth) and network (used to update the cache).
    - View Model: maintains the data that drives the UI and implements the business logic. Relies on the repository to access the data. Exposes the data wrapped in LiveData to the UI.
-   - View: activities/fragments, observe the View Model LiveData and update the UI
+   - View: views are refreshed by a stateful View Model
 
 - Additional implementation details:
    - Mappers are used to map between entity models and domain models. There are only 2 entity models: network and cache. Domain models are used in the upper layers: Repository / View Model / View.
    - Functionality is exposed via constructor-injected interfaces. This facilitates testing components in isolation where fake dependency implementations are injected. The following interfaces are implemented: api service, cache service, repository.
 
-- The **initial MVVM implementation** has a few shortcomings:
-   -  the network error handling is bubbled up to the UI via Exceptions caught and processed (displaying the error to the user) by the View Model.
-   -  the data received from the Repository only contains articles data, leaving the responsibility on the View Model to manage the loading spinner and the error state.
-
-- The **second MVVM implementation** improves the implementation as follows:
+- The **initial MVVM implementation** provides the following features:
    - the data is wrapped in a **Resource** adding a message String and a status: success / error / loading. This relieves the responsibility on the upper layers (ViewModel) to manage the data state such as the loading state (and its associated progress indicator), the error state (and its error dialog), and finally the nominal success state. The Repository will first emit a Resource to indicate the loading state, later it will emit another Resource once the data is retrieved, and eventually a different Resource in case of an error.
    - the **cache is the source of truth** common business logic is abstracted into a **NetworkBoundResource** that executes the following flow for every Repository API call:
       - emits a **loading Resource with no data** to instruct the ViewModel to update the loading LiveData observed by the View so the latter can display the loading indicator
