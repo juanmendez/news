@@ -1,30 +1,23 @@
-iOS sample illustrating MVVM application behavior pattern
+# News — iOS
 
-## iOS notes
-- Run `pod install` 
-- [Mocking Bird library](https://mockingbirdswift.com/) is used to mock types for unit testing.
-  - Ensure to make some changes to run it.
-    - Right-click on `news.xcodeproj`, and select show packages contents
-    - Edit `project.pbxproj` and update by adding `compatibilityVersion`
-        ```
-      /* Begin PBXProject section */
-		2A86B0C62D2586A1001BEA6D /* Project object */ = {
-                        ...
-                        compatibilityVersion = "Xcode 26.2";
-                        ...
-                }
-      /* End PBXProject section */
-      ``` 
-    - Run this code to auto generate mocks
-    ``` 
-      Pods/MockingbirdFramework/mockingbird configure newsTests -- --targets news
-    ```
-    - Mockingbird has not been updated for a while so this adjustment is needed occasionally.
+iOS sample illustrating the MVVM architecture pattern built with **SwiftUI**.
+
+## Setup
+- Create your own News API key at https://newsapi.org and set it in `NewsApi.key`.
+- Avoid committing your key by running:
+  ```bash
+  git update-index --assume-unchanged news/app/constants/NewsApi.swift
+  ```
+  To undo: `git update-index --no-assume-unchanged news/app/constants/NewsApi.swift`
+- Run `pod install` to install dependencies, then open `news.xcworkspace`.
 
 ## Requirements
-- Allows searching news articles using the paginated API from https://newsapi.org
+- Browse news articles fetched from the paginated API at https://newsapi.org
+- Infinite scrolling (auto-loads next page when the user reaches the bottom)
 - Pull to refresh
-- Data shall be cached for fast access
+- Data is cached locally for fast access (cache is the source of truth)
+- Dark mode support (follows system settings)
+- Portrait and landscape support
 
 ## Screenshots
 
@@ -32,57 +25,128 @@ iOS sample illustrating MVVM application behavior pattern
 
 ![landscape light](./docs/landscape-light.png)
 
-## Implementation
-- The news articles are presented in a list view.
-- The app stack is
- 
-  - The architecture will be MVVM.
-    - **Cache is the source of truth**. Data fetched from the network is only used to update the cache.
-    - The API key must be set in `NewsApi.key`. Avoid commiting your secret key in this file by ignorning it. There are notes in that file in how to do so.
-  - The app supports both portrait and landscape.
-  - The app supports dark mode based on the phone's settings.
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| UI | SwiftUI |
+| State management | `@Observable` (Swift 5.9+) |
+| Local cache | GRDB (SQLite) |
+| Networking | URLSession (`HttpClient`) |
+| Dependency injection | Custom `InjectionsProvider` |
+| Unit tests | Swift Testing framework |
 
 ## MVVM Architecture
-- Follows the vanilla implementation:
-   - Repository: abstracts the data sources: cache (source of truth) and network (used to update the cache).
-   - View Model: maintains the data that drives the UI and implements the business logic. Relies on the repository to access the data. Exposes the data wrapped in LiveData to the UI.
-   - View: views are refreshed by a stateful View Model
 
-- Additional implementation details:
-   - Mappers are used to map between entity models and domain models. There are only 2 entity models: network and cache. Domain models are used in the upper layers: Repository / View Model / View.
-   - Functionality is exposed via constructor-injected interfaces. This facilitates testing components in isolation where fake dependency implementations are injected. The following interfaces are implemented: api service, cache service, repository.
+### Layers
 
-- The **initial MVVM implementation** provides the following features:
-   - the data is wrapped in a **Resource** adding a message String and a status: success / error / loading. This relieves the responsibility on the upper layers (ViewModel) to manage the data state such as the loading state (and its associated progress indicator), the error state (and its error dialog), and finally the nominal success state. The Repository will first emit a Resource to indicate the loading state, later it will emit another Resource once the data is retrieved, and eventually a different Resource in case of an error.
-   - the **cache is the source of truth** common business logic is abstracted into a **NetworkBoundResource** that executes the following flow for every Repository API call:
-      - emits a **loading Resource with no data** to instruct the ViewModel to update the loading LiveData observed by the View so the latter can display the loading indicator
-      - queries the cache and emits a **loading Resource with the cache data** so that app can display the cached data immediately
-      - executes the network request
-      - in case of network success
-         - updates the cache
-         - queries again the cache and emits a **success Resource with the updated cache data** so that app can display the updated cached data
-      - in case of network failure emits an **error Resource** so that the app can display the error
-   - The **NetworkBoundResource** allows the Repository to be very lean and only implements API specifics by implementing abstract methods defined by the NetworkBoundResource.
+- **View** (`ArticlesView`, `ArticleCardView`): SwiftUI views that observe the ViewModel via `@Observable`. The view triggers events (scroll, refresh) and reflects the ViewModel state — no business logic lives here.
+- **ViewModel** (`ArticlesViewModel`): Marked `@Observable` and `@MainActor`. Maintains all UI state (`articles`, `showProgress`, `errorMessage`, `isScrollingFinished`) and delegates data access to the Repository.
+- **Repository** (`DefaultRepository`): Abstracts the two data sources — local cache (source of truth) and remote network (used only to update the cache). Exposes data as `AsyncStream<Resource<[ArticleEntity]>>`.
+- **Cache** (`DefaultNewsDatabase` via GRDB): Persistent SQLite database storing `ArticleEntity`, `QueryEntity`, and `QueryArticleEntity` records. Falls back to `SessionNewsDatabase` (in-memory) if the database file cannot be created.
+- **Network** (`DefaultHttpClient`): Wraps `URLSession` and decodes JSON responses into typed models. All errors are mapped to `HttpError`.
 
-Uml sequence diagram for the user making a query search
+### Dependency Injection
 
+Dependencies are registered once at app startup via `DefaultInjections` and resolved through `InjectionsProvider.byType(_:)`. Interfaces (`Repository`, `HttpClient`, `NewsDatabase`) are injected by type, making it easy to swap real implementations for fakes in tests.
 
-Execution example:
-- app starts OR user searches for "Top Headlines"
-	- GetArticlesEvent(query=Top Headlines, page=1) **user interaction event**
-	- DataState(status=LOADING, message=null, data=null) **loading**
-	- DataState(status=LOADING, message=null, data=ArticleListViewState(articles=[], query=Top Headlines, page=1)) **empty cache hit, still loading state**
-	- API call: http://newsapi.org/v2/everything?q=Top%20Headlines&page=1&pageSize=10&sortBy=publishedAt&language=en&apiKey= **loads page 1 from network, updates cache**
-	- DataState(status=SUCCESS, message=null, data=ArticleListViewState(articles=[Article(1), Article(1726243711), Article(1528412622), Article(-995679586), Article(-1375563641), Article(270800907), Article(-2056362363), Article(538178404), Article(219357909), Article(1189165479), Article(1151014404)], query=Top Headlines, page=1)) **updated cache hit, 10 articles, success state**
-- user scrolls to the bottom of the list
-	- IncrementPageEvent **user interaction event**
-	- DataState(status=LOADING, message=null, data=null) **loading**
-	- DataState(status=LOADING, message=null, data=ArticleListViewState(articles=[Article(1726243711), Article(1528412622), Article(-995679586), Article(-1375563641), Article(270800907), Article(-2056362363), Article(538178404), Article(219357909), Article(1189165479), Article(1151014404)], query=Top Headlines, page=2)) **cache hit, 10 articles, still loading state**
-	- API call: http://newsapi.org/v2/everything?q=Top%20Headlines&page=2&pageSize=10&sortBy=publishedAt&language=en&apiKey= **loads page 2 from network, updates cache**
-	- DataState(status=SUCCESS, message=null, data=ArticleListViewState(articles=[Article(1726243711), Article(1528412622), Article(-995679586), Article(-1375563641), Article(270800907), Article(-2056362363), Article(538178404), Article(219357909), Article(1189165479), Article(1151014404), Article(-2120201611), Article(-904808611), Article(742014054), Article(1254831480), Article(-1881845964), Article(9912236), Article(-520627924), Article(-1962542157), Article(1107571009), Article(-1246901041)], query=Top Headlines, page=2)) **updated cache hit, 20 articles, success state**
-- user pulls to refresh (empties the cache)
-	- RefreshEvent **user interaction event**
-	- DataState(status=LOADING, message=null, data=null) **loading**
-	- DataState(status=LOADING, message=null, data=ArticleListViewState(articles=[], query=Top Headlines, page=1)) **empty cache hit, still loading state**
-	- API call: http://newsapi.org/v2/everything?q=Top%20Headlines&page=1&pageSize=10&sortBy=publishedAt&language=en&apiKey= **loads page 1 from network, updates cache**
-	- DataState(status=SUCCESS, message=null, data=ArticleListViewState(articles=[Article(1726243711), Article(1528412622), Article(-995679586), Article(-1375563641), Article(270800907), Article(-2056362363), Article(538178404), Article(219357909), Article(1189165479), Article(1151014404)], query=Top Headlines, page=1)) **updated cache hit, 10 articles, success state**
+```swift
+// Registration (NewsApp.swift)
+InjectionsProvider.register(DefaultInjections())
+
+// Resolution (ArticlesViewModel.swift)
+init(repository: Repository = InjectionsProvider.byType(Repository.self))
+```
+
+### Resource & NetworkBoundResource
+
+All repository calls return `AsyncStream<Resource<T>>`. `Resource` is a Swift enum with three cases:
+
+```swift
+enum Resource<Item> {
+    case loading(item: Item?)   // Emitted immediately with cached data (if any)
+    case success(item: Item)    // Emitted after a successful network fetch + cache update
+    case error(error: Error)    // Emitted on network or decoding failure
+}
+```
+
+The common cache-first flow is implemented in `ResourceProvider.networkBoundResource(...)`:
+
+1. Emit `.loading(nil)` — tells the ViewModel to show a progress indicator.
+2. Load from cache → emit `.loading(cachedData)` — displays stale data instantly.
+3. Decide whether a network fetch is needed (`shouldFetchFromNetwork`).
+4. If yes:
+   - Fetch from network.
+   - Save to cache.
+   - Reload from cache → emit `.success(freshData)`.
+5. On any error → emit `.error(error)`.
+
+This keeps the Repository lean; it only provides closures for each step.
+
+### Infinite Scrolling & Pagination
+
+`ArticlesView` appends a `ProgressBar` at the bottom of the list. When it becomes visible (`.onAppear`), `fetchArticles(refresh: false)` is called, incrementing the page and fetching the next batch. The ViewModel sets `isScrollingFinished = true` when the returned article list is identical to the current list (no new data).
+
+### Pull to Refresh
+
+SwiftUI's `.refreshable` modifier calls `fetchArticles(refresh: true)`, which resets the page to 1 and forces a network fetch regardless of cache state.
+
+## Project Structure
+
+```
+news/
+├── app/
+│   ├── constants/          # NewsApi key, DefaultInjections, Dimensions
+│   ├── utils/
+│   │   ├── dependencyInjection/   # InjectionsProvider, Inject, Injections
+│   │   └── extensions/            # String+Common, Array+Common
+│   └── views/
+│       └── articles/
+│           ├── ArticlesView.swift
+│           ├── ArticleCardView.swift
+│           └── vm/
+│               ├── ArticlesViewModel.swift
+│               ├── ArticlesViewModelContract.swift
+│               └── ArticlesViewModelPreview.swift
+├── data/
+│   ├── Article.swift               # Network model
+│   ├── ArticlesResponse.swift
+│   └── cache/
+│       ├── entities/               # ArticleEntity, QueryEntity, QueryArticleEntity
+│       ├── database/               # DefaultNewsDatabase (GRDB), SessionNewsDatabase
+│       └── ArticleEntityMapper.swift
+└── network/
+    ├── Repository.swift            # Protocol
+    ├── DefaultRepository.swift
+    ├── ResourceProvider.swift      # NetworkBoundResource implementation
+    └── api/
+        └── http/                   # HttpClient, DefaultHttpClient, HttpError, Resource
+
+newsShared/
+├── constants/              # PreviewConstants, Dimensions, LocalizedStrings
+└── stubs/                  # ArticleEntity+Stub, Article+Stub (for tests & previews)
+
+newsTests/
+├── MockRepository.swift    # Hand-written mock (no third-party mocking library)
+├── MockHttpClient.swift
+├── RepositoryTests.swift   # Swift Testing (@Test)
+└── HttpClientTest.swift
+```
+
+## Testing
+
+Tests use **Swift Testing** (`@Test`, `#expect`) and hand-written mocks — no third-party mocking library is required.
+
+- `MockRepository` exposes two `AsyncStream` properties (`articlesStream`, `articlesRefreshStream`) that tests set directly before calling the method under test.
+- `MockHttpClient` exposes a `rawRequestHandler` closure to simulate network responses or errors.
+- `AsyncStream+Common` provides a `collect()` helper that gathers all emitted values into an array, making stream assertions straightforward.
+
+```swift
+sut.articlesStream = AsyncStream { continuation in
+    continuation.yield(.loading())
+    continuation.yield(.success(item: ArticleEntity.samples))
+    continuation.finish()
+}
+let result = await sut.getArticles(query: "Tech", page: 1).collect()
+#expect(result.last == .success(item: ArticleEntity.samples))
+```

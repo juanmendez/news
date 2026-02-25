@@ -5,22 +5,20 @@
 //  Created by Mendez, Juan on 9/16/25.
 //
 
-import Mockingbird
 import Testing
 
 @testable import news
 
 struct RepositoryTests {
-    let sut = mock(Repository.self)
+    let sut = MockRepository()
 
     @Test func responseHasNoArticlesVerifyThereAreNoArticles() async throws {
-        let asynStream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
+        sut.articlesStream = AsyncStream { continuation in
             continuation.yield(Resource.loading())
             continuation.yield(Resource.success(item: []))
             continuation.finish()
         }
 
-        given(sut.getArticles(query: any(), page: any())).willReturn(asynStream)
         let result = await sut.getArticles(query: "", page: 1).collect()
 
         #expect(result.first == Resource.loading())
@@ -28,13 +26,12 @@ struct RepositoryTests {
     }
 
     @Test func responseComesWithError() async throws {
-        let asynStream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
+        sut.articlesStream = AsyncStream { continuation in
             continuation.yield(Resource.loading())
             continuation.yield(Resource.error(error: HttpError.invalidUrl))
             continuation.finish()
         }
 
-        given(sut.getArticles(query: any(), page: any())).willReturn(asynStream)
         let result = await sut.getArticles(query: "", page: 1).collect()
 
         #expect(result.first == Resource.loading())
@@ -46,7 +43,7 @@ struct RepositoryTests {
             ArticleEntity.stub(id: "1", title: "Test Article", url: "http://test.com")
         ]
 
-        let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
+        sut.articlesStream = AsyncStream { continuation in
             continuation.yield(Resource.loading())
             continuation.yield(Resource.loading(item: []))
             continuation.yield(Resource.loading(item: articles))
@@ -54,7 +51,6 @@ struct RepositoryTests {
             continuation.finish()
         }
 
-        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
         let result = await sut.getArticles(query: "Sports", page: 1).collect()
 
         #expect(result.count == 4)
@@ -67,14 +63,13 @@ struct RepositoryTests {
     @Test func errorAfterLoadingWithNoSuccessState() async throws {
         let error = HttpError.badResponse(status: 500, error: nil, result: nil)
 
-        let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
+        sut.articlesStream = AsyncStream { continuation in
             continuation.yield(Resource.loading())
             continuation.yield(Resource.loading(item: []))
             continuation.yield(Resource.error(error: error))
             continuation.finish()
         }
 
-        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
         let result = await sut.getArticles(query: "Breaking News", page: 1).collect()
 
         #expect(result.count == 3)
@@ -84,11 +79,10 @@ struct RepositoryTests {
     }
 
     @Test func emptyStreamFinishesImmediately() async throws {
-        let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
+        sut.articlesStream = AsyncStream { continuation in
             continuation.finish()
         }
 
-        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
         let result = await sut.getArticles(query: "", page: 1).collect()
 
         #expect(result.isEmpty)
@@ -102,22 +96,18 @@ struct RepositoryTests {
             ArticleEntity.stub(id: "2", title: "Article 2", url: "http://test.com/2", publishedAt: 1_700_086_400_000)
         ]
 
-        let stream1 = AsyncStream<Resource<[ArticleEntity]>> { continuation in
+        sut.articlesStream = AsyncStream { continuation in
             continuation.yield(Resource.loading())
             continuation.yield(Resource.success(item: page1Articles))
             continuation.finish()
         }
+        let result1 = await sut.getArticles(query: "Tech", page: 1).collect()
 
-        let stream2 = AsyncStream<Resource<[ArticleEntity]>> { continuation in
+        sut.articlesStream = AsyncStream { continuation in
             continuation.yield(Resource.loading())
             continuation.yield(Resource.success(item: page2Articles))
             continuation.finish()
         }
-
-        given(sut.getArticles(query: any(), page: 1)).willReturn(stream1)
-        given(sut.getArticles(query: any(), page: 2)).willReturn(stream2)
-
-        let result1 = await sut.getArticles(query: "Tech", page: 1).collect()
         let result2 = await sut.getArticles(query: "Tech", page: 2).collect()
 
         #expect(result1.last == Resource.success(item: page1Articles))
@@ -131,13 +121,12 @@ struct RepositoryTests {
         ]
 
         for (index, error) in errors.enumerated() {
-            let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
+            sut.articlesStream = AsyncStream { continuation in
                 continuation.yield(Resource.loading())
                 continuation.yield(Resource.error(error: error))
                 continuation.finish()
             }
 
-            given(sut.getArticles(query: "test\(index)", page: any())).willReturn(stream)
             let result = await sut.getArticles(query: "test\(index)", page: 1).collect()
 
             #expect(result.last == Resource.error(error: error))
@@ -159,13 +148,12 @@ struct RepositoryTests {
             )
         }
 
-        let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
+        sut.articlesStream = AsyncStream { continuation in
             continuation.yield(Resource.loading())
             continuation.yield(Resource.success(item: largeList))
             continuation.finish()
         }
 
-        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
         let result = await sut.getArticles(query: "All News", page: 1).collect()
 
         if case .success(let articles) = result.last {
@@ -252,13 +240,12 @@ struct RepositoryTests {
             ),
         ]
 
-        let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
+        sut.articlesStream = AsyncStream { continuation in
             continuation.yield(Resource.loading())
             continuation.yield(Resource.success(item: articles))
             continuation.finish()
         }
 
-        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
         let result = await sut.getArticles(query: "Technology", page: 1).collect()
 
         if case .success(let returnedArticles) = result.last {
@@ -277,12 +264,11 @@ struct RepositoryTests {
             ArticleEntity.stub(id: "1", sourceId: nil, title: "Article without source ID", url: "http://test.com")
         ]
 
-        let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
+        sut.articlesStream = AsyncStream { continuation in
             continuation.yield(Resource.success(item: articlesWithNilSourceId))
             continuation.finish()
         }
 
-        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
         let result = await sut.getArticles(query: "", page: 1).collect()
 
         if case .success(let articles) = result.last {
@@ -300,12 +286,11 @@ struct RepositoryTests {
             ArticleEntity.stub(id: "2", title: "Middle", url: "http://test.com/2", publishedAt: 1_700_086_400_000),
         ]
 
-        let stream = AsyncStream<Resource<[ArticleEntity]>> { continuation in
+        sut.articlesStream = AsyncStream { continuation in
             continuation.yield(Resource.success(item: articles))
             continuation.finish()
         }
 
-        given(sut.getArticles(query: any(), page: any())).willReturn(stream)
         let result = await sut.getArticles(query: "", page: 1).collect()
 
         if case .success(let returnedArticles) = result.last {
