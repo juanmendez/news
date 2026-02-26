@@ -15,29 +15,42 @@ struct ArticlesView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            List {
-                ForEach(viewModelContract.articles, id: \.id) { article in
-                    ArticleCardView(article)
-                }
+        List {
+            ForEach(viewModelContract.articles, id: \.id) { article in
+                ArticleCardView(article)
+            }
 
-                // Create an Infinitely Scrolling List in SwiftUI
-                // https://tinyurl.com/2bzznj8s
-                if !viewModelContract.isScrollingFinished {
-                    ProgressBar()
-                        .onAppear {
-                            Task {
-                                await viewModelContract.fetchArticles(refresh: false)
-                            }
+            // Create an Infinitely Scrolling List in SwiftUI
+            // https://tinyurl.com/2bzznj8s
+            if !viewModelContract.isScrollingFinished {
+                ProgressBar()
+                    .onAppear {
+                        Task {
+                            await viewModelContract.fetchArticles(refresh: false)
                         }
+                    }
+            }
+        }
+        .listStyle(.plain)
+        .navigationTitle("Articles")
+        .navigationBarTitleDisplayMode(.inline)
+        .refreshable {
+            await viewModelContract.fetchArticles(refresh: true)
+        }
+        .alert(
+            viewModelContract.errorMessage ?? "",
+            isPresented: Binding(
+                get: {
+                    viewModelContract.errorMessage != nil
+                },
+                set: {
+                    if !$0 {
+                        viewModelContract.errorMessage = nil
+                    }
                 }
-            }
-            .listStyle(.plain)
-            .navigationTitle("Articles")
-            .navigationBarTitleDisplayMode(.inline)
-            .refreshable {
-                await viewModelContract.fetchArticles(refresh: true)
-            }
+            )
+        ) {
+
         }
     }
 }

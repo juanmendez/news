@@ -12,7 +12,7 @@ class ArticlesViewModel: ArticlesViewModelContract {
 
     private(set) var showProgress: Bool = false
     private(set) var articles: [ArticleEntity] = []
-    private(set) var errorMessage: String?
+    var errorMessage: String?
     private(set) var isScrollingFinished: Bool = false
 
     // TODO: start with this initial query, but allow user to search by query as well.

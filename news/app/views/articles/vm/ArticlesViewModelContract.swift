@@ -10,7 +10,7 @@ import Foundation
 protocol ArticlesViewModelContract {
     var showProgress: Bool { get }
     var articles: [ArticleEntity] { get }
-    var errorMessage: String? { get }
+    var errorMessage: String? { get set }
     var isScrollingFinished: Bool { get }
 
     func fetchArticles(refresh: Bool) async
