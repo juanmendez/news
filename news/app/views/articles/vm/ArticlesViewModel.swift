@@ -16,27 +16,32 @@ class ArticlesViewModel: ArticlesViewModelContract {
     private(set) var isScrollingFinished: Bool = false
 
     // TODO: start with this initial query, but allow user to search by query as well.
-    private var query: String = "Top Headlines"
+    var query: String = "Top Headlines"
     private var page: Int = 0
+    private let pageSize: Int
     private var repository: Repository
 
-    init(repository: Repository = InjectionsProvider.byType(Repository.self)) {
+    init(
+        repository: Repository = InjectionsProvider.byType(Repository.self),
+        pageSize: Int = 10
+    ) {
         self.repository = repository
+        self.pageSize = pageSize
     }
 
     @MainActor private func getArticles(refresh: Bool = false) async {
-        for await value in repository.getArticles(query: query, page: page, refresh: refresh) {
+        for await value in repository.getArticles(query: query, page: page, pageSize: pageSize, refresh: refresh) {
             showProgress = value.isLoading
-            
+
             switch value {
-            case .loading(let item):
-                articles = item ?? []
-            case .error(_):
-                isScrollingFinished = true
-                self.errorMessage = String(localized: "Something went wrong")
-            case .success(let item):
-                isScrollingFinished = articles == item
-                articles = item
+                case .loading(let item):
+                    articles = item ?? []
+                case .error(_):
+                    isScrollingFinished = true
+                    self.errorMessage = String(localized: "Something went wrong")
+                case .success(let item):
+                    isScrollingFinished = articles == item
+                    articles = item
             }
         }
     }
@@ -51,5 +56,12 @@ class ArticlesViewModel: ArticlesViewModelContract {
 
             await self.getArticles(refresh: refresh)
         }
+    }
+
+    @MainActor func submitArticles() async {
+        page = 1
+        isScrollingFinished = false
+        showProgress = false
+        await getArticles(refresh: false)
     }
 }

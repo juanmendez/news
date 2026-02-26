@@ -11,8 +11,8 @@ struct DefaultRepository: Repository {
     let httpClient: HttpClient
     let apiKey: String
     var database: NewsDatabase
-
-    func getArticles(query: String, page: Int, refresh: Bool) -> AsyncStream<Resource<[ArticleEntity]>> {
+    
+    func getArticles(query: String, page: Int, pageSize: Int, refresh: Bool) -> AsyncStream<Resource<[ArticleEntity]>> {
         return ResourceProvider.networkBoundResource(
             loadFromCache: {
                 // Load from cache implementation
@@ -33,14 +33,14 @@ struct DefaultRepository: Repository {
                     queryItems: [
                         URLQueryItem(name: "q", value: query),
                         URLQueryItem(name: "page", value: String(page)),
-                        URLQueryItem(name: "pageSize", value: "10"),
+                        URLQueryItem(name: "pageSize", value: String(pageSize)),
                         URLQueryItem(name: "sortBy", value: "publishedAt"),
                         URLQueryItem(name: "language", value: "en"),
                         URLQueryItem(name: "apiKey", value: apiKey),
                     ],
                     body: nil
                 )
-
+                
                 return response.model.articles
             },
             saveToCache: { articles in
@@ -50,11 +50,11 @@ struct DefaultRepository: Repository {
                     database.saveArticle(query, articleEntity: articleEntity)
                 }
             }
-
+            
         )
     }
-
-    func getArticles(query: String, page: Int) -> AsyncStream<Resource<[ArticleEntity]>> {
-        self.getArticles(query: query, page: page, refresh: false)
+    
+    func getArticles(query: String, page: Int, pageSize: Int) -> AsyncStream<Resource<[ArticleEntity]>> {
+        self.getArticles(query: query, page: page, pageSize: pageSize, refresh: false)
     }
 }

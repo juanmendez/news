@@ -12,6 +12,8 @@ protocol ArticlesViewModelContract {
     var articles: [ArticleEntity] { get }
     var errorMessage: String? { get set }
     var isScrollingFinished: Bool { get }
+    var query: String { get set }
 
     func fetchArticles(refresh: Bool) async
+    func submitArticles() async
 }

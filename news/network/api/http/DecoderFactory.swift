@@ -13,4 +13,10 @@ enum DecoderFactory {
         decoder.dateDecodingStrategy = .iso8601
         return decoder
     }
+    
+    static var iso8601Encoder: JSONEncoder {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        return encoder
+    }
 }

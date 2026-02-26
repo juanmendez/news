@@ -15,42 +15,46 @@ struct ArticlesView: View {
     }
 
     var body: some View {
-        List {
-            ForEach(viewModelContract.articles, id: \.id) { article in
-                ArticleCardView(article)
-            }
-
-            // Create an Infinitely Scrolling List in SwiftUI
-            // https://tinyurl.com/2bzznj8s
-            if !viewModelContract.isScrollingFinished {
-                ProgressBar()
-                    .onAppear {
-                        Task {
-                            await viewModelContract.fetchArticles(refresh: false)
-                        }
-                    }
-            }
-        }
-        .listStyle(.plain)
-        .navigationTitle("Articles")
-        .navigationBarTitleDisplayMode(.inline)
-        .refreshable {
-            await viewModelContract.fetchArticles(refresh: true)
-        }
-        .alert(
-            viewModelContract.errorMessage ?? "",
-            isPresented: Binding(
-                get: {
-                    viewModelContract.errorMessage != nil
-                },
-                set: {
-                    if !$0 {
-                        viewModelContract.errorMessage = nil
-                    }
+        NavigationStack {
+            List {
+                ForEach(viewModelContract.articles, id: \.id) { article in
+                    ArticleCardView(article)
                 }
-            )
-        ) {
 
+                // Create an Infinitely Scrolling List in SwiftUI
+                // https://tinyurl.com/2bzznj8s
+                if !viewModelContract.isScrollingFinished {
+                    ProgressBar()
+                        .onAppear {
+                            Task {
+                                await viewModelContract.fetchArticles(refresh: false)
+                            }
+                        }
+                }
+            }
+            .listStyle(.plain)
+            .navigationTitle("app_name")
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(
+                text: $viewModelContract.query,
+                placement: .navigationBarDrawer(displayMode: .always),
+                prompt: "search_hint"
+            )
+            .onSubmit(of: .search) {
+                Task {
+                    await viewModelContract.submitArticles()
+                }
+            }
+            .refreshable {
+                await viewModelContract.fetchArticles(refresh: true)
+            }
+            .alert(
+                viewModelContract.errorMessage ?? "",
+                isPresented: Binding(
+                    get: { viewModelContract.errorMessage != nil },
+                    set: { if !$0 { viewModelContract.errorMessage = nil } }
+                )
+            ) { }
         }
     }
 }
