@@ -61,7 +61,8 @@ class ArticlesViewModel: ArticlesViewModelContract {
 
     func fetchArticles(refresh: Bool = false) async {
         if !showProgress {
-            guard await internetService.hasAccess() else {
+
+            if refresh,  await !internetService.hasAccess() {
                 return
             }
 
