@@ -21,6 +21,8 @@ extension Injections {
                 .repository
             } else if type.self == NewsDatabase.self {
                 .database
+            } else if type.self == InternetService.self {
+                .internetService
             } else {
                 fatalError("No injection type defined for expected type \(type)")
             }

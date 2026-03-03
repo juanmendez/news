@@ -12,4 +12,5 @@ enum InjectionType: Hashable {
     case httpClient
     case repository
     case database
+    case internetService
 }

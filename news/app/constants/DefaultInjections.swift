@@ -22,9 +22,10 @@ struct DefaultInjections: Injections {
             Log.e("error \(error)")
             database = SessionNewsDatabase()
         }
-
+        
         dependencies[.database] = database
         let repository = DefaultRepository(httpClient: httpClient, apiKey: NewsApi.key, database: database)
         dependencies[.repository] = repository
+        dependencies[.internetService] = DefaultInternetService()
     }
 }
