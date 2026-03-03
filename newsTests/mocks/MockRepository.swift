@@ -25,13 +25,13 @@ final class MockRepository: Repository {
 
     // MARK: - getArticles(query:page:)
 
-    func getArticles(query: String, page: Int) -> AsyncStream<Resource<[ArticleEntity]>> {
+    func getArticles(query: String, page: Int, pageSize: Int) -> AsyncStream<Resource<[ArticleEntity]>> {
         articlesStream
     }
 
     // MARK: - getArticles(query:page:refresh:)
 
-    func getArticles(query: String, page: Int, refresh: Bool) -> AsyncStream<Resource<[ArticleEntity]>> {
+    func getArticles(query: String, page: Int, pageSize: Int, refresh: Bool) -> AsyncStream<Resource<[ArticleEntity]>> {
         articlesRefreshStream
     }
 }
