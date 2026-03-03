@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         TabView {
-            ArticlesView()
+            ArticlesView(contract: ArticlesViewModel())
                 .tabItem {
                     Label(String(localized: "Articles"), systemImage: "newspaper.fill")
                 }

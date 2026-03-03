@@ -10,7 +10,7 @@ import SwiftUI
 struct ArticlesView: View {
     @State private var viewModelContract: ArticlesViewModelContract
 
-    init(contract: ArticlesViewModelContract = ArticlesViewModel()) {
+    init(contract: ArticlesViewModelContract) {
         self.viewModelContract = contract
     }
 
@@ -33,11 +33,28 @@ struct ArticlesView: View {
                 }
             }
             .listStyle(.plain)
-            .navigationTitle("Articles")
+            .navigationTitle("app_name")
             .navigationBarTitleDisplayMode(.inline)
+            .searchable(
+                text: $viewModelContract.query,
+                placement: .navigationBarDrawer(displayMode: .always),
+                prompt: "search_hint"
+            )
+            .onSubmit(of: .search) {
+                Task {
+                    await viewModelContract.submitArticles()
+                }
+            }
             .refreshable {
                 await viewModelContract.fetchArticles(refresh: true)
             }
+            .alert(
+                viewModelContract.errorMessage ?? "",
+                isPresented: Binding(
+                    get: { viewModelContract.errorMessage != nil },
+                    set: { if !$0 { viewModelContract.errorMessage = nil } }
+                )
+            ) { }
         }
     }
 }
