@@ -12,7 +12,7 @@ struct DefaultRepository: Repository {
     let apiKey: String
     var database: NewsDatabase
 
-    func getArticles(query: String, page: Int, refresh: Bool) -> AsyncStream<Resource<[ArticleEntity]>> {
+    func getArticles(query: String, page: Int, pageSize: Int, refresh: Bool) -> AsyncStream<Resource<[ArticleEntity]>> {
         return ResourceProvider.networkBoundResource(
             loadFromCache: {
                 // Load from cache implementation
@@ -33,7 +33,7 @@ struct DefaultRepository: Repository {
                     queryItems: [
                         URLQueryItem(name: "q", value: query),
                         URLQueryItem(name: "page", value: String(page)),
-                        URLQueryItem(name: "pageSize", value: "10"),
+                        URLQueryItem(name: "pageSize", value: String(pageSize)),
                         URLQueryItem(name: "sortBy", value: "publishedAt"),
                         URLQueryItem(name: "language", value: "en"),
                         URLQueryItem(name: "apiKey", value: apiKey),
@@ -54,7 +54,8 @@ struct DefaultRepository: Repository {
         )
     }
 
-    func getArticles(query: String, page: Int) -> AsyncStream<Resource<[ArticleEntity]>> {
-        self.getArticles(query: query, page: page, refresh: false)
+    func getArticles(query: String, page: Int, pageSize: Int) -> AsyncStream<Resource<[ArticleEntity]>> {
+        self.getArticles(query: query, page: page, pageSize: pageSize, refresh: false)
     }
+
 }
