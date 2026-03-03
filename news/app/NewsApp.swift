@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import UIKit
 
 @main
 struct NewsApp: App {
 
     init() {
-        InjectionsProvider.register(
+        InjectionProvider.register(
             DefaultInjections()
         )
     }

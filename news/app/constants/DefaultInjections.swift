@@ -10,11 +10,11 @@ import GRDB
 
 struct DefaultInjections: Injections {
     var dependencies: [InjectionType: Any] = [:]
-
+    
     init() {
         let httpClient = DefaultHttpClient(urlBase: "https://newsapi.org")
         dependencies[.httpClient] = httpClient
-
+        
         let database: NewsDatabase
         do {
             database = try DefaultNewsDatabase.create()

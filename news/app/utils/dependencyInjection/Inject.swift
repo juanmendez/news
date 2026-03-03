@@ -10,6 +10,6 @@ import Foundation
 @propertyWrapper
 struct Inject<T> {
     var wrappedValue: T {
-        InjectionsProvider.byType(T.self)
+        InjectionProvider.byType(T.self)
     }
 }

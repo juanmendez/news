@@ -33,7 +33,7 @@ iOS sample illustrating the MVVM architecture pattern built with **SwiftUI**.
 | State management | `@Observable` (Swift 5.9+) |
 | Local cache | GRDB (SQLite) |
 | Networking | URLSession (`HttpClient`) |
-| Dependency injection | Custom `InjectionsProvider` |
+| Dependency injection | Custom `InjectionProvider` |
 | Unit tests | Swift Testing framework |
 
 ## MVVM Architecture
@@ -48,14 +48,14 @@ iOS sample illustrating the MVVM architecture pattern built with **SwiftUI**.
 
 ### Dependency Injection
 
-Dependencies are registered once at app startup via `DefaultInjections` and resolved through `InjectionsProvider.byType(_:)`. Interfaces (`Repository`, `HttpClient`, `NewsDatabase`) are injected by type, making it easy to swap real implementations for fakes in tests.
+Dependencies are registered once at app startup via `DefaultInjections` and resolved through `InjectionProvider.byType(_:)`. Interfaces (`Repository`, `HttpClient`, `NewsDatabase`) are injected by type, making it easy to swap real implementations for fakes in tests.
 
 ```swift
 // Registration (NewsApp.swift)
-InjectionsProvider.register(DefaultInjections())
+InjectionProvider.register(DefaultInjections())
 
 // Resolution (ArticlesViewModel.swift)
-init(repository: Repository = InjectionsProvider.byType(Repository.self))
+init(repository: Repository = InjectionProvider.byType(Repository.self))
 ```
 
 ### Resource & NetworkBoundResource
@@ -98,7 +98,7 @@ news/
 ├── app/
 │   ├── constants/          # NewsApi key, DefaultInjections, Dimensions
 │   ├── utils/
-│   │   ├── dependencyInjection/   # InjectionsProvider, Inject, Injections
+│   │   ├── dependencyInjection/   # InjectionProvider, Inject, Injections
 │   │   └── extensions/            # String+Common, Array+Common
 │   └── views/
 │       └── articles/
