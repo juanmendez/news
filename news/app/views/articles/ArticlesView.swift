@@ -84,3 +84,12 @@ struct ArticlesView: View {
         )
     )
 }
+
+#Preview("with articles fully loaded") {
+    ArticlesView(
+        contract: ArticlesViewModelPreview(
+            articles: Array(PreviewConstants.articleEntities.prefix(8)),
+            isScrollingFinished: true,
+        )
+    )
+}

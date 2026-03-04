@@ -9,14 +9,14 @@ import Foundation
 import GRDB
 
 struct SessionNewsDatabase: NewsDatabase {
-    private static var articles: [String: [ArticleEntity]] = [:]
+    private static var mapQueryArticles: [String: [ArticleEntity]] = [:]
 
     func saveArticle(_ query: String, articleEntity: ArticleEntity) {
-        Self.articles[query, default: []].append(articleEntity)
+        Self.mapQueryArticles[query, default: []].append(articleEntity)
     }
 
     func readArticles(_ query: String) -> [ArticleEntity] {
-        Self.articles[query] ?? []
+        Self.mapQueryArticles[query] ?? []
     }
 
     static func setupConfiguration(_ configuration: inout GRDB.Configuration) {
