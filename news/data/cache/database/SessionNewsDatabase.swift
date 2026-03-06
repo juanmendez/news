@@ -11,12 +11,16 @@ import GRDB
 struct SessionNewsDatabase: NewsDatabase {
     private static var mapQueryArticles: [String: [ArticleEntity]] = [:]
 
-    func saveArticle(_ query: String, articleEntity: ArticleEntity) {
+    func saveArticle(_ query: String, articleEntity: ArticleEntity) async throws {
         Self.mapQueryArticles[query, default: []].append(articleEntity)
     }
 
     func readArticles(_ query: String) -> [ArticleEntity] {
         Self.mapQueryArticles[query] ?? []
+    }
+
+    func deleteArticles(_ query: String) async throws {
+        Self.mapQueryArticles.removeValue(forKey: query)
     }
 
     static func setupConfiguration(_ configuration: inout GRDB.Configuration) {

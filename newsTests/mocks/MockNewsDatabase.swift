@@ -30,12 +30,16 @@ final class MockNewsDatabase: @unchecked Sendable, NewsDatabase {
         self.mapQueryArticles = mapQueryArticles
     }
 
-    func saveArticle(_ query: String, articleEntity: ArticleEntity) {
+    func saveArticle(_ query: String, articleEntity: ArticleEntity) async throws {
         mapQueryArticles[query, default: []].append(articleEntity)
     }
 
     func readArticles(_ query: String) -> [ArticleEntity] {
         mapQueryArticles[query] ?? []
+    }
+
+    func deleteArticles(_ query: String) async throws {
+        mapQueryArticles.removeValue(forKey: query)
     }
 
     static func setupConfiguration(_ configuration: inout GRDB.Configuration) { }

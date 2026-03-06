@@ -34,7 +34,7 @@ struct ResourceProvider {
         loadFromCache: @escaping () async -> CachedType,
         shouldFetchFromNetwork: @escaping (CachedType?) -> Bool,
         fetchFromNetwork: @escaping () async throws -> NetworkType,
-        saveToCache: @escaping (NetworkType) async -> Void
+        saveToCache: @escaping (NetworkType) async throws -> Void
     ) -> AsyncStream<Resource<CachedType>> {
         return AsyncStream { continuation in
             Task {
@@ -44,7 +44,7 @@ struct ResourceProvider {
                 if shouldFetchFromNetwork(cachedValue) {
                     do {
                         let networkResult = try await fetchFromNetwork()
-                        await saveToCache(networkResult)
+                        try await saveToCache(networkResult)
 
                         continuation.yield(Resource.success(item: await loadFromCache()))
                     } catch let error {

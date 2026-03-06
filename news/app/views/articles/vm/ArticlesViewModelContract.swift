@@ -7,7 +7,7 @@
 
 import Foundation
 
-@MainActor 
+@MainActor
 protocol ArticlesViewModelContract {
     var showProgress: Bool { get }
     var articles: [ArticleEntity] { get }
@@ -15,6 +15,7 @@ protocol ArticlesViewModelContract {
     var isScrollingFinished: Bool { get }
     var query: String { get set }
 
-    func fetchArticles(refresh: Bool) async
+    func fetchArticles() async
+    func refreshArticles() async
     func submitArticles() async
 }

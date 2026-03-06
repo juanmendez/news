@@ -27,7 +27,7 @@ struct ArticlesView: View {
                     ProgressBar()
                         .onAppear {
                             Task {
-                                await viewModelContract.fetchArticles(refresh: false)
+                                await viewModelContract.fetchArticles()
                             }
                         }
                 }
@@ -46,7 +46,7 @@ struct ArticlesView: View {
                 }
             }
             .refreshable {
-                await viewModelContract.fetchArticles(refresh: true)
+                await viewModelContract.refreshArticles()
             }
             .alert(
                 viewModelContract.errorMessage ?? "",

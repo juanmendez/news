@@ -53,7 +53,7 @@ struct ArticlesViewModelTest {
 
         // when
         httpClient.rawResponse = try makeArticlesResponse(pageArticles0)
-        await sut.fetchArticles(refresh: false)
+        await sut.fetchArticles()
 
         // then
         #expect(sut.articles.count == pageSize)
@@ -69,10 +69,10 @@ struct ArticlesViewModelTest {
 
         // when
         httpClient.rawResponse = try makeArticlesResponse(pageArticles0)
-        await sut.fetchArticles(refresh: false)
+        await sut.fetchArticles()
 
         httpClient.rawResponse = try makeArticlesResponse(pageArticles1)
-        await sut.fetchArticles(refresh: false)
+        await sut.fetchArticles()
 
         // then
         #expect(sut.articles.count == pageSize * 2)
@@ -89,13 +89,13 @@ struct ArticlesViewModelTest {
 
         // when
         httpClient.rawResponse = try makeArticlesResponse(pageArticles0)
-        await sut.fetchArticles(refresh: false)
+        await sut.fetchArticles()
 
         httpClient.rawResponse = try makeArticlesResponse(pageArticles1)
-        await sut.fetchArticles(refresh: false)
+        await sut.fetchArticles()
 
         httpClient.rawResponse = try makeArticlesResponse(pageArticles2)
-        await sut.fetchArticles(refresh: false)
+        await sut.fetchArticles()
 
         // then
         #expect(sut.articles.count == pageSize * 2)
@@ -110,7 +110,7 @@ struct ArticlesViewModelTest {
 
         // when
         httpClient.rawResponse = try makeArticlesResponse(pageArticles0)
-        await sut.fetchArticles(refresh: false)
+        await sut.fetchArticles()
 
         // then
         let storedArticles = database.mapQueryArticles[sut.query]
@@ -132,11 +132,13 @@ struct ArticlesViewModelTest {
         let sut = ArticlesViewModel(repository: cachedRepository, internetService: internetService, pageSize: pageSize)
 
         // when
-        await sut.fetchArticles(refresh: false)
+        await sut.fetchArticles()
 
         // then
         #expect(sut.articles.count == pageSize)
         #expect(sut.articles == cachedEntities)
         #expect(sut.isScrollingFinished == true)
     }
+
+
 }

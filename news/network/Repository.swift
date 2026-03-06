@@ -45,7 +45,7 @@ protocol Repository {
      * Deletes all articles matching a given [query]
      * @param query the matching query
      */
-    //func deleteArticles(query: String) -> AsyncStream<Resource<NoResponse>>
+    func deleteArticles(query: String) async throws
 
     /**
      * Deletes all articles

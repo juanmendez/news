@@ -46,8 +46,8 @@ struct DefaultRepository: Repository {
             saveToCache: { articles in
                 let mapper = ArticleEntityMapper()
                 let articlesEntity = articles.map(mapper.toEntity)
-                articlesEntity.forEach { articleEntity in
-                    database.saveArticle(query, articleEntity: articleEntity)
+                for articleEntity in articlesEntity {
+                    try await database.saveArticle(query, articleEntity: articleEntity)
                 }
             }
 
@@ -56,6 +56,10 @@ struct DefaultRepository: Repository {
 
     func getArticles(query: String, page: Int, pageSize: Int) -> AsyncStream<Resource<[ArticleEntity]>> {
         self.getArticles(query: query, page: page, pageSize: pageSize, refresh: false)
+    }
+
+    func deleteArticles(query: String) async throws {
+        try await database.deleteArticles(query)
     }
 
 }

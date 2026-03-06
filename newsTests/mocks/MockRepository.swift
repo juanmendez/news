@@ -34,4 +34,8 @@ final class MockRepository: Repository {
     func getArticles(query: String, page: Int, pageSize: Int, refresh: Bool) -> AsyncStream<Resource<[ArticleEntity]>> {
         articlesRefreshStream
     }
+
+    // MARK: - deleteArticles(query:)
+
+    func deleteArticles(query: String) async throws { }
 }

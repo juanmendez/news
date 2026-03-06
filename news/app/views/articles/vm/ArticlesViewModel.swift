@@ -46,7 +46,7 @@ class ArticlesViewModel: ArticlesViewModelContract {
                     articles = item ?? []
                 case .error(_):
                     isScrollingFinished = true
-                    // TODO: refactor — error message should come from Repository
+
                     if NewsApi.key.isEmpty {
                         self.errorMessage = String(localized: "no_api_key")
                     } else {
@@ -59,20 +59,18 @@ class ArticlesViewModel: ArticlesViewModelContract {
         }
     }
 
-    func fetchArticles(refresh: Bool = false) async {
+    func fetchArticles() async {
         if !showProgress {
-
-            if refresh,  await !internetService.hasAccess() {
-                return
-            }
-
-            if refresh {
-                page = 0
-            }
-
             page += 1
+            await self.getArticles(refresh: false)
+        }
+    }
 
-            await self.getArticles(refresh: refresh)
+    func refreshArticles() async {
+        if !showProgress {
+            guard await internetService.hasAccess() else { return }
+            page = 1
+            await self.getArticles(refresh: true)
         }
     }
 
