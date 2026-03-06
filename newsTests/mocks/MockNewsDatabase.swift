@@ -12,34 +12,40 @@ import GRDB
 
 // MARK: - MockNewsDatabase
 
-/// A hand-written mock for the NewsDatabase protocol.
-/// Unlike SessionNewsDatabase, the articles store is an instance variable,
-/// so each MockNewsDatabase instance has its own isolated state.
+/// A test double for `NewsDatabase` backed by a real in-memory GRDB instance.
+/// Each `MockNewsDatabase` instance gets its own isolated SQLite database,
+/// so tests never share state.
 final class MockNewsDatabase: @unchecked Sendable, NewsDatabase {
 
-    /// Read-only access from outside the class so tests can inspect what was
-    /// saved to the database without being able to mutate it directly.
-    /// Use `database.mapQueryArticles[query]` in assertions to verify that
-    /// articles were persisted under the expected query key.
-    private(set) var mapQueryArticles: [String: [ArticleEntity]]
+    private let database: NewsDatabase
 
-    /// Allows tests to pre-populate the database with existing articles,
-    /// simulating a cache-hit scenario where data is already available locally
-    /// before any network request is made. Defaults to empty.
-    init(mapQueryArticles: [String: [ArticleEntity]] = [:]) {
-        self.mapQueryArticles = mapQueryArticles
+    /// Creates a new isolated in-memory database instance.
+    /// - Throws: If the in-memory database or migrations fail to initialize.
+    init() throws {
+        database = try DefaultNewsDatabase.create(.inMemory)
     }
 
     func saveArticle(_ query: String, articleEntity: ArticleEntity) async throws {
-        mapQueryArticles[query, default: []].append(articleEntity)
+        try await database.saveArticle(query, articleEntity: articleEntity)
     }
 
     func readArticles(_ query: String) -> [ArticleEntity] {
-        mapQueryArticles[query] ?? []
+        database.readArticles(query)
     }
 
     func deleteArticles(_ query: String) async throws {
-        mapQueryArticles.removeValue(forKey: query)
+        try await database.deleteArticles(query)
+    }
+
+    /// Pre-populates the database with a list of articles under the given query.
+    /// Use this in tests to simulate a cache-hit scenario before any network request is made.
+    /// - Parameters:
+    ///   - query: The search query to associate the articles with.
+    ///   - articles: The articles to persist.
+    func preload(_ query: String, articles: [ArticleEntity]) async throws {
+        for article in articles {
+            try await database.saveArticle(query, articleEntity: article)
+        }
     }
 
     static func setupConfiguration(_ configuration: inout GRDB.Configuration) { }

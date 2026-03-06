@@ -7,17 +7,36 @@
 import Foundation
 import GRDB
 
+/// Defines the storage strategy for `DefaultNewsDatabase`.
+enum DatabaseType {
+    /// Persists data to a SQLite file in the app's Application Support directory.
+    case persistent
+    /// Stores data in memory only — isolated per instance, ideal for unit tests.
+    case inMemory
+}
+
 /// A struct that conforms to the `NewsDatabase` protocol, providing an implementation
 /// backed by a SQLite database using the GRDB library.
 struct DefaultNewsDatabase: NewsDatabase {
 
     // great learning from https://swiftpackageindex.com/groue/grdb.swift/v7.8.0/documentation/grdb/
 
-    /// Creates and returns a fully migrated `DefaultNewsDatabase` instance backed by a
-    /// persistent SQLite file stored in the app's Application Support directory.
+    /// Creates and returns a fully migrated `DefaultNewsDatabase` instance.
+    /// - Parameter type: The storage strategy — `.persistent` for production, `.inMemory` for tests.
     /// - Throws: Any error from file system operations or database initialization.
     /// - Returns: A ready-to-use `NewsDatabase` instance.
-    static func create() throws -> NewsDatabase {
+    static func create(_ type: DatabaseType = .persistent) throws -> NewsDatabase {
+        switch type {
+            case .persistent:
+                return try makePersistent()
+            case .inMemory:
+                return try makeInMemory()
+        }
+    }
+
+    // MARK: - Private Factory Helpers
+
+    private static func makePersistent() throws -> NewsDatabase {
         let fileManager = FileManager.default
         let appSupportURL = try fileManager.url(
             for: .applicationSupportDirectory,
@@ -35,6 +54,11 @@ struct DefaultNewsDatabase: NewsDatabase {
         DefaultNewsDatabase.setupConfiguration(&configuration)
 
         let databaseQueue = try DatabasePool(path: databaseURL.path, configuration: configuration)
+        return try DefaultNewsDatabase(databaseQueue)
+    }
+
+    private static func makeInMemory() throws -> NewsDatabase {
+        let databaseQueue = try DatabaseQueue()
         return try DefaultNewsDatabase(databaseQueue)
     }
 
@@ -103,7 +127,8 @@ struct DefaultNewsDatabase: NewsDatabase {
             try QueryEntity.deleteOne(database, key: query)
 
             // Collect all article IDs associated with this query before removing the associations
-            var articleIds = try QueryArticleEntity
+            var articleIds =
+            try QueryArticleEntity
                 .filter({ $0.queryname == query })
                 .fetchAll(database)
                 .map(\.articleId)
@@ -115,7 +140,8 @@ struct DefaultNewsDatabase: NewsDatabase {
 
             // Keep only articles that are no longer referenced by any other query
             articleIds = articleIds.filter { articleId in
-                let count = (try? QueryArticleEntity
+                let count =
+                (try? QueryArticleEntity
                     .filter({ $0.articleId == articleId })
                     .fetchCount(database)) ?? 0
                 return count == 0

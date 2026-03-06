@@ -14,8 +14,12 @@ struct ArticlesViewModelTest {
 
     let httpClient = MockHttpClient()
     let internetService = MockInternetService()
-    let database = MockNewsDatabase()
+    let database: MockNewsDatabase
     let pageSize = 2
+
+    init() throws {
+        database = try MockNewsDatabase()
+    }
 
     var repository: DefaultRepository {
         DefaultRepository(
@@ -113,32 +117,24 @@ struct ArticlesViewModelTest {
         await sut.fetchArticles()
 
         // then
-        let storedArticles = database.mapQueryArticles[sut.query]
-        #expect(storedArticles?.count == pageSize)
+        let storedArticles = database.readArticles(sut.query)
+        #expect(storedArticles.count == pageSize)
         #expect(sut.isScrollingFinished == false)
     }
 
     @Test func fetchArticlesLoadsFromCacheWhenAvailable() async throws {
         // given
         let cachedEntities = PreviewConstants.articleEntities.slice(0, pageSize)
-        let preloadedDatabase = MockNewsDatabase(mapQueryArticles: ["Top Headlines": cachedEntities])
+        try await database.preload("Top Headlines", articles: cachedEntities)
 
-        let cachedRepository = DefaultRepository(
-            httpClient: httpClient,
-            apiKey: NewsApi.key,
-            database: preloadedDatabase
-        )
-
-        let sut = ArticlesViewModel(repository: cachedRepository, internetService: internetService, pageSize: pageSize)
+        let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
 
         // when
         await sut.fetchArticles()
 
         // then
         #expect(sut.articles.count == pageSize)
-        #expect(sut.articles == cachedEntities)
+        #expect(sut.articles.sortedById() == cachedEntities.sortedById())
         #expect(sut.isScrollingFinished == true)
     }
-
-
 }
