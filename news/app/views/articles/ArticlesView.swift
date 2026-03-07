@@ -16,48 +16,60 @@ struct ArticlesView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(viewModelContract.articles, id: \.id) { article in
-                    ArticleCardView(article)
-                }
-
-                // Create an Infinitely Scrolling List in SwiftUI
-                // https://tinyurl.com/2bzznj8s
-                if !viewModelContract.isScrollingFinished {
-                    ProgressBar()
-                        .onAppear {
-                            Task {
-                                await viewModelContract.fetchArticles()
+            ScrollViewReader { proxy in
+                content
+                    .navigationTitle("app_name")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .articlesToolbar(
+                        query: $viewModelContract.query,
+                        onRefresh: viewModelContract.refreshArticles,
+                        onSubmit: viewModelContract.submitArticles
+                    )
+                    .refreshable {
+                        await viewModelContract.refreshArticles()
+                    }
+                    .alert(
+                        viewModelContract.errorMessage ?? "",
+                        isPresented: Binding(
+                            get: { viewModelContract.errorMessage != nil },
+                            set: { if !$0 { viewModelContract.errorMessage = nil } }
+                        )
+                    ) { }
+                    .onChange(of: viewModelContract.scrollToTop) { _, newValue in
+                        if newValue {
+                            withAnimation(.default) {
+                                proxy.scrollTo("top", anchor: .top)
+                            } completion: {
+                                viewModelContract.scrollToTop = false
                             }
                         }
-                }
+                    }
             }
-            .listStyle(.plain)
-            .navigationTitle("app_name")
-            .navigationBarTitleDisplayMode(.inline)
-            .searchable(
-                text: $viewModelContract.query,
-                placement: .navigationBarDrawer(displayMode: .always),
-                prompt: "search_hint"
-            )
-            .onSubmit(of: .search) {
-                Task {
-                    await viewModelContract.submitArticles()
-                }
-            }
-            .refreshable {
-                await viewModelContract.refreshArticles()
-            }
-            .alert(
-                viewModelContract.errorMessage ?? "",
-                isPresented: Binding(
-                    get: { viewModelContract.errorMessage != nil },
-                    set: { if !$0 { viewModelContract.errorMessage = nil } }
-                )
-            ) { }
         }
     }
+
+    @ViewBuilder
+    private var content: some View {
+        List {
+            ForEach(viewModelContract.articles, id: \.id) { article in
+                ArticleCardView(article)
+            }
+
+            // Create an Infinitely Scrolling List in SwiftUI
+            // https://tinyurl.com/2bzznj8s
+            if !viewModelContract.isScrollingFinished {
+                ProgressBar()
+                    .onAppear {
+                        Task {
+                            await viewModelContract.fetchArticles()
+                        }
+                    }
+            }
+        }
+        .listStyle(.plain)
+    }
 }
+
 
 #Preview("loading") {
     ArticlesView(

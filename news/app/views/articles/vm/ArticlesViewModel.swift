@@ -14,6 +14,7 @@ class ArticlesViewModel: ArticlesViewModelContract {
     private(set) var articles: [ArticleEntity] = []
     var errorMessage: String?
     private(set) var isScrollingFinished: Bool = false
+    var scrollToTop: Bool = false
 
     // TODO: start with this initial query, but allow user to search by query as well.
     var query: String = "Top Headlines"
@@ -44,8 +45,10 @@ class ArticlesViewModel: ArticlesViewModelContract {
             switch value {
                 case .loading(let item):
                     articles = item ?? []
+                    scrollToTop = false
                 case .error(_):
                     isScrollingFinished = true
+                    scrollToTop = false
 
                     if NewsApi.key.isEmpty {
                         self.errorMessage = String(localized: "no_api_key")
@@ -55,6 +58,7 @@ class ArticlesViewModel: ArticlesViewModelContract {
                 case .success(let item):
                     isScrollingFinished = articles == item
                     articles = item
+                    scrollToTop = page == 1
             }
         }
     }
@@ -69,6 +73,7 @@ class ArticlesViewModel: ArticlesViewModelContract {
     func refreshArticles() async {
         if !showProgress {
             guard await internetService.hasAccess() else { return }
+            try? await repository.deleteArticles(query: query)
             page = 1
             await self.getArticles(refresh: true)
         }

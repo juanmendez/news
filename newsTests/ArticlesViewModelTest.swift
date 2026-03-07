@@ -37,6 +37,8 @@ struct ArticlesViewModelTest {
         ))
     }
 
+    // MARK: - Initial State
+
     @Test func initialStateIsEmpty() {
         // given
         let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
@@ -48,6 +50,8 @@ struct ArticlesViewModelTest {
         #expect(sut.isScrollingFinished == false)
         #expect(sut.query == "Top Headlines")
     }
+
+    // MARK: - Fetch Articles
 
     @Test func fetchFirstPageLoadsArticlesFromNetwork() async throws {
         // given
@@ -62,6 +66,7 @@ struct ArticlesViewModelTest {
         // then
         #expect(sut.articles.count == pageSize)
         #expect(sut.isScrollingFinished == false)
+        #expect(sut.scrollToTop == true)
     }
 
     @Test func fetchingTwiceAppendsPagesOfArticles() async throws {
@@ -81,6 +86,7 @@ struct ArticlesViewModelTest {
         // then
         #expect(sut.articles.count == pageSize * 2)
         #expect(sut.isScrollingFinished == false)
+        #expect(sut.scrollToTop == false)
     }
 
     @Test func fetchingThreeTimesFinishesPagination() async throws {
@@ -106,6 +112,18 @@ struct ArticlesViewModelTest {
         #expect(sut.isScrollingFinished == true)
     }
 
+    @Test func fetchArticlesShowsErrorWhenOfflineAndNoCache() async throws {
+        // given
+        let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
+
+        // when - no internet, no cached data, no http response
+        internetService.access = false
+        await sut.fetchArticles()
+
+        // then
+        #expect(sut.errorMessage == String(localized: "something_went_wrong"))
+    }
+
     @Test func fetchFirstPageStoresArticlesInDatabase() async throws {
         // given
         let pageArticles0 = PreviewConstants.articles.slice(0, pageSize)
@@ -120,6 +138,49 @@ struct ArticlesViewModelTest {
         let storedArticles = database.readArticles(sut.query)
         #expect(storedArticles.count == pageSize)
         #expect(sut.isScrollingFinished == false)
+    }
+
+    // MARK: - Refresh Articles
+
+    @Test func refreshArticlesClearsPreviousPageAndFetchesFromNetwork() async throws {
+        // given
+        let pageArticles0 = PreviewConstants.articles.slice(0, pageSize)
+        let pageArticleEntities0 = pageArticles0.map(ArticleEntityMapper().toEntity)
+
+        let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
+
+        // when - fetch first page
+        httpClient.rawResponse = try makeArticlesResponse(pageArticles0)
+        await sut.fetchArticles()
+
+        // when - internet is available, refresh
+        internetService.access = true
+        httpClient.rawResponse = try makeArticlesResponse(pageArticles0)
+        await sut.refreshArticles()
+
+        // then
+        let storedArticles = database.readArticles(sut.query)
+        #expect(storedArticles.sortedById() == pageArticleEntities0.sortedById())
+        #expect(sut.articles.sortedById() == pageArticleEntities0.sortedById())
+    }
+
+    @Test func refreshArticlesDoesNothingWhenOffline() async throws {
+        // given
+        let pageArticles0 = PreviewConstants.articles.slice(0, pageSize)
+        let pageArticleEntities0 = pageArticles0.map(ArticleEntityMapper().toEntity)
+
+        let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
+
+        // when - fetch first page
+        httpClient.rawResponse = try makeArticlesResponse(pageArticles0)
+        await sut.fetchArticles()
+
+        // when - no internet, attempt refresh
+        internetService.access = false
+        await sut.refreshArticles()
+
+        // then
+        #expect(sut.articles.sortedById() == pageArticleEntities0.sortedById())
     }
 
     @Test func fetchArticlesLoadsFromCacheWhenAvailable() async throws {

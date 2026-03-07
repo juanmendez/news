@@ -10,6 +10,10 @@ import Foundation
 extension PreviewConstants {
     static let articles: [Article] = [
         Article(
+            id: """
+                Bye-bye bots: Altera's game-playing AI agents get backing \
+                from Eric Schmidt | TechCrunch
+                """,
             source: Source(id: "techcrunch", name: "TechCrunch"),
             author: "Lauren Forristal",
             title: """
@@ -38,6 +42,10 @@ extension PreviewConstants {
                 """
         ),
         Article(
+            id: """
+                $450M for Noname, two billion-dollar rounds, and good news \
+                for crypto startups | TechCrunch
+                """,
             source: Source(id: "techcrunch", name: "TechCrunch"),
             author: "Alex Wilhelm and Theresa Loconsolo",
             title: """
@@ -65,6 +73,7 @@ extension PreviewConstants {
                 """
         ),
         Article(
+            id: "Watch: When did iPads get as expensive as MacBooks?",
             source: Source(id: "techcrunch", name: "TechCrunch"),
             author: "Alex Wilhelm",
             title: "Watch: When did iPads get as expensive as MacBooks?",
@@ -89,6 +98,9 @@ extension PreviewConstants {
                 """
         ),
         Article(
+            id: """
+                Uber promises member exclusives as Uber One passes $1B run-rate | TechCrunch
+                """,
             source: Source(id: "techcrunch", name: "TechCrunch"),
             author: "Rebecca Bellan",
             title: """
@@ -114,6 +126,10 @@ extension PreviewConstants {
                 """
         ),
         Article(
+            id: """
+                Checkfirst raises $1.5M pre-seed, applying AI to remote inspections \
+                and audits | TechCrunch
+                """,
             source: Source(id: "techcrunch", name: "TechCrunch"),
             author: "Mike Butcher",
             title: """
@@ -140,6 +156,9 @@ extension PreviewConstants {
                 """
         ),
         Article(
+            id: """
+                UK challenger bank Monzo nabs another $190M as US expansion beckons | TechCrunch
+                """,
             source: Source(id: "techcrunch", name: "TechCrunch"),
             author: "Paul Sawers",
             title: """
@@ -165,6 +184,7 @@ extension PreviewConstants {
                 """
         ),
         Article(
+            id: "iRobot names former Timex head Gary Cohen as CEO | TechCrunch",
             source: Source(id: "techcrunch", name: "TechCrunch"),
             author: "Brian Heater",
             title: "iRobot names former Timex head Gary Cohen as CEO | TechCrunch",
@@ -188,6 +208,10 @@ extension PreviewConstants {
                 """
         ),
         Article(
+            id: """
+                Google Deepmind debuts huge AlphaFold update and free \
+                proteomics-as-a-service web app | TechCrunch
+                """,
             source: Source(id: "techcrunch", name: "TechCrunch"),
             author: "Devin Coldewey",
             title: """
@@ -214,6 +238,9 @@ extension PreviewConstants {
                 """
         ),
         Article(
+            id: """
+                Mycocycle uses mushrooms to upcycle old tires and construction waste | TechCrunch
+                """,
             source: Source(id: "techcrunch", name: "TechCrunch"),
             author: "Tim De Chant",
             title: """
@@ -239,6 +266,9 @@ extension PreviewConstants {
                 """
         ),
         Article(
+            id: """
+                Controversial drone company Xtend leans into defense with new $40M round | TechCrunch
+                """,
             source: Source(id: "techcrunch", name: "TechCrunch"),
             author: "Kyle Wiggers",
             title: """

@@ -41,6 +41,7 @@ iOS app written in SwiftUI targeting iOS 17+. Originally ported from an Android/
   ```
 
 ## Testing
+- When asked to **create or modify unit tests**, do **not** make any changes to the unit of software (ViewModel, Repository, etc.) being tested — only modify the test file
 - Use **Swift Testing** framework (`@Test`, `#expect`) — not XCTest
 - Each `@Test` method gets its own struct instance, so shared properties are safe
 - Use `AsyncStream.collect()` from `Asyncstream+Common.swift` to gather emissions
