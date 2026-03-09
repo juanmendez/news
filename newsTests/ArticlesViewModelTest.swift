@@ -121,7 +121,10 @@ struct ArticlesViewModelTest {
         await sut.fetchArticles()
 
         // then
-        #expect(sut.errorMessage == String(localized: "something_went_wrong"))
+        #expect(
+            sut.errorMessage == String(localized: "something_went_wrong"),
+            "No News API Key is found triggers instead if not set"
+        )
     }
 
     @Test func fetchFirstPageStoresArticlesInDatabase() async throws {

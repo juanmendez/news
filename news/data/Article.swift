@@ -11,7 +11,7 @@ import Foundation
 /// This model is used in the Repository and subsequent upper layers.
 /// Below the repository we have entity models: a network entity model for the api service, and a
 /// cache entity model for the cache service.
-public struct Article: Codable, Equatable {
+public struct Article: Codable, Equatable, Sendable {
     let id: String
     let source: Source
     let author: String

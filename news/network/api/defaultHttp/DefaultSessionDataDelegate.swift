@@ -7,4 +7,4 @@
 
 import Foundation
 
-class DefaultSessionDataDelegate: NSObject, URLSessionDataDelegate {}
+final class DefaultSessionDataDelegate: NSObject, URLSessionDataDelegate {}

@@ -9,6 +9,7 @@ import Foundation
 
 @propertyWrapper
 struct Inject<T> {
+    @MainActor
     var wrappedValue: T {
         InjectionProvider.byType(T.self)
     }

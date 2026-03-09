@@ -8,7 +8,7 @@
 import Foundation
 
 /// A simple logger utility for printing messages with different severity levels.
-public final class Log {
+public final class Log: Sendable {
 
     /// Defines the severity level of a log message.
     public enum LogLevel: String {
@@ -22,7 +22,7 @@ public final class Log {
     private static let shared = Log()
 
     /// Controls whether logging is enabled.
-    public static var isEnabled: Bool = true
+    public nonisolated(unsafe) static var isEnabled: Bool = true
 
     /// Logs a message with the specified log level.
     ///

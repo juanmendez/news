@@ -74,7 +74,9 @@ class ArticlesViewModel: ArticlesViewModelContract {
         if !showProgress {
             guard await internetService.hasAccess() else { return }
             try? await repository.deleteArticles(query: query)
+            articles = []
             page = 1
+            isScrollingFinished = false
             await self.getArticles(refresh: true)
         }
     }

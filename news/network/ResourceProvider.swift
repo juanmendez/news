@@ -30,14 +30,14 @@ struct ResourceProvider {
 
      - Note: Both generic types must conform to Codable and Equatable.
      */
-    static func networkBoundResource<CachedType: Codable & Equatable, NetworkType: Codable & Equatable>(
-        loadFromCache: @escaping () async -> CachedType,
-        shouldFetchFromNetwork: @escaping (CachedType?) -> Bool,
-        fetchFromNetwork: @escaping () async throws -> NetworkType,
-        saveToCache: @escaping (NetworkType) async throws -> Void
+    static func networkBoundResource<CachedType: Codable & Equatable & Sendable, NetworkType: Codable & Equatable & Sendable>(
+        loadFromCache: @Sendable @escaping () async -> CachedType,
+        shouldFetchFromNetwork: @Sendable @escaping (CachedType?) -> Bool,
+        fetchFromNetwork: @Sendable @escaping () async throws -> NetworkType,
+        saveToCache: @Sendable @escaping (NetworkType) async throws -> Void
     ) -> AsyncStream<Resource<CachedType>> {
         return AsyncStream { continuation in
-            Task {
+            Task { @Sendable in
                 let cachedValue = await loadFromCache()
                 continuation.yield(Resource.loading(item: cachedValue))
 

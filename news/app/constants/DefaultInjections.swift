@@ -14,18 +14,18 @@ struct DefaultInjections: Injections {
     init() {
         let httpClient = DefaultHttpClient(urlBase: "https://newsapi.org")
         dependencies[.httpClient] = httpClient
-        
-        let database: NewsDatabase
+
         do {
-            database = try DefaultNewsDatabase.create()
+            let database = try DefaultNewsDatabase.create()
+            dependencies[.database] = database
+            
+            let repository = DefaultRepository(httpClient: httpClient, apiKey: NewsApi.key, database: database)
+            dependencies[.repository] = repository
         } catch {
             Log.e("error \(error)")
-            database = SessionNewsDatabase()
         }
-        
-        dependencies[.database] = database
-        let repository = DefaultRepository(httpClient: httpClient, apiKey: NewsApi.key, database: database)
-        dependencies[.repository] = repository
+
+
         dependencies[.internetService] = DefaultInternetService()
     }
 }

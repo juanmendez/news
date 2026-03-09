@@ -35,7 +35,6 @@
 		5F540B7F2EC51E3500A4148C /* HttpClientTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F540B7E2EC51E3500A4148C /* HttpClientTest.swift */; };
 		5F6758242EBB07BE001524DF /* NewsDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6758232EBB07BE001524DF /* NewsDatabase.swift */; };
 		5F6758262EBC773E001524DF /* DefaultNewsDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6758252EBC773E001524DF /* DefaultNewsDatabase.swift */; };
-		5F6758282EBC7774001524DF /* SessionNewsDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6758272EBC7774001524DF /* SessionNewsDatabase.swift */; };
 		5F6FD16D2EA4740D007770AE /* Inject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FD16C2EA4740D007770AE /* Inject.swift */; };
 		5F6FD16F2EA48DEB007770AE /* Injections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FD16E2EA48DEB007770AE /* Injections.swift */; };
 		5F6FD1732EA48E0D007770AE /* DefaultInjections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FD1722EA48E0D007770AE /* DefaultInjections.swift */; };
@@ -156,7 +155,6 @@
 		5F540B7E2EC51E3500A4148C /* HttpClientTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpClientTest.swift; sourceTree = "<group>"; };
 		5F6758232EBB07BE001524DF /* NewsDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsDatabase.swift; sourceTree = "<group>"; };
 		5F6758252EBC773E001524DF /* DefaultNewsDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultNewsDatabase.swift; sourceTree = "<group>"; };
-		5F6758272EBC7774001524DF /* SessionNewsDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionNewsDatabase.swift; sourceTree = "<group>"; };
 		5F6FD16C2EA4740D007770AE /* Inject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Inject.swift; sourceTree = "<group>"; };
 		5F6FD16E2EA48DEB007770AE /* Injections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injections.swift; sourceTree = "<group>"; };
 		5F6FD1722EA48E0D007770AE /* DefaultInjections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInjections.swift; sourceTree = "<group>"; };
@@ -355,7 +353,6 @@
 			children = (
 				5F6758252EBC773E001524DF /* DefaultNewsDatabase.swift */,
 				5F6758232EBB07BE001524DF /* NewsDatabase.swift */,
-				5F6758272EBC7774001524DF /* SessionNewsDatabase.swift */,
 			);
 			path = database;
 			sourceTree = "<group>";
@@ -895,7 +892,6 @@
 				5FAD34062F5663B0004487FE /* DefaultInternetService.swift in Sources */,
 				5F540B3B2EC42C3200A4148C /* ArticlesViewModel.swift in Sources */,
 				5F6FD1752EA48FCA007770AE /* InjectionType.swift in Sources */,
-				5F6758282EBC7774001524DF /* SessionNewsDatabase.swift in Sources */,
 				5F6FD1772EA48FDD007770AE /* InjectionProvider.swift in Sources */,
 				5F29D1202F29A13100FC7F6F /* ArticleEntity+Stub.swift in Sources */,
 				5F7386F62E9DF83700F6D61C /* ArticlesResponse.swift in Sources */,
@@ -1147,7 +1143,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -1183,7 +1179,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

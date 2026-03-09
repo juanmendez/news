@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol Repository {
+protocol Repository: Sendable {
     /**
      * Retrieves a list of [Article] matching a given [query] and [page]
      * @param query the matching query

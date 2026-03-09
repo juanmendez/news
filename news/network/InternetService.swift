@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol InternetService {
+protocol InternetService: Sendable {
     /// Returns `true` if the device has an active internet connection.
     func hasAccess() async -> Bool
 }
