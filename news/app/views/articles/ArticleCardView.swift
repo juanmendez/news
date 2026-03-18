@@ -5,6 +5,7 @@
 //  Created by Mendez, Juan on 2/9/26.
 //
 
+import Kingfisher
 import SwiftUI
 
 struct ArticleCardView: View {
@@ -18,28 +19,23 @@ struct ArticleCardView: View {
         VStack(alignment: .leading) {
 
             if let url = article.imageAsUrl {
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                        case .empty:
-                            HStack {
-                                Spacer()
-                                ProgressView()
-                                Spacer()
-                            }
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFit()
-                        case .failure:
-                            Image(systemName: "photo")
-                                .resizable()
-                                .scaledToFit()
-                                .foregroundColor(.gray)
-                        @unknown default:
-                            EmptyView()
+                KFImage(url)
+                    .placeholder {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Spacer()
+                        }
                     }
-                }
-                .frame(height: Dimensions.articleImageHeight)
+                    .onFailureView {
+                        Image(systemName: "photo")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(.gray)
+                    }
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: Dimensions.articleImageHeight)
             }
             HStack {
                 Text(article.sourceName)

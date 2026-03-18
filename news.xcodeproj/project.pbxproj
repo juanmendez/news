@@ -81,7 +81,7 @@
 		5FF82CC82E91D67600521F54 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF82CC72E91D67600521F54 /* Resource.swift */; };
 		5FFE539C2F3BF2F0006E1BCF /* ArticleEntity+DateCreated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFE539B2F3BF2F0006E1BCF /* ArticleEntity+DateCreated.swift */; };
 		8B9AAC85C1F327A5F79DC34F /* Pods_news.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C42C23A92730812600D962C /* Pods_news.framework */; };
-		ADD5EA80B565EAC4AD9CEAB2 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		ADD5EA80B565EAC4AD9CEAB2 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -225,7 +225,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADD5EA80B565EAC4AD9CEAB2 /* (null) in Frameworks */,
+				ADD5EA80B565EAC4AD9CEAB2 /* BuildFile in Frameworks */,
 				8B9AAC85C1F327A5F79DC34F /* Pods_news.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -742,13 +742,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-news-newsUITests/Pods-news-newsUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-news-newsUITests/Pods-news-newsUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -829,13 +825,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-news/Pods-news-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-news/Pods-news-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
