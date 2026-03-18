@@ -12,7 +12,7 @@ struct ContentView: View {
         TabView {
             ArticlesView(contract: ArticlesViewModel())
                 .tabItem {
-                    Label(String(localized: "Articles"), systemImage: "newspaper.fill")
+                    Label("Articles", systemImage: "newspaper.fill")
                 }
         }
         .tabBarMinimizeBehavior(.onScrollDown)

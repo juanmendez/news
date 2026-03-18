@@ -9,11 +9,11 @@ import SwiftUI
 
 struct ArticlesView: View {
     @State private var viewModelContract: ArticlesViewModelContract
-
+    
     init(contract: ArticlesViewModelContract) {
         self.viewModelContract = contract
     }
-
+    
     var body: some View {
         NavigationStack {
             ScrollViewReader { proxy in
@@ -47,14 +47,14 @@ struct ArticlesView: View {
             }
         }
     }
-
+    
     @ViewBuilder
     private var content: some View {
         List {
             ForEach(viewModelContract.articles, id: \.id) { article in
                 ArticleCardView(article)
             }
-
+            
             // Create an Infinitely Scrolling List in SwiftUI
             // https://tinyurl.com/2bzznj8s
             if !viewModelContract.isScrollingFinished {
@@ -70,38 +70,61 @@ struct ArticlesView: View {
     }
 }
 
-
 #Preview("loading") {
-    ArticlesView(
-        contract: ArticlesViewModelPreview(
-            isScrollingFinished: false,
+    TabView {
+        ArticlesView(
+            contract: ArticlesViewModelPreview(
+                isScrollingFinished: false,
+            )
         )
-    )
+        .tabItem {
+            Label("Articles", systemImage: "newspaper.fill")
+        }
+    }
+    .tabBarMinimizeBehavior(.onScrollDown)
 }
 
 #Preview("with one article") {
-    ArticlesView(
-        contract: ArticlesViewModelPreview(
-            articles: Array(PreviewConstants.articleEntities.prefix(1)),
-            isScrollingFinished: false,
+    TabView {
+        ArticlesView(
+            contract: ArticlesViewModelPreview(
+                articles: Array(PreviewConstants.articleEntities.prefix(1)),
+                isScrollingFinished: false,
+            )
         )
-    )
+        .tabItem {
+            Label("Articles", systemImage: "newspaper.fill")
+        }
+    }
+    .tabBarMinimizeBehavior(.onScrollDown)
 }
 
 #Preview("with articles") {
-    ArticlesView(
-        contract: ArticlesViewModelPreview(
-            articles: Array(PreviewConstants.articleEntities.prefix(8)),
-            isScrollingFinished: false,
+    TabView {
+        ArticlesView(
+            contract: ArticlesViewModelPreview(
+                articles: Array(PreviewConstants.articleEntities.prefix(8)),
+                isScrollingFinished: false,
+            )
         )
-    )
+        .tabItem {
+            Label("Articles", systemImage: "newspaper.fill")
+        }
+    }
+    .tabBarMinimizeBehavior(.onScrollDown)
 }
 
 #Preview("with articles fully loaded") {
-    ArticlesView(
-        contract: ArticlesViewModelPreview(
-            articles: Array(PreviewConstants.articleEntities.prefix(8)),
-            isScrollingFinished: true,
+    TabView {
+        ArticlesView(
+            contract: ArticlesViewModelPreview(
+                articles: Array(PreviewConstants.articleEntities.prefix(8)),
+                isScrollingFinished: true,
+            )
         )
-    )
+        .tabItem {
+            Label("Articles", systemImage: "newspaper.fill")
+        }
+    }
+    .tabBarMinimizeBehavior(.onScrollDown)
 }
