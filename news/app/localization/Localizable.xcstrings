@@ -92,6 +92,18 @@
           }
         }
       }
+    },
+    "too_many_requests": {
+      "comment": "Error message displayed when the News API rate limit has been exceeded",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many requests. Please try again later."
+          }
+        }
+      }
     }
   },
   "version": "1.1"

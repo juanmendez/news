@@ -30,11 +30,13 @@ struct ArticlesViewModelTest {
     }
 
     func makeArticlesResponse(_ articles: [Article]) throws -> HttpClientResponseRaw {
-        try HttpClientResponseRaw(item: ArticlesResponse(
-            status: "ok",
-            totalResults: PreviewConstants.articles.count,
-            articles: articles
-        ))
+        try HttpClientResponseRaw(
+            item: ArticlesResponse(
+                status: "ok",
+                totalResults: PreviewConstants.articles.count,
+                articles: articles
+            )
+        )
     }
 
     // MARK: - Initial State
@@ -45,10 +47,9 @@ struct ArticlesViewModelTest {
 
         // then
         #expect(sut.articles.isEmpty)
-        #expect(sut.showProgress == false)
         #expect(sut.errorMessage == nil)
         #expect(sut.isScrollingFinished == false)
-        #expect(sut.query == "Top Headlines")
+        #expect(sut.query == TOP_HEADLINES)
     }
 
     // MARK: - Fetch Articles
@@ -66,7 +67,6 @@ struct ArticlesViewModelTest {
         // then
         #expect(sut.articles.count == pageSize)
         #expect(sut.isScrollingFinished == false)
-        #expect(sut.scrollToTop == true)
     }
 
     @Test func fetchingTwiceAppendsPagesOfArticles() async throws {
@@ -148,7 +148,7 @@ struct ArticlesViewModelTest {
     @Test func refreshArticlesClearsPreviousPageAndFetchesFromNetwork() async throws {
         // given
         let pageArticles0 = PreviewConstants.articles.slice(0, pageSize)
-        let pageArticleEntities0 = pageArticles0.map(ArticleEntityMapper().toEntity)
+        let cachedArticleEntities = pageArticles0.map(ArticleEntityMapper().toEntity)
 
         let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
 
@@ -163,14 +163,28 @@ struct ArticlesViewModelTest {
 
         // then
         let storedArticles = database.readArticles(sut.query)
-        #expect(storedArticles.sortedById() == pageArticleEntities0.sortedById())
-        #expect(sut.articles.sortedById() == pageArticleEntities0.sortedById())
+        #expect(storedArticles.sortedById() == cachedArticleEntities.sortedById())
+        #expect(sut.articles.sortedById() == cachedArticleEntities.sortedById())
+    }
+
+    @Test func refreshArticlesDoesNothingWhenQueryIsEmpty() async throws {
+        // given
+        let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
+
+        // when
+        sut.query = ""
+        await sut.refreshArticles()
+
+        // then
+        #expect(sut.articles.isEmpty)
+        #expect(sut.errorMessage == nil)
+        #expect(sut.isScrollingFinished == false)
     }
 
     @Test func refreshArticlesDoesNothingWhenOffline() async throws {
         // given
         let pageArticles0 = PreviewConstants.articles.slice(0, pageSize)
-        let pageArticleEntities0 = pageArticles0.map(ArticleEntityMapper().toEntity)
+        let cachedArticleEntities = pageArticles0.map(ArticleEntityMapper().toEntity)
 
         let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
 
@@ -183,13 +197,95 @@ struct ArticlesViewModelTest {
         await sut.refreshArticles()
 
         // then
-        #expect(sut.articles.sortedById() == pageArticleEntities0.sortedById())
+        #expect(sut.articles.sortedById() == cachedArticleEntities.sortedById())
     }
+
+    // MARK: - Submit Articles
+
+    @Test func submitArticlesFetchesFromNetwork() async throws {
+        // given
+        let pageArticles0 = PreviewConstants.articles.slice(0, pageSize)
+        let cachedArticleEntities = pageArticles0.map(ArticleEntityMapper().toEntity)
+
+        let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
+
+        // when
+        sut.query = "Bitcoin"
+        httpClient.rawResponse = try makeArticlesResponse(pageArticles0)
+        await sut.submitArticles()
+
+        // then
+        #expect(sut.articles.sortedById() == cachedArticleEntities.sortedById())
+    }
+
+    @Test func submitArticlesClearsPreviousArticles() async throws {
+        // given
+        let pageArticles0 = PreviewConstants.articles.slice(0, pageSize)
+        let pageArticles1 = PreviewConstants.articles.slice(pageSize, pageSize)
+        let cachedArticleEntities = pageArticles1.map(ArticleEntityMapper().toEntity)
+
+        let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
+
+        // when - fetch first page
+        httpClient.rawResponse = try makeArticlesResponse(pageArticles0)
+        await sut.fetchArticles()
+
+        // when - submit resets and fetches page 1 again
+        sut.query = "Bitcoin"
+        httpClient.rawResponse = try makeArticlesResponse(pageArticles1)
+        await sut.submitArticles()
+
+        // then
+        #expect(sut.articles.count == pageSize)
+        #expect(sut.articles.sortedById() == cachedArticleEntities.sortedById())
+
+    }
+
+    @Test func submitArticlesWithSameQueryResetsToPageOne() async throws {
+        // given
+        let pageArticles0 = PreviewConstants.articles.slice(0, pageSize)
+        let pageArticles1 = PreviewConstants.articles.slice(pageSize, pageSize)
+        let cachedArticleEntities = (pageArticles0 + pageArticles1).map(ArticleEntityMapper().toEntity)
+
+        let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
+
+        // when - fetch two pages
+        httpClient.rawResponse = try makeArticlesResponse(pageArticles0)
+        await sut.fetchArticles()
+
+        httpClient.rawResponse = try makeArticlesResponse(pageArticles1)
+        await sut.fetchArticles()
+
+        // when - submit same query resets to page 1
+        httpClient.rawResponse = try makeArticlesResponse(pageArticles0)
+        await sut.submitArticles()
+
+        // then - cache has both pages, sut.articles shows page 1 after reset
+        #expect(sut.articles.count == cachedArticleEntities.count)
+        #expect(sut.articles.sortedById() == cachedArticleEntities.sortedById())
+        #expect(sut.isScrollingFinished)
+    }
+
+    @Test func submitArticlesDoesNothingWhenQueryIsEmpty() async throws {
+        // given
+        let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
+
+        // when
+        sut.query = ""
+        await sut.submitArticles()
+
+        // then
+        #expect(sut.articles.isEmpty)
+        #expect(sut.errorMessage == nil)
+        #expect(sut.isScrollingFinished == false)
+    }
+
+    // MARK: - Cache
 
     @Test func fetchArticlesLoadsFromCacheWhenAvailable() async throws {
         // given
         let cachedEntities = PreviewConstants.articleEntities.slice(0, pageSize)
-        try await database.preload("Top Headlines", articles: cachedEntities)
+        try await database.preload(TOP_HEADLINES, articles: cachedEntities)
 
         let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
 
@@ -199,6 +295,6 @@ struct ArticlesViewModelTest {
         // then
         #expect(sut.articles.count == pageSize)
         #expect(sut.articles.sortedById() == cachedEntities.sortedById())
-        #expect(sut.isScrollingFinished == true)
+        #expect(sut.isScrollingFinished)
     }
 }

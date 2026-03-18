@@ -14,17 +14,6 @@ struct ArticlesToolbarModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        Task {
-                            await onRefresh()
-                        }
-                    } label: {
-                        Image(systemName: "arrow.clockwise")
-                    }
-                }
-            }
             .searchable(
                 text: $query,
                 placement: .navigationBarDrawer(displayMode: .always),

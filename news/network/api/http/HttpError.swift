@@ -13,4 +13,5 @@ enum HttpError: Error, Equatable {
     case notFound
     case conflict(result: [ErrorModel]?)
     case badResponse(status: Int, error: String?, result: [ErrorModel]?)
+    case tooManyRequests
 }

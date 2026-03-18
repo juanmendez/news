@@ -12,10 +12,13 @@ public final class Log: Sendable {
 
     /// Defines the severity level of a log message.
     public enum LogLevel: String {
-        case debug = "DEBUG"
-        case info = "INFO"
-        case warning = "WARNING"
-        case error = "ERROR"
+        case debug
+        case info
+        case notice
+        case warn
+        case error
+        case critical
+        case preview
     }
 
     /// Shared singleton instance for global logging.
@@ -35,15 +38,48 @@ public final class Log: Sendable {
         _ message: String,
         error: Error? = nil,
         level: LogLevel,
+        attributes: Encodable? = nil,
     ) {
         guard Log.isEnabled else { return }
 
-        let timestamp = Log.timestamp()
+        let icon = icon(for: level)
 
-        print("[\(timestamp)] [\(level.rawValue)] - \(message)")
+        var logMessage = "\(icon) [\(level)] \(message)"
 
         if let error {
-            print("[\(timestamp)] [\(level.rawValue)] - \(error.localizedDescription)")
+            logMessage += "\n\t❌ Error:\n\t\t\(error)"
+        }
+
+        if let attributes {
+            if let jsonData = try? DecoderFactory.iso8601Encoder.encode(attributes),
+                let jsonString = String(data: jsonData, encoding: .utf8) {
+                logMessage += "\n\t📎 Attributes: \(jsonString)"
+            } else {
+                logMessage += "\n\t📎 Attributes: \(attributes)"
+            }
+        }
+
+        print(logMessage)
+    }
+
+    private func icon(for level: LogLevel) -> String {
+        switch level {
+        case .debug:
+            return "🔍"
+        case .info:
+            return "ℹ️"
+        case .notice:
+            return "📢"
+        case .warn:
+            return "⚠️"
+        case .error:
+            return "🚨"
+        case .critical:
+            return "💥"
+        case .preview:
+            return "👀"
+        @unknown default:
+            return "•"
         }
     }
 
@@ -56,21 +92,31 @@ public final class Log: Sendable {
     public static func i(
         _ message: String,
         error: Error? = nil,
+        attributes: Encodable? = nil,
     ) {
-        shared.log(message, error: error, level: .info)
+        shared.log(message, error: error, level: .info, attributes: attributes)
     }
 
     public static func w(
         _ message: String,
         error: Error? = nil,
+        attributes: Encodable? = nil,
     ) {
-        shared.log(message, error: error, level: .warning)
+        shared.log(message, error: error, level: .warn, attributes: attributes)
     }
 
     public static func e(
         _ message: String,
         error: Error? = nil,
+        attributes: Encodable? = nil,
     ) {
-        shared.log(message, error: error, level: .error)
+        shared.log(message, error: error, level: .error, attributes: attributes)
+    }
+
+    public static func p(
+        _ message: String,
+        attributes: Encodable? = nil,
+    ) {
+        shared.log(message, error: nil, level: .preview, attributes: attributes)
     }
 }

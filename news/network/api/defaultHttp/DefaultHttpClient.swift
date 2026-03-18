@@ -45,6 +45,8 @@ struct DefaultHttpClient: Sendable, HttpClient {
                 from: data
             )
             throw HttpError.conflict(result: errorModels)
+        case 429:
+            throw HttpError.tooManyRequests
         default:
             throw HttpError.badResponse(
                 status: urlResponse.statusCode,

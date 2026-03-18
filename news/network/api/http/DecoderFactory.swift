@@ -17,6 +17,7 @@ enum DecoderFactory {
     static var iso8601Encoder: JSONEncoder {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
+        encoder.outputFormatting = .prettyPrinted
         return encoder
     }
 }

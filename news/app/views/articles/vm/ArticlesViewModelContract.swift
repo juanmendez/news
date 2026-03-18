@@ -9,7 +9,6 @@ import Foundation
 
 @MainActor
 protocol ArticlesViewModelContract {
-    var showProgress: Bool { get }
     var articles: [ArticleEntity] { get }
     var errorMessage: String? { get set }
     var isScrollingFinished: Bool { get }
