@@ -12,6 +12,7 @@ import Foundation
 
 /// A hand-written mock for the InternetService protocol.
 /// Set `access` to control what `hasAccess()` returns.
+@MainActor
 final class MockInternetService: InternetService {
 
     // MARK: - Stub

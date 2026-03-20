@@ -17,6 +17,7 @@ enum DatabaseType {
 
 /// A struct that conforms to the `NewsDatabase` protocol, providing an implementation
 /// backed by a SQLite database using the GRDB library.
+@MainActor
 struct DefaultNewsDatabase: NewsDatabase {
 
     // great learning from https://swiftpackageindex.com/groue/grdb.swift/v7.8.0/documentation/grdb/
@@ -88,29 +89,27 @@ struct DefaultNewsDatabase: NewsDatabase {
     /// the matching `ArticleEntity` records.
     /// - Parameter query: The search query to look up.
     /// - Returns: An array of `ArticleEntity` records, or empty if none are found.
-    func readArticles(_ query: String) -> [ArticleEntity] {
-        var articles = [ArticleEntity]()
+    func readArticles(_ query: String) async -> [ArticleEntity] {
         do {
-            try dbWriter.read { database in
-                if let query = try? QueryEntity.find(database, key: query),
-                    let articleIds = try? QueryArticleEntity.filter({ $0.queryname == query.queryName }).fetchAll(
+            let articles: [ArticleEntity] = try await dbWriter.read { database in
+                if let queryEntity = try? QueryEntity.find(database, key: query),
+                    let articleIds = try? QueryArticleEntity.filter({ $0.queryname == queryEntity.queryName }).fetchAll(
                         database
-                    ).map(\.articleId) {
+                    ).map(\.articleId)
+                {
 
-                    articles.append(
-                        contentsOf: try ArticleEntity.filter { columns in
-                            articleIds.contains(columns.id)
-                        }
-                        .fetchAll(database)
-                    )
+                    return try ArticleEntity.filter { columns in
+                        articleIds.contains(columns.id)
+                    }.fetchAll(database)
                 }
 
+                return []
             }
+            return articles
         } catch {
             Log.e("Failed to fetch articles: \(error)")
+            return []
         }
-
-        return articles
     }
 
     /// Deletes all data associated with the given query in the correct dependency order:

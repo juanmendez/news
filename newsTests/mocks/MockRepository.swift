@@ -13,6 +13,7 @@ import Foundation
 
 /// A hand-written mock for the Repository protocol.
 /// Use `getArticlesHandler` to control what each call returns.
+@MainActor
 final class MockRepository: Repository {
 
     // MARK: - Stub streams

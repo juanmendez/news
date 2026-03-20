@@ -7,9 +7,9 @@
 
 import Foundation
 import Testing
-
 @testable import news
 
+@MainActor
 struct HttpClientTest {
     @Test func findOutHowToMockAJsonForHttpClientResponse() async throws {
         let stub = PreviewConstants.articles[0]

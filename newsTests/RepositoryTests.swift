@@ -6,9 +6,9 @@
 //
 
 import Testing
-
 @testable import news
 
+@MainActor
 struct RepositoryTests {
     let sut = MockRepository()
     

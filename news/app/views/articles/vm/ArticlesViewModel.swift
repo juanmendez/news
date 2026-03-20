@@ -32,7 +32,7 @@ class ArticlesViewModel: ArticlesViewModelContract {
         self.pageSize = pageSize
     }
 
-    @MainActor private func getArticles(refresh: Bool = false) async {
+    private func getArticles(refresh: Bool = false) async {
         Log.i("getArticles query: \(query), page: \(page), refresh: \(refresh)")
 
         for await value in repository.getArticles(

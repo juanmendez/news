@@ -14,19 +14,17 @@ struct DefaultRepository: Repository {
 
     func getArticles(query: String, page: Int, pageSize: Int, refresh: Bool) -> AsyncStream<Resource<[ArticleEntity]>> {
         return ResourceProvider.networkBoundResource(
-            loadFromCache: {
-                // Load from cache implementation
-                database.readArticles(query)
+            loadFromCache: { @Sendable () async -> [ArticleEntity] in
+                return await database.readArticles(query)
             },
-            shouldFetchFromNetwork: { data in
-                // Determine if we should fetch from network
+            shouldFetchFromNetwork: { @Sendable (data: [ArticleEntity]?) -> Bool in
                 if refresh {
-                    true
+                    return true
                 } else {
-                    page > 1 || (data == nil || data?.isEmpty == true)
+                    return page > 1 || (data == nil || data?.isEmpty == true)
                 }
             },
-            fetchFromNetwork: {
+            fetchFromNetwork: { @Sendable () async throws -> [ArticleEntity] in
                 let response: HttpClientResponse<ArticlesResponse> = try await httpClient.request(
                     router: DefaultHttpRouter.newsByPage,
                     headers: nil,
@@ -41,12 +39,11 @@ struct DefaultRepository: Repository {
                     body: nil
                 )
 
-                return response.model.articles
-            },
-            saveToCache: { articles in
                 let mapper = ArticleEntityMapper()
-                let articlesEntity = articles.map(mapper.toEntity)
-                for articleEntity in articlesEntity {
+                return response.model.articles.map(mapper.toEntity)
+            },
+            saveToCache: { @Sendable (articles: [ArticleEntity]) async throws -> Void in
+                for articleEntity in articles {
                     try await database.saveArticle(query, articleEntity: articleEntity)
                 }
             }

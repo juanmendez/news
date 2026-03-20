@@ -36,6 +36,8 @@ extension HttpClientResponseRaw {
     ///     headerFields: ["Authorization": "Bearer token"]
     /// )
     /// ```
+
+    @MainActor
     init<T: Encodable>(
         item: T,
         statusCode: Int = 200,

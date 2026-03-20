@@ -14,6 +14,7 @@ import Foundation
 /// A hand-written mock for the HttpClient protocol.
 /// Set `rawResponse` to control what rawRequest returns,
 /// or leave it nil to simulate an invalidUrl error.
+@MainActor
 final class MockHttpClient: HttpClient {
 
     /// Set this before calling rawRequest to control the mock response.

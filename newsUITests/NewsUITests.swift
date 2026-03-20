@@ -2,11 +2,12 @@
 //  newsUITests.swift
 //  newsUITests
 //
-//  Created by Mendez, Juan on 9/16/25.
+//  Created by Mendez, Juan on 3/20/26.
 //
 
 import XCTest
 
+@MainActor
 final class NewsUITests: XCTestCase {
 
     override func setUpWithError() throws {
@@ -22,7 +23,6 @@ final class NewsUITests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    @MainActor
     func testExample() throws {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
@@ -31,7 +31,6 @@ final class NewsUITests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
-    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {

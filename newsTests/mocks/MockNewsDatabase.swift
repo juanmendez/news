@@ -15,6 +15,7 @@ import GRDB
 /// A test double for `NewsDatabase` backed by a real in-memory GRDB instance.
 /// Each `MockNewsDatabase` instance gets its own isolated SQLite database,
 /// so tests never share state.
+@MainActor
 final class MockNewsDatabase: @unchecked Sendable, NewsDatabase {
 
     private let database: NewsDatabase
@@ -29,8 +30,8 @@ final class MockNewsDatabase: @unchecked Sendable, NewsDatabase {
         try await database.saveArticle(query, articleEntity: articleEntity)
     }
 
-    func readArticles(_ query: String) -> [ArticleEntity] {
-        database.readArticles(query)
+    func readArticles(_ query: String) async -> [ArticleEntity] {
+        await database.readArticles(query)
     }
 
     func deleteArticles(_ query: String) async throws {

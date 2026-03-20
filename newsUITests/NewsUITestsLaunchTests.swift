@@ -2,11 +2,12 @@
 //  newsUITestsLaunchTests.swift
 //  newsUITests
 //
-//  Created by Mendez, Juan on 9/16/25.
+//  Created by Mendez, Juan on 3/20/26.
 //
 
 import XCTest
 
+@MainActor
 final class NewsUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
@@ -17,7 +18,6 @@ final class NewsUITestsLaunchTests: XCTestCase {
         continueAfterFailure = false
     }
 
-    @MainActor
     func testLaunch() throws {
         let app = XCUIApplication()
         app.launch()
