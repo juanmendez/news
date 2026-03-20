@@ -21,9 +21,10 @@ iOS sample illustrating the MVVM architecture pattern built with **SwiftUI**.
 
 ## Screenshots
 
-![portrait dark](./docs/portrait-dark.png)
-
-![landscape light](./docs/landscape-light.png)
+<img src="./docs/portrait-dark.png" width="450" alt="portrait light" />
+<br/>
+<br/>
+<img src="./docs/landscape-light.png" alt="landscape light" />
 
 ## Tech Stack
 
@@ -96,41 +97,92 @@ SwiftUI's `.refreshable` modifier calls `fetchArticles(refresh: true)`, which re
 ```
 news/
 ├── app/
-│   ├── constants/          # NewsApi key, DefaultInjections, Dimensions
+│   ├── NewsApp.swift
+│   ├── constants/
+│   │   ├── DefaultInjections.swift
+│   │   └── NewsApi.swift
+│   ├── localization/
+│   │   └── Localizable.xcstrings
 │   ├── utils/
-│   │   ├── dependencyInjection/   # InjectionProvider, Inject, Injections
-│   │   └── extensions/            # String+Common, Array+Common
+│   │   ├── dependencyInjection/
+│   │   │   ├── Inject.swift
+│   │   │   ├── InjectionProvider.swift
+│   │   │   ├── InjectionType.swift
+│   │   │   └── Injections.swift
+│   │   └── extensions/
+│   │       ├── Array+Comon.swift
+│   │       ├── ArticleEntity+DateCreated.swift
+│   │       └── String+Common.swift
 │   └── views/
+│       ├── ContentView.swift
+│       ├── viewComponents/
 │       └── articles/
-│           ├── ArticlesView.swift
 │           ├── ArticleCardView.swift
+│           ├── ArticlesToolbarModifier.swift
+│           ├── ArticlesView.swift
+│           ├── ProgressBar.swift
 │           └── vm/
 │               ├── ArticlesViewModel.swift
 │               ├── ArticlesViewModelContract.swift
 │               └── ArticlesViewModelPreview.swift
 ├── data/
-│   ├── Article.swift               # Network model
+│   ├── Article.swift
 │   ├── ArticlesResponse.swift
-│   └── cache/
-│       ├── entities/               # ArticleEntity, QueryEntity, QueryArticleEntity
-│       ├── database/               # DefaultNewsDatabase (GRDB), SessionNewsDatabase
-│       └── ArticleEntityMapper.swift
+│   ├── cache/
+│   │   ├── ArticleEntityMapper.swift
+│   │   ├── EntityMapper.swift
+│   │   └── database/
+│   │       ├── DefaultNewsDatabase.swift
+│   │       └── NewsDatabase.swift
+│   └── util/
 └── network/
-    ├── Repository.swift            # Protocol
+    ├── DefaultInternetService.swift
     ├── DefaultRepository.swift
-    ├── ResourceProvider.swift      # NetworkBoundResource implementation
+    ├── InternetService.swift
+    ├── NoResponse.swift
+    ├── Repository.swift
+    ├── ResourceProvider.swift
     └── api/
-        └── http/                   # HttpClient, DefaultHttpClient, HttpError, Resource
+        ├── defaultHttp/
+        │   ├── DefaultHttpClient.swift
+        │   ├── DefaultHttpRouter.swift
+        │   └── DefaultSessionDataDelegate.swift
+        └── http/
+            ├── DecoderFactory.swift
+            ├── ErrorModel.swift
+            ├── HttpClient+Common.swift
+            ├── HttpClient.swift
+            ├── HttpClientResponse.swift
+            ├── HttpClientResponseRaw.swift
+            ├── HttpError.swift
+            ├── HttpMethod.swift
+            ├── HttpRouter.swift
+            ├── Resource.swift
+            └── URLRequest+Common.swift
 
 newsShared/
-├── constants/              # PreviewConstants, Dimensions, LocalizedStrings
-└── stubs/                  # ArticleEntity+Stub, Article+Stub (for tests & previews)
+├── constants/
+│   ├── PreviewConstants+ArticleEntities.swift
+│   ├── PreviewConstants+Articles.swift
+│   └── PreviewConstants.swift
+└── stubs/
+    ├── Article+Stub.swift
+    ├── ArticleEntity+Stub.swift
+    └── Stub.swift
 
 newsTests/
-├── MockRepository.swift    # Hand-written mock (no third-party mocking library)
-├── MockHttpClient.swift
-├── RepositoryTests.swift   # Swift Testing (@Test)
-└── HttpClientTest.swift
+├── ArticlesViewModelTest.swift
+├── HttpClientTest.swift
+├── RepositoryTests.swift
+├── mocks/
+│   ├── MockHttpClient.swift
+│   ├── MockInternetService.swift
+│   ├── MockNewsDatabase.swift
+│   └── MockRepository.swift
+└── utils/
+
+newsUITests/
+└── (UI tests files)
 ```
 
 ## Testing
