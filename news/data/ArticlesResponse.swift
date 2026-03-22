@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ArticlesResponse: nonisolated Codable, Equatable, Sendable {
+struct ArticlesResponse: Codable, Equatable, Sendable {
     let status: String
     let totalResults: Int
     let articles: [Article]

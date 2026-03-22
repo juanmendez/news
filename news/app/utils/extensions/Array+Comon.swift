@@ -8,7 +8,7 @@
 
 extension Array {
     /// Returns `true` if the array contains at least one element, otherwise `false`.
-    var isNotEmpty: Bool {
+    nonisolated var isNotEmpty: Bool {
         !isEmpty
     }
 

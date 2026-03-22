@@ -6,13 +6,13 @@
 //
 
 enum InjectionProvider {
-    @MainActor static private var injections: Injections = EmptyInjections()
+    static private var injections: Injections = EmptyInjections()
 
-    @MainActor static func register(_ injections: any Injections) {
+    static func register(_ injections: any Injections) {
         Self.injections = injections
     }
 
-    @MainActor static func byType<T>(_ type: T.Type) -> T {
+    static func byType<T>(_ type: T.Type) -> T {
         injections.byType(type)
     }
 }

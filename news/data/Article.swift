@@ -44,36 +44,31 @@ public struct Article: nonisolated Codable, nonisolated Equatable, Sendable {
         self.content = content
     }
 
+    // Assign each stored property directly from the decoder using decodeIfPresent with defaults.
     nonisolated public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let source = try container.decodeIfPresent(Source.self, forKey: .source) ?? Source(id: nil, name: "")
-        let author = try container.decodeIfPresent(String.self, forKey: .author) ?? ""
-        let title = try container.decodeIfPresent(String.self, forKey: .title) ?? ""
-        let description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
-        let url = try container.decodeIfPresent(String.self, forKey: .url) ?? ""
-        let urlToImage = try container.decodeIfPresent(String.self, forKey: .urlToImage) ?? ""
-        let publishedAt = try container.decodeIfPresent(Date.self, forKey: .publishedAt) ?? Date()
-        let content = try container.decodeIfPresent(String.self, forKey: .content) ?? ""
+
+        // Decode each field directly into the stored properties (providing sensible defaults).
+        self.source = try container.decodeIfPresent(Source.self, forKey: .source) ?? Source(id: nil, name: "")
+        self.author = try container.decodeIfPresent(String.self, forKey: .author) ?? ""
+        self.title = try container.decodeIfPresent(String.self, forKey: .title) ?? ""
+        self.description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
+        self.url = try container.decodeIfPresent(String.self, forKey: .url) ?? ""
+        self.urlToImage = try container.decodeIfPresent(String.self, forKey: .urlToImage) ?? ""
+        self.publishedAt = try container.decodeIfPresent(Date.self, forKey: .publishedAt) ?? Date()
+        self.content = try container.decodeIfPresent(String.self, forKey: .content) ?? ""
 
         // Compute id deterministically: prefer title, then url, otherwise random UUID
-        let id: String
-        if !title.isEmpty {
-            id = title
-        } else if !url.isEmpty {
-            id = url
+        let computedId: String
+        if self.title.isNotEmpty {
+            computedId = self.title
+        } else if self.url.isNotEmpty {
+            computedId = self.url
         } else {
-            id = UUID().uuidString
+            computedId = UUID().uuidString
         }
 
-        self.id = id
-        self.source = source
-        self.author = author
-        self.title = title
-        self.description = description
-        self.url = url
-        self.urlToImage = urlToImage
-        self.publishedAt = publishedAt
-        self.content = content
+        self.id = computedId
     }
 }
 
@@ -81,7 +76,7 @@ struct Source: nonisolated Codable, nonisolated Equatable, Sendable {
     let id: String?
     let name: String
 
-    nonisolated init( id: String?, name: String) {
+    nonisolated init(id: String?, name: String) {
         self.id = id
         self.name = name
     }

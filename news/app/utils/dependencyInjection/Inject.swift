@@ -8,8 +8,7 @@
 import Foundation
 
 @propertyWrapper
-struct Inject<T> {
-    @MainActor
+struct Inject<T>: Sendable {
     var wrappedValue: T {
         InjectionProvider.byType(T.self)
     }

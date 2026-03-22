@@ -19,7 +19,7 @@ extension String {
     /// "Hello".isNotEmpty  // true
     /// "".isNotEmpty       // false
     /// ```
-    var isNotEmpty: Bool {
+    nonisolated var isNotEmpty: Bool {
         isEmpty == false
     }
 
@@ -33,7 +33,7 @@ extension String {
     /// "    \n".isBlank          // true
     /// "  text  ".isBlank         // false
     /// ```
-    var isBlank: Bool {
+    nonisolated var isBlank: Bool {
         isEmpty == true || trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
@@ -44,7 +44,7 @@ extension String {
     /// "  text  ".isNotBlank   // true
     /// "   \n".isNotBlank     // false
     /// ```
-    var isNotBlank: Bool {
+    nonisolated var isNotBlank: Bool {
         !isBlank
     }
 
@@ -107,7 +107,7 @@ extension String? {
     /// let none: String? = nil
     /// none.hasContent         // false
     /// ```
-    var hasContent: Bool {
+    nonisolated var hasContent: Bool {
         if let self {
             self.isNotBlank
         } else {

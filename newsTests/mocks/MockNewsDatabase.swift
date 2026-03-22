@@ -16,7 +16,7 @@ import GRDB
 /// Each `MockNewsDatabase` instance gets its own isolated SQLite database,
 /// so tests never share state.
 @MainActor
-final class MockNewsDatabase: @unchecked Sendable, NewsDatabase {
+final class MockNewsDatabase: NewsDatabase {
 
     private let database: NewsDatabase
 

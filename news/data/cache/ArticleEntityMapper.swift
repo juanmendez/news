@@ -11,7 +11,7 @@ struct ArticleEntityMapper: EntityMapper {
     typealias EntityModel = ArticleEntity
     typealias DomainModel = Article
 
-    nonisolated func toDomain(_ entityModel: ArticleEntity) -> Article {
+    func toDomain(_ entityModel: ArticleEntity) -> Article {
         return Article(
             id: entityModel.id,
             source: Source(id: entityModel.sourceId, name: entityModel.sourceName),

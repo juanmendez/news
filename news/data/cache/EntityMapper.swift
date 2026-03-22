@@ -12,7 +12,7 @@ import Foundation
  * @param EntityModel the entity model type
  * @param DomainModel the domain model type
  */
-protocol EntityMapper {
+protocol EntityMapper where EntityModel: Sendable, DomainModel: Sendable {
     associatedtype EntityModel
     associatedtype DomainModel
 
