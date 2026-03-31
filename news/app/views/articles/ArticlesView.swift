@@ -52,7 +52,11 @@ struct ArticlesView: View {
     private var content: some View {
         List {
             ForEach(viewModelContract.articles, id: \.id) { article in
-                ArticleCardView(article)
+                NavigationLink {
+                    ArticleView(articleEntity: article)
+                } label: {
+                    ArticleCardView(article)
+                }
             }
             
             // Create an Infinitely Scrolling List in SwiftUI

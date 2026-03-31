@@ -20,7 +20,7 @@ struct ArticleEntityMapper: EntityMapper {
             description: entityModel.description,
             url: entityModel.url,
             urlToImage: entityModel.imageUrl,
-            publishedAt: Date(timeIntervalSince1970: TimeInterval(entityModel.publishedAt)),
+            publishedAt: Date(timeIntervalSince1970: TimeInterval(entityModel.publishedAt) / 1000),
             content: entityModel.content
         )
     }
@@ -35,7 +35,7 @@ struct ArticleEntityMapper: EntityMapper {
             description: domainModel.description,
             url: domainModel.url,
             imageUrl: domainModel.urlToImage,
-            publishedAt: Int64(domainModel.publishedAt.timeIntervalSince1970),
+            publishedAt: Int64(domainModel.publishedAt.timeIntervalSince1970 * 1000),
             content: domainModel.content
         )
     }

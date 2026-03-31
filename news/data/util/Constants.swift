@@ -8,4 +8,3 @@
 import Foundation
 
 let TOP_HEADLINES = "Top Headlines"
-let ARTICLES_DATA_FILENAME = "articles.json"

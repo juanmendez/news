@@ -43,7 +43,7 @@ struct ArticleCardView: View {
                     .foregroundColor(.secondary)
                 Spacer()
 
-                Text(article.formattedPublishedDate())
+                Text(article.publishedDate.formatted())
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -58,9 +58,6 @@ struct ArticleCardView: View {
         }
         .padding(.vertical, 8)
         .listRowInsets(EdgeInsets(vertical: 0, horizontal: 16))
-        .onTapGesture {
-
-        }
     }
 }
 

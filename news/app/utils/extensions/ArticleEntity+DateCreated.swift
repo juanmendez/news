@@ -33,4 +33,8 @@ extension ArticleEntity {
     nonisolated var imageAsUrl: URL? {
         URL(string: imageUrl)
     }
+
+    nonisolated var asUrl: URL? {
+        URL(string: url)
+    }
 }

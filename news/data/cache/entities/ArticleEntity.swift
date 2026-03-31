@@ -8,7 +8,7 @@
 import Foundation
 import GRDB
 
-struct ArticleEntity: Codable, Equatable, FetchableRecord, PersistableRecord  {
+struct ArticleEntity: Codable, Equatable, Hashable, FetchableRecord, PersistableRecord  {
     var id: String // PrimaryKey
     var sourceId: String?
     var sourceName: String
