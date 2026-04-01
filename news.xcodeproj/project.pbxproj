@@ -79,6 +79,8 @@
 		5FB8F05B2F6CAFAF00A5CC06 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FB8F0572F6CAFAF00A5CC06 /* Assets.xcassets */; };
 		5FB8F05C2F6CAFAF00A5CC06 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB8F0582F6CAFAF00A5CC06 /* ContentView.swift */; };
 		5FB8F05D2F6CAFAF00A5CC06 /* NewsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB8F0592F6CAFAF00A5CC06 /* NewsApp.swift */; };
+		5FD07C4F2F7DD3C5009AAF93 /* PreviewInjections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD07C4E2F7DD3C0009AAF93 /* PreviewInjections.swift */; };
+		5FD07C542F7DD62D009AAF93 /* NewsApp+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD07C532F7DD62D009AAF93 /* NewsApp+Common.swift */; };
 		5FF6A61B2F6DB17600D30ED9 /* NewsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF6A6182F6DB17600D30ED9 /* NewsUITests.swift */; };
 		5FF6A61C2F6DB17600D30ED9 /* NewsUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF6A6192F6DB17600D30ED9 /* NewsUITestsLaunchTests.swift */; };
 		8CF331CA3AA5C99986097970 /* Pods_newsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3621C88092B12F85F2404CCF /* Pods_newsTests.framework */; };
@@ -193,6 +195,8 @@
 		5FB8F0572F6CAFAF00A5CC06 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5FB8F0582F6CAFAF00A5CC06 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		5FB8F0592F6CAFAF00A5CC06 /* NewsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsApp.swift; sourceTree = "<group>"; };
+		5FD07C4E2F7DD3C0009AAF93 /* PreviewInjections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewInjections.swift; sourceTree = "<group>"; };
+		5FD07C532F7DD62D009AAF93 /* NewsApp+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NewsApp+Common.swift"; sourceTree = "<group>"; };
 		5FF6A60D2F6DB16400D30ED9 /* newsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = newsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FF6A6182F6DB17600D30ED9 /* NewsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsUITests.swift; sourceTree = "<group>"; };
 		5FF6A6192F6DB17600D30ED9 /* NewsUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsUITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -273,6 +277,7 @@
 		5F6F7F122F6CB93B007A6B9B /* constants */ = {
 			isa = PBXGroup;
 			children = (
+				5FD07C4E2F7DD3C0009AAF93 /* PreviewInjections.swift */,
 				5F6F7F102F6CB93B007A6B9B /* DefaultInjections.swift */,
 				5F6F7F112F6CB93B007A6B9B /* NewsApi.swift */,
 			);
@@ -427,8 +432,8 @@
 		5F6F7F882F6CB9BA007A6B9B /* constants */ = {
 			isa = PBXGroup;
 			children = (
-				5F6F7F852F6CB9BA007A6B9B /* PreviewConstants+ArticleEntities.swift */,
 				5F6F7F862F6CB9BA007A6B9B /* PreviewConstants.swift */,
+				5F6F7F852F6CB9BA007A6B9B /* PreviewConstants+ArticleEntities.swift */,
 				5F6F7F872F6CB9BA007A6B9B /* PreviewConstants+Articles.swift */,
 			);
 			path = constants;
@@ -524,6 +529,7 @@
 			isa = PBXGroup;
 			children = (
 				5FB8F0592F6CAFAF00A5CC06 /* NewsApp.swift */,
+				5FD07C532F7DD62D009AAF93 /* NewsApp+Common.swift */,
 				5F6F7F122F6CB93B007A6B9B /* constants */,
 				5F6F7F142F6CB93B007A6B9B /* localization */,
 				5F6F7F1E2F6CB93B007A6B9B /* utils */,
@@ -815,6 +821,7 @@
 				5F6F7F4F2F6CB9A0007A6B9B /* Articles+Log.swift in Sources */,
 				5F6F7F502F6CB9A0007A6B9B /* Article.swift in Sources */,
 				5F6F7F512F6CB9A0007A6B9B /* Constants.swift in Sources */,
+				5FD07C542F7DD62D009AAF93 /* NewsApp+Common.swift in Sources */,
 				5F6F7F522F6CB9A0007A6B9B /* NewsDatabase.swift in Sources */,
 				5F6F7F532F6CB9A0007A6B9B /* QueryArticleEntity.swift in Sources */,
 				5F6F7F542F6CB9A0007A6B9B /* QueryEntity.swift in Sources */,
@@ -831,6 +838,7 @@
 				5F6F7F212F6CB93B007A6B9B /* InjectionType.swift in Sources */,
 				5F6F7F222F6CB93B007A6B9B /* InjectionProvider.swift in Sources */,
 				5F6F7F232F6CB93B007A6B9B /* Inject.swift in Sources */,
+				5FD07C4F2F7DD3C5009AAF93 /* PreviewInjections.swift in Sources */,
 				5F6F7F242F6CB93B007A6B9B /* Array+Comon.swift in Sources */,
 				5F6F7F252F6CB93B007A6B9B /* Injections.swift in Sources */,
 				5F6F7F262F6CB93B007A6B9B /* String+Common.swift in Sources */,

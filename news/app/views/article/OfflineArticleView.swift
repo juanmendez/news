@@ -11,6 +11,7 @@ import SwiftUI
 struct OfflineArticleView: View {
     // TODO: add VM, in order to format data and avoid logic in View.
     let articleEntity: ArticleEntity
+    var checkIfOnline: () async -> Void = {}
 
     var body: some View {
         ScrollView {
@@ -55,6 +56,9 @@ struct OfflineArticleView: View {
                 }
             }
             .padding(.horizontal, 8)
+        }
+        .refreshable {
+            await checkIfOnline()
         }
     }
 }

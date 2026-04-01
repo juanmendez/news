@@ -1,5 +1,5 @@
 //
-//  WebView.swift
+//  OnlineArticleView.swift
 //  news
 //
 //  Created by Mendez, Juan on 3/31/26.

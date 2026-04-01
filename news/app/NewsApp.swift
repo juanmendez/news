@@ -10,9 +10,11 @@ import SwiftUI
 @main
 struct NewsApp: App {
     init() {
-        InjectionProvider.register(
-            DefaultInjections()
-        )
+        if NewsApp.isRealApp {
+            InjectionProvider.register(DefaultInjections())
+        } else {
+            InjectionProvider.register(PreviewInjections())
+        }
     }
 
     var body: some Scene {

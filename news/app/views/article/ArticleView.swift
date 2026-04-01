@@ -29,11 +29,15 @@ struct ArticleView: View {
         if isOnline {
             OnlineArticleView(articleEntity: articleEntity)
         } else {
-            OfflineArticleView(articleEntity: articleEntity)
+            OfflineArticleView(articleEntity: articleEntity) { () async -> Void in
+                isOnline = await internetService.hasAccess()
+            }
         }
     }
 }
 
 #Preview {
-    ArticleView(articleEntity: PreviewConstants.articleEntities.first!)
+    NavigationStack {
+        ArticleView(articleEntity: PreviewConstants.articleEntities.first!)
+    }
 }
