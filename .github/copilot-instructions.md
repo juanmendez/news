@@ -52,6 +52,7 @@ iOS app written in SwiftUI targeting iOS 17+. Originally ported from an Android/
       continuation.finish()
   }
   ```
+- **Do not request or require the user to run tests after making changes to test files.**
 
 ## Code Style
 - Prefer `AsyncStream` over callbacks or Combine

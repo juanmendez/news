@@ -16,24 +16,43 @@ import Foundation
 @MainActor
 final class MockRepository: Repository {
 
-    // MARK: - Stub streams
+    // MARK: - Stub values
 
-    /// Set this before calling getArticles(query:page:) to control what the mock returns.
-    var articlesStream: AsyncStream<Resource<[ArticleEntity]>> = AsyncStream { $0.finish() }
+    /// Assign an array of values to yield for getArticles(query:page:)
+    var articlesStreamValues: [Resource<[ArticleEntity]>] = []
 
-    /// Set this before calling getArticles(query:page:refresh:) to control what the mock returns.
-    var articlesRefreshStream: AsyncStream<Resource<[ArticleEntity]>> = AsyncStream { $0.finish() }
+    /// Assign an array of values to yield for getArticles(query:page:refresh:)
+    var articlesRefreshStreamValues: [Resource<[ArticleEntity]>] = []
 
     // MARK: - getArticles(query:page:)
 
-    func getArticles(query: String, page: Int, pageSize: Int) -> AsyncStream<Resource<[ArticleEntity]>> {
-        articlesStream
+    func getArticles(
+        query: String,
+        page: Int,
+        pageSize: Int
+    ) -> AsyncStream<Resource<[ArticleEntity]>> {
+        AsyncStream { continuation in
+            for value in articlesStreamValues {
+                continuation.yield(value)
+            }
+            continuation.finish()
+        }
     }
 
     // MARK: - getArticles(query:page:refresh:)
 
-    func getArticles(query: String, page: Int, pageSize: Int, refresh: Bool) -> AsyncStream<Resource<[ArticleEntity]>> {
-        articlesRefreshStream
+    func getArticles(
+        query: String,
+        page: Int,
+        pageSize: Int,
+        refresh: Bool
+    ) -> AsyncStream<Resource<[ArticleEntity]>> {
+        AsyncStream { continuation in
+            for value in articlesRefreshStreamValues {
+                continuation.yield(value)
+            }
+            continuation.finish()
+        }
     }
 
     // MARK: - deleteArticles(query:)
