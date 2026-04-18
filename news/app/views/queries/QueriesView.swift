@@ -9,11 +9,13 @@ import SwiftUI
 
 struct QueriesView: View {
     @State private var viewModelContract: QueriesViewModelContract
-    
-    init(contract: QueriesViewModelContract) {
+    private var onQuerySelected: (QueryEntity) -> Void
+
+    init(contract: QueriesViewModelContract, onQuerySelected: @escaping (QueryEntity) -> Void = { _ in }) {
         self._viewModelContract = State(initialValue: contract)
+        self.onQuerySelected = onQuerySelected
     }
-    
+
     var body: some View {
         NavigationStack {
             List {
@@ -27,7 +29,9 @@ struct QueriesView: View {
                     }
                 } else {
                     ForEach(viewModelContract.queries, id: \.queryName) { query in
-                        Text(query.queryName)
+                        Button(action: { onQuerySelected(query) }) {
+                            Text(query.queryName)
+                        }
                     }
                 }
             }

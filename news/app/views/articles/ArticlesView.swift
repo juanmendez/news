@@ -9,11 +9,13 @@ import SwiftUI
 
 struct ArticlesView: View {
     @State private var viewModelContract: ArticlesViewModelContract
-    
-    init(contract: ArticlesViewModelContract) {
+    private var selectedQuery: String
+
+    init(contract: ArticlesViewModelContract, selectedQuery: String = "") {
         self.viewModelContract = contract
+        self.selectedQuery = selectedQuery
     }
-    
+
     var body: some View {
         NavigationStack {
             ScrollViewReader { proxy in
@@ -44,10 +46,16 @@ struct ArticlesView: View {
                             }
                         }
                     }
+                    .onChange(of: selectedQuery) { _, newQuery in
+                        if newQuery.isNotEmpty, newQuery != viewModelContract.query {
+                            viewModelContract.query = newQuery
+                            Task { await viewModelContract.submitArticles() }
+                        }
+                    }
             }
         }
     }
-    
+
     @ViewBuilder
     private var content: some View {
         List {
@@ -58,15 +66,13 @@ struct ArticlesView: View {
                     ArticleCardView(article)
                 }
             }
-            
+
             // Create an Infinitely Scrolling List in SwiftUI
             // https://tinyurl.com/2bzznj8s
             if !viewModelContract.isScrollingFinished {
                 ProgressBar()
-                    .onAppear {
-                        Task {
-                            await viewModelContract.fetchArticles()
-                        }
+                    .task {
+                        await viewModelContract.fetchArticles()
                     }
             }
         }

@@ -7,17 +7,37 @@
 
 import SwiftUI
 
+enum Tab: Hashable {
+    case articles
+    case queries
+}
+
 struct ContentView: View {
+    @State private var selectedQuery: String = ""
+    @State private var selectedTab: Tab = .articles
+
     var body: some View {
-        TabView {
-            ArticlesView(contract: ArticlesViewModel())
-                .tabItem {
-                    Label("Articles", systemImage: "newspaper.fill")
+        TabView(selection: $selectedTab) {
+            ArticlesView(
+                contract: ArticlesViewModel(),
+                selectedQuery: selectedQuery
+            )
+            .tabItem {
+                Label("Articles", systemImage: "newspaper.fill")
+            }
+            .tag(Tab.articles)
+
+            QueriesView(
+                contract: QueriesViewModel(),
+                onQuerySelected: { query in
+                    selectedQuery = query.queryName
+                    selectedTab = .articles
                 }
-            QueriesView(contract: QueriesViewModel())
-                .tabItem {
-                    Label("Queries", systemImage: "bookmark")
-                }
+            )
+            .tabItem {
+                Label("Queries", systemImage: "bookmark")
+            }
+            .tag(Tab.queries)
         }
         .tabBarMinimizeBehavior(.onScrollDown)
     }
