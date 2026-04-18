@@ -24,6 +24,9 @@ final class MockRepository: Repository {
     /// Assign an array of values to yield for getArticles(query:page:refresh:)
     var articlesRefreshStreamValues: [Resource<[ArticleEntity]>] = []
 
+    /// Assign an array of Resource values to yield for getQueries()
+    var queriesStreamValues: [Resource<[QueryEntity]>] = []
+
     // MARK: - getArticles(query:page:)
 
     func getArticles(
@@ -49,6 +52,16 @@ final class MockRepository: Repository {
     ) -> AsyncStream<Resource<[ArticleEntity]>> {
         AsyncStream { continuation in
             for value in articlesRefreshStreamValues {
+                continuation.yield(value)
+            }
+            continuation.finish()
+        }
+    }
+
+    // MARK: - getQueries()
+    func getQueries() -> AsyncStream<Resource<[QueryEntity]>> {
+        AsyncStream { continuation in
+            for value in queriesStreamValues {
                 continuation.yield(value)
             }
             continuation.finish()

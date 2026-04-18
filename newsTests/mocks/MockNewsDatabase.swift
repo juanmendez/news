@@ -17,7 +17,6 @@ import GRDB
 /// so tests never share state.
 @MainActor
 final class MockNewsDatabase: NewsDatabase {
-
     private let database: NewsDatabase
 
     /// Creates a new isolated in-memory database instance.
@@ -47,6 +46,10 @@ final class MockNewsDatabase: NewsDatabase {
         for article in articles {
             try await database.saveArticle(query, articleEntity: article)
         }
+    }
+
+    func readQueries() async -> [news.QueryEntity] {
+        await database.readQueries()
     }
 
     static func setupConfiguration(_ configuration: inout GRDB.Configuration) { }

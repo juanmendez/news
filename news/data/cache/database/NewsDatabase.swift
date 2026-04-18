@@ -12,5 +12,6 @@ protocol NewsDatabase: Sendable {
     func saveArticle(_ query: String, articleEntity: ArticleEntity) async throws
     func readArticles(_ query: String) async -> [ArticleEntity]
     func deleteArticles(_ query: String) async throws
+    func readQueries() async -> [QueryEntity]
     static func setupConfiguration(_ configuration: inout Configuration)
 }

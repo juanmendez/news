@@ -14,6 +14,10 @@ struct ContentView: View {
                 .tabItem {
                     Label("Articles", systemImage: "newspaper.fill")
                 }
+            QueriesView(contract: QueriesViewModel())
+                .tabItem {
+                    Label("Queries", systemImage: "bookmark")
+                }
         }
         .tabBarMinimizeBehavior(.onScrollDown)
     }

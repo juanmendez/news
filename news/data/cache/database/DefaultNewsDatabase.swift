@@ -18,7 +18,6 @@ enum DatabaseType {
 /// A struct that conforms to the `NewsDatabase` protocol, providing an implementation
 /// backed by a SQLite database using the GRDB library.
 struct DefaultNewsDatabase: NewsDatabase {
-
     // great learning from https://swiftpackageindex.com/groue/grdb.swift/v7.8.0/documentation/grdb/
 
     /// Creates and returns a fully migrated `DefaultNewsDatabase` instance.
@@ -199,5 +198,13 @@ struct DefaultNewsDatabase: NewsDatabase {
         }
 
         return migrator
+    }
+
+    func readQueries() async -> [QueryEntity] {
+        let articles = try? await dbWriter.read { database in
+            try? QueryEntity.fetchAll(database)
+        }
+        
+        return articles ?? []
     }
 }

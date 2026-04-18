@@ -256,4 +256,31 @@ struct RepositoryTests {
             Issue.record("Expected success")
         }
     }
+
+    @Test func readQueriesReturnsExpectedQueries() async throws {
+        // Arrange: assign Resource values to the mock's queriesStreamValues
+        let queries = [
+            QueryEntity(queryName: "Swift"),
+            QueryEntity(queryName: "Kotlin"),
+            QueryEntity(queryName: "iOS")
+        ]
+        sut.queriesStreamValues = [
+            Resource.loading(),
+            Resource.success(item: queries)
+        ]
+        // Act: collect all Resource emissions from getQueries()
+        let result = await sut.getQueries().collect()
+
+        // Assert: verify the Resource emissions and contained queries
+        #expect(result.first == Resource.loading())
+
+        if case .success(let returnedQueries) = result.last {
+            #expect(returnedQueries.count == queries.count)
+            for query in queries {
+                #expect(returnedQueries.contains(where: { $0.queryName == query.queryName }))
+            }
+        } else {
+            Issue.record("Expected success with all queries")
+        }
+    }
 }

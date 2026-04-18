@@ -35,17 +35,17 @@ protocol Repository: Sendable {
     ) -> AsyncStream<Resource<[ArticleEntity]>>
 
     /**
-     * Retrieves a list of [Article] matching "Top Headlines" and [page]
-     * @param page the matching page
-     * @return the [Flow] of [Resource] of the list of matching [Article]
-     */
-    //func getTopHeadlines(page: Int) -> AsyncStream<Resource<ArticlesResponse>>
-
-    /**
      * Deletes all articles matching a given [query]
      * @param query the matching query
      */
     func deleteArticles(query: String) async throws
+
+
+    /**
+     * Retrieves a list of [QueryEntity]
+     * @return the [Flow] of [Resource] of the list of [QueryEntity]
+     */
+    func getQueries() -> AsyncStream<Resource<[QueryEntity]>>
 
     /**
      * Deletes all articles

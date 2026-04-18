@@ -59,4 +59,16 @@ struct DefaultRepository: Repository {
         try await database.deleteArticles(query)
     }
 
+
+    func getQueries() -> AsyncStream<Resource<[QueryEntity]>> {
+        return AsyncStream { continuation in
+            Task { @Sendable in
+                continuation.yield(Resource.loading())
+                continuation.yield(
+                    Resource.success(item: await database.readQueries())
+                )
+                continuation.finish()
+            }
+        }
+    }
 }
