@@ -8,8 +8,10 @@
 import Foundation
 
 struct QueriesViewModelPreview: QueriesViewModelContract {
-    var queries: [QueryEntity] {
-        PreviewConstants.queries
+    var queries: [QueryEntity]
+
+    init(queries: [QueryEntity] = PreviewConstants.queries) {
+        self.queries = queries
     }
 
     func refreshQueries() async { }
