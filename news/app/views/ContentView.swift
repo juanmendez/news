@@ -35,7 +35,7 @@ struct ContentView: View {
                 }
             )
             .tabItem {
-                Label("Queries", systemImage: "bookmark")
+                Label("History", systemImage: "bookmark")
             }
             .tag(Tab.queries)
         }

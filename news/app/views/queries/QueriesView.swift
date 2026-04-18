@@ -21,7 +21,7 @@ struct QueriesView: View {
             List {
                 if viewModelContract.queries.isEmpty {
                     Section {
-                        Text("No Queries Found")
+                        Text("No History Found")
                             .font(.body)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -41,7 +41,7 @@ struct QueriesView: View {
             .task {
                 await viewModelContract.refreshQueries()
             }
-            .navigationTitle("Search History")
+            .navigationTitle("History")
             .navigationBarTitleDisplayMode(.inline)
         }
     }
