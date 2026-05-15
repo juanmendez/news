@@ -11,7 +11,6 @@
 		5F1083792F932AD700C64438 /* QueriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1083782F932AD700C64438 /* QueriesView.swift */; };
 		5F10837B2F932B1F00C64438 /* QueriesViewModelPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F10837A2F932B1F00C64438 /* QueriesViewModelPreview.swift */; };
 		5F10837D2F932B6F00C64438 /* PreviewConstants+Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F10837C2F932B6F00C64438 /* PreviewConstants+Queries.swift */; };
-		5F10837E2F932B6F00C64438 /* PreviewConstants+Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F10837C2F932B6F00C64438 /* PreviewConstants+Queries.swift */; };
 		5F1083802F93378700C64438 /* QueriesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F10837F2F93378700C64438 /* QueriesViewModelTests.swift */; };
 		5F39225A2F7B742C00BC9749 /* ArticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3922592F7B742C00BC9749 /* ArticleView.swift */; };
 		5F39225C2F7C179C00BC9749 /* OnlineArticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F39225B2F7C179C00BC9749 /* OnlineArticleView.swift */; };
@@ -934,7 +933,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5F10837E2F932B6F00C64438 /* PreviewConstants+Queries.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1092,6 +1090,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -1129,6 +1128,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
