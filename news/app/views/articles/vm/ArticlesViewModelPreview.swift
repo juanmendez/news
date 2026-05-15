@@ -13,9 +13,9 @@ struct ArticlesViewModelPreview: ArticlesViewModelContract {
     var isScrollingFinished: Bool = true
     var scrollToTop: Bool = false
     var query: String = ""
+    var articleRead: ArticleEntity? = nil
 
     func fetchArticles() async { }
     func refreshArticles() async { }
-
     func submitArticles() async { }
 }

@@ -13,14 +13,14 @@ enum Tab: Hashable {
 }
 
 struct ContentView: View {
-    @State private var selectedQuery: String = ""
     @State private var selectedTab: Tab = .articles
+    @State private var selectedQuery: String = ""
 
     var body: some View {
         TabView(selection: $selectedTab) {
             ArticlesView(
-                contract: ArticlesViewModel(),
-                selectedQuery: selectedQuery
+                viewModelContract: ArticlesViewModel(),
+                selectedQuery: $selectedQuery
             )
             .tabItem {
                 Label("Articles", systemImage: "newspaper.fill")

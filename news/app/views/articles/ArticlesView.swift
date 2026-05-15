@@ -8,13 +8,8 @@
 import SwiftUI
 
 struct ArticlesView: View {
-    @State private var viewModelContract: ArticlesViewModelContract
-    private var selectedQuery: String
-
-    init(contract: ArticlesViewModelContract, selectedQuery: String = "") {
-        self.viewModelContract = contract
-        self.selectedQuery = selectedQuery
-    }
+    @State var viewModelContract: ArticlesViewModelContract
+    @Binding var selectedQuery: String
 
     var body: some View {
         NavigationStack {
@@ -29,6 +24,9 @@ struct ArticlesView: View {
                     )
                     .refreshable {
                         await viewModelContract.refreshArticles()
+                    }
+                    .navigationDestination(item: $viewModelContract.articleRead) { article in
+                        ArticleView(articleEntity: article)
                     }
                     .alert(
                         viewModelContract.errorMessage ?? "",
@@ -46,10 +44,14 @@ struct ArticlesView: View {
                             }
                         }
                     }
-                    .onChange(of: selectedQuery) { _, newQuery in
-                        if newQuery.isNotEmpty, newQuery != viewModelContract.query {
-                            viewModelContract.query = newQuery
-                            Task { await viewModelContract.submitArticles() }
+                    .onChange(of: selectedQuery) { _, newValue in
+                        if newValue.isNotEmpty, newValue != viewModelContract.query {
+                            viewModelContract.query = newValue
+
+                            Task {
+                                Log.i("submitArticles: \(viewModelContract.query)")
+                                await viewModelContract.submitArticles()
+                            }
                         }
                     }
             }
@@ -60,8 +62,8 @@ struct ArticlesView: View {
     private var content: some View {
         List {
             ForEach(viewModelContract.articles, id: \.id) { article in
-                NavigationLink {
-                    ArticleView(articleEntity: article)
+                Button {
+                    viewModelContract.articleRead = article
                 } label: {
                     ArticleCardView(article)
                 }
@@ -72,6 +74,7 @@ struct ArticlesView: View {
             if !viewModelContract.isScrollingFinished {
                 ProgressBar()
                     .task {
+                        Log.i("fetch articles -> \(viewModelContract.query)")
                         await viewModelContract.fetchArticles()
                     }
             }
@@ -83,9 +86,10 @@ struct ArticlesView: View {
 #Preview("loading") {
     TabView {
         ArticlesView(
-            contract: ArticlesViewModelPreview(
+            viewModelContract: ArticlesViewModelPreview(
                 isScrollingFinished: false,
-            )
+            ),
+            selectedQuery: .constant(""),
         )
         .tabItem {
             Label("Articles", systemImage: "newspaper.fill")
@@ -97,10 +101,11 @@ struct ArticlesView: View {
 #Preview("with one article") {
     TabView {
         ArticlesView(
-            contract: ArticlesViewModelPreview(
+            viewModelContract: ArticlesViewModelPreview(
                 articles: Array(PreviewConstants.articleEntities.prefix(1)),
                 isScrollingFinished: false,
-            )
+            ),
+            selectedQuery: .constant(""),
         )
         .tabItem {
             Label("Articles", systemImage: "newspaper.fill")
@@ -112,10 +117,11 @@ struct ArticlesView: View {
 #Preview("with articles") {
     TabView {
         ArticlesView(
-            contract: ArticlesViewModelPreview(
+            viewModelContract: ArticlesViewModelPreview(
                 articles: Array(PreviewConstants.articleEntities.prefix(8)),
                 isScrollingFinished: false,
-            )
+            ),
+            selectedQuery: .constant(""),
         )
         .tabItem {
             Label("Articles", systemImage: "newspaper.fill")
@@ -127,10 +133,11 @@ struct ArticlesView: View {
 #Preview("with articles fully loaded") {
     TabView {
         ArticlesView(
-            contract: ArticlesViewModelPreview(
+            viewModelContract: ArticlesViewModelPreview(
                 articles: Array(PreviewConstants.articleEntities.prefix(8)),
                 isScrollingFinished: true,
-            )
+            ),
+            selectedQuery: .constant(""),
         )
         .tabItem {
             Label("Articles", systemImage: "newspaper.fill")

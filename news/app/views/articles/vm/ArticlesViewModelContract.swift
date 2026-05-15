@@ -14,6 +14,7 @@ protocol ArticlesViewModelContract {
     var isScrollingFinished: Bool { get }
     var scrollToTop: Bool { get set }
     var query: String { get set }
+    var articleRead: ArticleEntity? { get set }
 
     func fetchArticles() async
     func refreshArticles() async

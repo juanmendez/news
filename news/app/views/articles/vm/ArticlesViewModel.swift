@@ -17,6 +17,7 @@ class ArticlesViewModel: ArticlesViewModelContract {
     var scrollToTop: Bool = false
 
     var query: String = TOP_HEADLINES
+    var articleRead: ArticleEntity? = nil
     private var page: Int = 0
     private let pageSize: Int
     private var repository: Repository
@@ -46,7 +47,6 @@ class ArticlesViewModel: ArticlesViewModelContract {
             switch value {
                 case .loading(let item):
                     articles = item ?? []
-                    Log.i("articles", attributes: articles.map{ $0.id })
                     scrollToTop = false
                 case .error(let error):
                     isScrollingFinished = true
@@ -62,6 +62,7 @@ class ArticlesViewModel: ArticlesViewModelContract {
                 case .success(let item):
                     isScrollingFinished = articles == item
                     articles = item
+                    Log.p("articles size \(articles.count)")
                     Log.p("articles", attributes: articles.map{ $0.id })
                     scrollToTop = page == 1
             }
@@ -71,7 +72,6 @@ class ArticlesViewModel: ArticlesViewModelContract {
     func fetchArticles() async {
         guard !processing else { return }
         page += 1
-        Log.i("fetchArticles processing")
         await self.getArticles(refresh: false)
     }
 
@@ -80,25 +80,20 @@ class ArticlesViewModel: ArticlesViewModelContract {
         guard !processing else { return }
         guard await internetService.hasAccess() else { return }
         try? await repository.deleteArticles(query: query)
-        processing = true
         articles = []
-
-        try? await Task.sleep(for: .seconds(1))
 
         page = 1
         isScrollingFinished = false
 
-        Log.i("refreshArticles processing")
         await self.getArticles(refresh: true)
     }
 
     func submitArticles() async {
+        articleRead = nil
         guard query.isNotBlank else { return }
-        guard !processing else { return }
         page = 1
         isScrollingFinished = false
         articles = []
-        Log.i("submitArticles")
         await getArticles(refresh: false)
     }
 }
