@@ -8,11 +8,9 @@
 import Foundation
 
 extension PreviewConstants {
-    static var queries: [QueryEntity] {
-        [
-            QueryEntity(queryName: "Top Headlines"),
-            QueryEntity(queryName: "Japan"),
-            QueryEntity(queryName: "Olympics")
-        ]
-    }
+    static let queries: [QueryEntity] = [
+        QueryEntity(queryName: "Top Headlines"),
+        QueryEntity(queryName: "Japan"),
+        QueryEntity(queryName: "Olympics")
+    ]
 }

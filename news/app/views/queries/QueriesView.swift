@@ -11,8 +11,11 @@ struct QueriesView: View {
     @State private var viewModelContract: QueriesViewModelContract
     private var onQuerySelected: (QueryEntity) -> Void
 
-    init(contract: QueriesViewModelContract, onQuerySelected: @escaping (QueryEntity) -> Void = { _ in }) {
-        self._viewModelContract = State(initialValue: contract)
+    init(
+        contract: QueriesViewModelContract,
+        onQuerySelected: @escaping (QueryEntity) -> Void = { _ in }
+    ) {
+        self.viewModelContract = contract
         self.onQuerySelected = onQuerySelected
     }
 
