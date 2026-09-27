@@ -26,4 +26,18 @@ class QueriesViewModel: QueriesViewModelContract {
         }
         self.queries = loadedQueries
     }
+
+    func deleteQueries(_ deletedQueries: [QueryEntity]) async {
+        for query in deletedQueries {
+            do {
+                try await repository.deleteArticles(query: query.queryName)
+
+                if let index = queries.firstIndex(of: query) {
+                    queries.remove(at: index)
+                }
+            } catch {
+                // TODO: do something about query not deleted.
+            }
+        }
+    }
 }

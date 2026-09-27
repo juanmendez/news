@@ -7,7 +7,6 @@
 
 import Foundation
 import GRDB
-import SwiftData
 
 struct QueryArticleEntity: Codable, Equatable, FetchableRecord, PersistableRecord {
     var id: Int64? // Auto-incremented primary key
@@ -24,20 +23,5 @@ struct QueryArticleEntity: Codable, Equatable, FetchableRecord, PersistableRecor
         static let id = Column(CodingKeys.id)
         static let queryname = Column(CodingKeys.queryName)
         static let articleId = Column(CodingKeys.articleId)
-    }
-}
-
-@Model
-class QueryArticleModel {
-    @Attribute(.unique)
-    var id: String
-    var queryName: String
-    var articleId: String
-    var queryArticle: QueryArticleModel?
-
-    init(queryName: String, articleId: String) {
-        self.id = "\(queryName)-\(articleId)"
-        self.queryName = queryName
-        self.articleId = articleId
     }
 }

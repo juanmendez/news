@@ -37,4 +37,20 @@ struct QueriesViewModelTests {
         let expectedQueries = [QueryEntity(queryName: TOP_HEADLINES)]
         #expect(sut.queries == expectedQueries)
     }
+
+    @Test func whenTappingToDeleteThenQueryIsDeleted() async throws {
+        // given
+        let initialArticleEntities = PreviewConstants.articleEntities.slice(0, 2)
+        try await database.preload(TOP_HEADLINES, articles: initialArticleEntities)
+
+        // when
+        await sut.refreshQueries()
+        let originalQueries = sut.queries
+        let deleteFirstQuery = originalQueries[0]
+        await sut.deleteQueries([deleteFirstQuery])
+
+        // then
+        await sut.refreshQueries()
+        #expect(!sut.queries.contains(deleteFirstQuery))
+    }
 }

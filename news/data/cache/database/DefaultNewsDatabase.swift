@@ -26,10 +26,10 @@ struct DefaultNewsDatabase: NewsDatabase {
     /// - Returns: A ready-to-use `NewsDatabase` instance.
     static func create(_ type: DatabaseType = .persistent) throws -> NewsDatabase {
         switch type {
-            case .persistent:
-                return try makePersistent()
-            case .inMemory:
-                return try makeInMemory()
+        case .persistent:
+            return try makePersistent()
+        case .inMemory:
+            return try makeInMemory()
         }
     }
 
@@ -91,7 +91,10 @@ struct DefaultNewsDatabase: NewsDatabase {
         do {
             let articles: [ArticleEntity] = try await dbWriter.read { database in
                 if let queryEntity = try? QueryEntity.find(database, key: query),
-                   let articleIds = try? QueryArticleEntity.filter({ $0.queryname == queryEntity.queryName }).fetchAll(database).map(\.articleId) {
+                    let articleIds = try? QueryArticleEntity.filter({ $0.queryname == queryEntity.queryName }).fetchAll(
+                        database
+                    ).map(\.articleId)
+                {
 
                     return try ArticleEntity.filter { columns in
                         articleIds.contains(columns.id)
@@ -120,8 +123,8 @@ struct DefaultNewsDatabase: NewsDatabase {
             try QueryEntity.deleteOne(database, key: query)
 
             // Collect all article IDs associated with this query before removing the associations
-            var articleIds =
-            try QueryArticleEntity
+            let articleIds =
+                try QueryArticleEntity
                 .filter({ $0.queryname == query })
                 .fetchAll(database)
                 .map(\.articleId)
@@ -132,16 +135,16 @@ struct DefaultNewsDatabase: NewsDatabase {
                 .deleteAll(database)
 
             // Keep only articles that are no longer referenced by any other query
-            articleIds = articleIds.filter { articleId in
+            let deletedArticleIds = articleIds.filter { articleId in
                 let count =
-                (try? QueryArticleEntity
-                    .filter({ $0.articleId == articleId })
-                    .fetchCount(database)) ?? 0
+                    (try? QueryArticleEntity
+                        .filter({ $0.articleId == articleId })
+                        .fetchCount(database)) ?? 0
                 return count == 0
             }
 
             // Delete articles that are exclusively associated with this query
-            try articleIds.forEach { articleId in
+            try deletedArticleIds.forEach { articleId in
                 try ArticleEntity.deleteOne(database, key: articleId)
             }
         }

@@ -36,6 +36,14 @@ struct QueriesView: View {
                             Text(query.queryName)
                         }
                     }
+                    .onDelete { indexSet in
+                        let queries = viewModelContract.queries
+                        let removedQueries = indexSet.map { queries[$0] }
+
+                        Task {
+                            await viewModelContract.deleteQueries(removedQueries)
+                        }
+                    }
                 }
             }
             .refreshable {

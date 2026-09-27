@@ -10,4 +10,5 @@ import Foundation
 protocol QueriesViewModelContract {
     var queries: [QueryEntity] { get }
     func refreshQueries() async
+    func deleteQueries(_ : [QueryEntity]) async
 }
