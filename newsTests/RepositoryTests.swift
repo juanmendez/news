@@ -94,7 +94,7 @@ struct RepositoryTests {
     @Test func differentErrorTypes() async throws {
         let errors: [Error] = [
             HttpError.invalidUrl,
-            HttpError.badResponse(status: 404, error: nil, result: nil),
+            HttpError.badResponse(status: 404, error: nil, result: nil)
         ]
         for (index, error) in errors.enumerated() {
             sut.articlesStreamValues = [
@@ -203,7 +203,7 @@ struct RepositoryTests {
                 imageUrl: "https://wired.com/images/quantum.jpg",
                 publishedAt: 1_700_086_400_000,
                 content: "Full article content about quantum computing..."
-            ),
+            )
         ]
         sut.articlesStreamValues = [
             Resource.loading(),
@@ -241,7 +241,7 @@ struct RepositoryTests {
         let articles = [
             ArticleEntity.stub(id: "3", title: "Newest", url: "http://test.com/3", publishedAt: 1_700_172_800_000),
             ArticleEntity.stub(id: "1", title: "Oldest", url: "http://test.com/1", publishedAt: 1_700_000_000_000),
-            ArticleEntity.stub(id: "2", title: "Middle", url: "http://test.com/2", publishedAt: 1_700_086_400_000),
+            ArticleEntity.stub(id: "2", title: "Middle", url: "http://test.com/2", publishedAt: 1_700_086_400_000)
         ]
         sut.articlesStreamValues = [
             Resource.success(item: articles)

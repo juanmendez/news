@@ -204,7 +204,7 @@ struct DefaultNewsDatabase: NewsDatabase {
         let articles = try? await dbWriter.read { database in
             try? QueryEntity.fetchAll(database)
         }
-        
+
         return articles ?? []
     }
 }

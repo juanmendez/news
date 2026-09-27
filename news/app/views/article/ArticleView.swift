@@ -29,7 +29,7 @@ struct ArticleView: View {
         if isOnline {
             OnlineArticleView(articleEntity: articleEntity)
         } else {
-            OfflineArticleView(articleEntity: articleEntity) { () async -> Void in
+            OfflineArticleView(articleEntity: articleEntity) { () async in
                 isOnline = await internetService.hasAccess()
             }
         }

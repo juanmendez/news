@@ -40,7 +40,6 @@ protocol Repository: Sendable {
      */
     func deleteArticles(query: String) async throws
 
-
     /**
      * Retrieves a list of [QueryEntity]
      * @return the [Flow] of [Resource] of the list of [QueryEntity]
@@ -50,5 +49,5 @@ protocol Repository: Sendable {
     /**
      * Deletes all articles
      */
-    //func deleteAllArticles() -> AsyncStream<Resource<NoResponse>>
+    // func deleteAllArticles() -> AsyncStream<Resource<NoResponse>>
 }

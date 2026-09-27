@@ -48,7 +48,7 @@ enum Resource<Item: Equatable & Codable>: Equatable {
 
 extension Resource {
     var isLoading: Bool {
-        if case .loading(_) = self {
+        if case .loading = self {
             true
         } else {
             false

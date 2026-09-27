@@ -45,7 +45,7 @@ struct OfflineArticleView: View {
                 Text(articleEntity.publishedDate.formatted())
                     .font(.caption)
                     .foregroundColor(.secondary)
-                
+
                 Text(articleEntity.content)
                     .font(.callout)
 

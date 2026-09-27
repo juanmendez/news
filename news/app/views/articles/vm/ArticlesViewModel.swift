@@ -17,7 +17,7 @@ class ArticlesViewModel: ArticlesViewModelContract {
     var scrollToTop: Bool = false
 
     var query: String = TOP_HEADLINES
-    var articleRead: ArticleEntity? = nil
+    var articleRead: ArticleEntity?
     private var page: Int = 0
     private let pageSize: Int
     private var repository: Repository
@@ -63,7 +63,7 @@ class ArticlesViewModel: ArticlesViewModelContract {
                     isScrollingFinished = articles == item
                     articles = item
                     Log.p("articles size \(articles.count)")
-                    Log.p("articles", attributes: articles.map{ $0.id })
+                    Log.p("articles", attributes: articles.map { $0.id })
                     scrollToTop = page == 1
             }
         }

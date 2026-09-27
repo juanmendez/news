@@ -8,7 +8,6 @@
 import SwiftUI
 import WebKit
 
-
 struct OnlineArticleView: View {
     let articleEntity: ArticleEntity
     @State private var isLoading = true

@@ -21,7 +21,6 @@ struct ProgressBar: View {
     }
 }
 
-
 #Preview {
     List {
         ProgressBar()

@@ -45,11 +45,11 @@ extension HttpClientResponseRaw {
         headerFields: [String: String] = [:]
     ) throws {
         let data = try DecoderFactory.iso8601Encoder.encode(item)
-        
+
         guard let url = URL(string: url) else {
             throw HttpError.invalidUrl
         }
-        
+
         guard let response = HTTPURLResponse(
             url: url,
             statusCode: statusCode,
@@ -58,7 +58,7 @@ extension HttpClientResponseRaw {
         ) else {
             throw HttpError.noHttpResponse
         }
-        
+
         self.init((data: data, response: response))
     }
 }

@@ -8,7 +8,7 @@
 import Foundation
 import GRDB
 
-struct ArticleEntity: Codable, Equatable, Hashable, FetchableRecord, PersistableRecord  {
+struct ArticleEntity: Codable, Equatable, Hashable, FetchableRecord, PersistableRecord {
     var id: String // PrimaryKey
     var sourceId: String?
     var sourceName: String
@@ -19,7 +19,7 @@ struct ArticleEntity: Codable, Equatable, Hashable, FetchableRecord, Persistable
     var imageUrl: String
     var publishedAt: Int64
     var content: String
-    
+
     enum Columns {
         static let id = Column(CodingKeys.id)
         static let sourceId = Column(CodingKeys.sourceId)

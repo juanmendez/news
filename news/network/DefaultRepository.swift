@@ -34,7 +34,7 @@ struct DefaultRepository: Repository {
                         URLQueryItem(name: "pageSize", value: String(pageSize)),
                         URLQueryItem(name: "sortBy", value: "publishedAt"),
                         URLQueryItem(name: "language", value: "en"),
-                        URLQueryItem(name: "apiKey", value: apiKey),
+                        URLQueryItem(name: "apiKey", value: apiKey)
                     ],
                     body: nil
                 )
@@ -42,7 +42,7 @@ struct DefaultRepository: Repository {
                 let mapper = ArticleEntityMapper()
                 return response.model.articles.map(mapper.toEntity)
             },
-            saveToCache: { @Sendable (articles: [ArticleEntity]) async throws -> Void in
+            saveToCache: { @Sendable (articles: [ArticleEntity]) async throws in
                 for articleEntity in articles {
                     try await database.saveArticle(query, articleEntity: articleEntity)
                 }
@@ -58,7 +58,6 @@ struct DefaultRepository: Repository {
     func deleteArticles(query: String) async throws {
         try await database.deleteArticles(query)
     }
-
 
     func getQueries() -> AsyncStream<Resource<[QueryEntity]>> {
         return AsyncStream { continuation in
