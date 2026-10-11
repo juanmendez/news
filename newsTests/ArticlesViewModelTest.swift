@@ -7,6 +7,7 @@
 
 import Foundation
 import Testing
+import SwiftData
 @testable import news
 
 @MainActor
@@ -14,11 +15,15 @@ struct ArticlesViewModelTest {
 
     let httpClient = MockHttpClient()
     let internetService = MockInternetService()
-    let database: MockNewsDatabase
+    let database: NewsDatabase
     let pageSize = 2
 
     init() throws {
-        database = try MockNewsDatabase()
+        let container = try ModelContainer(
+            for: QueryModel.self, ArticleModel.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        database = DefaultNewsDatabase(modelContext: ModelContext(container))
     }
 
     var repository: DefaultRepository {
@@ -138,7 +143,7 @@ struct ArticlesViewModelTest {
         await sut.fetchArticles()
 
         // then
-        let storedArticles = await database.readArticles(sut.query)
+        let storedArticles = database.readArticles(sut.query)
         #expect(storedArticles.count == pageSize)
         #expect(sut.isScrollingFinished == false)
     }
@@ -162,7 +167,7 @@ struct ArticlesViewModelTest {
         await sut.refreshArticles()
 
         // then
-        let storedArticles = await database.readArticles(sut.query)
+        let storedArticles = database.readArticles(sut.query)
         #expect(storedArticles.sortedById() == cachedArticleEntities.sortedById())
         #expect(sut.articles.sortedById() == cachedArticleEntities.sortedById())
     }
@@ -284,8 +289,8 @@ struct ArticlesViewModelTest {
 
     @Test func fetchArticlesLoadsFromCacheWhenAvailable() async throws {
         // given
-        let cachedEntities = PreviewConstants.articleEntities.slice(0, pageSize)
-        try await database.preload(TOP_HEADLINES, articles: cachedEntities)
+        let cachedEntities = PreviewConstants.articleEntities.slice(0, 2)
+        try preload(TOP_HEADLINES, articles: cachedEntities)
 
         let sut = ArticlesViewModel(repository: repository, internetService: internetService, pageSize: pageSize)
 
@@ -296,5 +301,11 @@ struct ArticlesViewModelTest {
         #expect(sut.articles.count == pageSize)
         #expect(sut.articles.sortedById() == cachedEntities.sortedById())
         #expect(sut.isScrollingFinished)
+    }
+
+    private func preload(_ query: String, articles: [ArticleEntity]) throws {
+        for articleEntity in articles {
+            try database.saveArticle(query, articleEntity: articleEntity)
+        }
     }
 }

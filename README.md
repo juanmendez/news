@@ -32,7 +32,7 @@ iOS sample illustrating the MVVM architecture pattern built with **SwiftUI**.
 |-------|-----------|
 | UI | SwiftUI |
 | State management | `@Observable` (Swift 5.9+) |
-| Local cache | GRDB (SQLite) |
+| Local cache | SwiftData |
 | Networking | URLSession (`HttpClient`) |
 | Dependency injection | Custom `InjectionProvider` |
 | Unit tests | Swift Testing framework |
@@ -44,7 +44,7 @@ iOS sample illustrating the MVVM architecture pattern built with **SwiftUI**.
 - **View** (`ArticlesView`, `ArticleCardView`): SwiftUI views that observe the ViewModel via `@Observable`. The view triggers events (scroll, refresh) and reflects the ViewModel state — no business logic lives here.
 - **ViewModel** (`ArticlesViewModel`): Marked `@Observable` and `@MainActor`. Maintains all UI state (`articles`, `showProgress`, `errorMessage`, `isScrollingFinished`) and delegates data access to the Repository.
 - **Repository** (`DefaultRepository`): Abstracts the two data sources — local cache (source of truth) and remote network (used only to update the cache). Exposes data as `AsyncStream<Resource<[ArticleEntity]>>`.
-- **Cache** (`DefaultNewsDatabase` via GRDB): Persistent SQLite database storing `ArticleEntity`, `QueryEntity`, and `QueryArticleEntity` records. Falls back to `SessionNewsDatabase` (in-memory) if the database file cannot be created.
+- **Cache** (`DefaultNewsDatabase` via SwiftData): Stores `ArticleModel` and `QueryModel` records in a SwiftData `ModelContainer`. The app uses persistent storage in real-app mode and in-memory storage for previews and tests.
 - **Network** (`DefaultHttpClient`): Wraps `URLSession` and decodes JSON responses into typed models. All errors are mapped to `HttpError`.
 
 ### Dependency Injection

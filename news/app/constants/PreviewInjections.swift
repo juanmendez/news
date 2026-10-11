@@ -6,12 +6,13 @@
 //
 
 import Foundation
-import GRDB
+import SwiftData
 
 struct PreviewInjections: Injections {
     var dependencies: [InjectionType: Any] = [:]
 
-    init() {
+    init(modelContext: ModelContext) {
+        dependencies[.database] = DefaultNewsDatabase(modelContext: modelContext)
         dependencies[.internetService] = PreviewInternetService()
     }
 }

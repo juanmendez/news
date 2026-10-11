@@ -6,30 +6,17 @@
 //
 
 import Foundation
-import GRDB
 
-struct ArticleEntity: Codable, Equatable, Hashable, FetchableRecord, PersistableRecord {
-    var id: String // PrimaryKey
-    var sourceId: String?
-    var sourceName: String
-    var author: String
-    var title: String
-    var description: String
-    var url: String
-    var imageUrl: String
-    var publishedAt: Int64
-    var content: String
-
-    enum Columns {
-        static let id = Column(CodingKeys.id)
-        static let sourceId = Column(CodingKeys.sourceId)
-        static let sourceName = Column(CodingKeys.sourceName)
-        static let author = Column(CodingKeys.author)
-        static let title = Column(CodingKeys.title)
-        static let description = Column(CodingKeys.description)
-        static let url = Column(CodingKeys.url)
-        static let imageUrl = Column(CodingKeys.imageUrl)
-        static let publishedAt = Column(CodingKeys.publishedAt)
-        static let content = Column(CodingKeys.content)
-    }
+nonisolated
+struct ArticleEntity: Codable, Equatable, Hashable, Sendable {
+    let id: String // PrimaryKey
+    let sourceId: String?
+    let sourceName: String
+    let author: String
+    let title: String
+    let description: String
+    let url: String
+    let imageUrl: String
+    let publishedAt: Int64
+    let content: String
 }

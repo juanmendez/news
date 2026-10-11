@@ -12,6 +12,7 @@ import Foundation
 /// Use this struct to coordinate fetching data from a local cache and a remote network source,
 /// automatically handling cache updates and error propagation. This is useful for repository/data layer patterns
 /// where you want to abstract away the details of data synchronization.
+/// 
 struct ResourceProvider {
     /**
      Creates an asynchronous stream that emits resource states from cache and network sources.

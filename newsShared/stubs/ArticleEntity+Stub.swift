@@ -8,11 +8,11 @@
 import Foundation
 
 extension ArticleEntity: Stub {
-    static var stub: ArticleEntity {
+    nonisolated static var stub: ArticleEntity {
         .stub()
     }
 
-    static func stub(
+    nonisolated static func stub(
         id: String = .stub,
         sourceId: String? = nil,
         sourceName: String = .stub,

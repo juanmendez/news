@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 struct DefaultRepository: Repository {
     let httpClient: HttpClient
     let apiKey: String
@@ -56,7 +57,7 @@ struct DefaultRepository: Repository {
     }
 
     func deleteArticles(query: String) async throws {
-        try await database.deleteArticles(query)
+        try database.deleteArticles(query)
     }
 
     func getQueries() -> AsyncStream<Resource<[QueryEntity]>> {
@@ -64,7 +65,7 @@ struct DefaultRepository: Repository {
             Task { @Sendable in
                 continuation.yield(Resource.loading())
                 continuation.yield(
-                    Resource.success(item: await database.readQueries())
+                    Resource.success(item: database.readQueries())
                 )
                 continuation.finish()
             }
