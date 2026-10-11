@@ -6,12 +6,8 @@
 //
 
 import Foundation
-import GRDB
 
-struct QueryEntity: Codable, Equatable, FetchableRecord, PersistableRecord {
-    var queryName: String
-
-    enum Columns {
-        static let queryName = Column(CodingKeys.queryName)
-    }
+nonisolated
+struct QueryEntity: Codable, Equatable, Hashable, Sendable  {
+    let queryName: String
 }

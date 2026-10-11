@@ -6,24 +6,20 @@
 //
 
 import Foundation
-import GRDB
+import SwiftData
 
 struct DefaultInjections: Injections {
     var dependencies: [InjectionType: Any] = [:]
 
-    init() {
+    init(modelContext: ModelContext) {
         let httpClient = DefaultHttpClient(urlBase: "https://newsapi.org")
         dependencies[.httpClient] = httpClient
 
-        do {
-            let database = try DefaultNewsDatabase.create()
-            dependencies[.database] = database
+        let database = DefaultNewsDatabase(modelContext: modelContext)
+        dependencies[.database] = database
 
-            let repository = DefaultRepository(httpClient: httpClient, apiKey: NewsApi.key, database: database)
-            dependencies[.repository] = repository
-        } catch {
-            Log.e("error \(error)")
-        }
+        let repository = DefaultRepository(httpClient: httpClient, apiKey: NewsApi.key, database: database)
+        dependencies[.repository] = repository
 
         dependencies[.internetService] = DefaultInternetService()
     }

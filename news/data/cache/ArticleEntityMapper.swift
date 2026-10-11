@@ -40,3 +40,41 @@ struct ArticleEntityMapper: EntityMapper {
         )
     }
 }
+
+struct ArticleModelMapper: EntityMapper {
+    typealias EntityModel = ArticleModel
+    typealias DomainModel = ArticleEntity
+
+    func toDomain(_ entityModel: ArticleModel) -> ArticleEntity {
+        return ArticleEntity(
+            id: entityModel.id,
+            sourceId: entityModel.sourceId,
+            sourceName: entityModel.sourceName,
+            author: entityModel.author,
+            title: entityModel.title,
+            description: entityModel.about,
+            url: entityModel.url,
+            imageUrl: entityModel.imageUrl,
+            publishedAt: entityModel.publishedAt,
+            content: entityModel.content
+        )
+    }
+    
+    func toEntity(_ domainModel: ArticleEntity) -> ArticleModel {
+        return ArticleModel(
+            id: domainModel.id,
+            sourceId: domainModel.sourceId,
+            sourceName: domainModel.sourceName,
+            author: domainModel.author,
+            title: domainModel.title,
+            about: domainModel.description,
+            url: domainModel.url,
+            imageUrl: domainModel.imageUrl,
+            publishedAt: domainModel.publishedAt,
+            content: domainModel.content,
+            queries: []
+        )
+    }
+    
+
+}

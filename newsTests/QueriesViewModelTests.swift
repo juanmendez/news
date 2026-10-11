@@ -6,18 +6,24 @@
 //
 
 import Foundation
+import SwiftData
 import Testing
 @testable import news
 
 @MainActor
 struct QueriesViewModelTests {
     let httpClient = MockHttpClient()
-    let database: MockNewsDatabase
+    let database: NewsDatabase
     let repository: DefaultRepository
     let sut: QueriesViewModel
 
     init() throws {
-        database = try MockNewsDatabase()
+        let container = try ModelContainer(
+            for: QueryModel.self, ArticleModel.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        database = DefaultNewsDatabase(modelContext: ModelContext(container))
+
         repository = DefaultRepository(
             httpClient: httpClient,
             apiKey: NewsApi.key,
@@ -29,7 +35,7 @@ struct QueriesViewModelTests {
     @Test func queriesReflectPreloadedCache() async throws {
         // given
         let cachedEntities = PreviewConstants.articleEntities.slice(0, 2)
-        try await database.preload(TOP_HEADLINES, articles: cachedEntities)
+        try preload(TOP_HEADLINES, articles: cachedEntities)
         // when
         // Simulate whatever triggers the queries to be loaded, e.g. refreshQueries()
         await sut.refreshQueries()
@@ -41,7 +47,7 @@ struct QueriesViewModelTests {
     @Test func whenTappingToDeleteThenQueryIsDeleted() async throws {
         // given
         let initialArticleEntities = PreviewConstants.articleEntities.slice(0, 2)
-        try await database.preload(TOP_HEADLINES, articles: initialArticleEntities)
+        try preload(TOP_HEADLINES, articles: initialArticleEntities)
 
         // when
         await sut.refreshQueries()
@@ -52,5 +58,11 @@ struct QueriesViewModelTests {
         // then
         await sut.refreshQueries()
         #expect(!sut.queries.contains(deleteFirstQuery))
+    }
+
+    private func preload(_ query: String, articles: [ArticleEntity]) throws {
+        for articleEntity in articles {
+            try database.saveArticle(query, articleEntity: articleEntity)
+        }
     }
 }
