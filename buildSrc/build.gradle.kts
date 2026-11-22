@@ -4,5 +4,5 @@ plugins {
 // Required since Gradle 4.10+.
 repositories {
     google()
-    jcenter()
+    mavenCentral()
 }

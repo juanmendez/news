@@ -11,9 +11,27 @@
 /.idea/misc.xml
 /.idea/runConfigurations.xml
 /.idea/compiler.xml
+/.idea/**/shelf/
+/.idea/**/httpRequests/
+.fleet/
 .DS_Store
 /build
 /captures
+/kotlin-profile/
+/.kotlin/
+/caches/
+/wrapper/
+/native/
+/daemon/
+/.tmp/
+
+# Local Android signing credentials
+*.jks
+*.keystore
+keystore.properties
+key.properties
+
+# iOS project
 Podfile.lock
 /Pods/
 /news.xcworkspace/
